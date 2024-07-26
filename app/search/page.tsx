@@ -5,15 +5,15 @@ import { SearchResults } from '@/components/search/SearchResults';
 export default function SearchPage({
   searchParams
 }: {
-  searchParams: { q: string; status: string }
+  searchParams: { q?: string }
 }) {
-  const { q, status } = searchParams;
+  const { q } = searchParams;
 
   return (
     <div>
       <h1>Search</h1>
       <SearchInput />
-      {status === 'pending' ? (
+      {q === 'pending' ? (
         <p>Searching...</p>
       ) : q ? (
         <Suspense fallback={<p>Loading results...</p>}>

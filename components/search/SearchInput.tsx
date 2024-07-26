@@ -9,16 +9,21 @@ export function SearchInput() {
   const [query, setQuery] = useState('');
   const router = useRouter();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (query.trim()) {
-      const pendingUrl = `/search?q=${encodeURIComponent(query)}&status=pending`;
+      const pendingUrl = `/search?q=pending`;
       router.push(pendingUrl);
       
       // Simulate API call
-      setTimeout(() => {
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000));
         const finalUrl = `/search/${encodeURIComponent(query)}-${generateHash()}`;
         router.push(finalUrl);
-      }, 2000);
+      } catch (error) {
+        console.error('Search failed:', error);
+        router.push('/search?error=true');
+      }
     }
   };
 

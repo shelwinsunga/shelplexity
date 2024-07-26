@@ -1,10 +1,10 @@
-import Image from "next/image";
-import Search from "@/components/search/search"
+import { SearchInput } from '@/components/search/SearchInput';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Search />
-    </main>
+    <div>
+      <h1>Perplexity-like Search</h1>
+      <SearchInput />
+    </div>
   );
 }

@@ -1,8 +1,12 @@
 'use client'
+import { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 export default function Search() {
+    const [searchData, setSearchData] = useState({
+        query: '',
+    });
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -15,6 +19,7 @@ export default function Search() {
             params.delete('query');
         }
         replace(`${pathname}?${params.toString()}`);
+        setSearchData({ query: term });
     }
 
     return (

@@ -17,12 +17,11 @@ export default function Search() {
         replace(`${pathname}?${params.toString()}`);
     }
 
-
     return (
         <>
             <Input
                 placeholder="search..."
-                onChange={(e) => { handleSearch(e.target.value) }}
+                onKeyDown={(e) => { if (e.key === 'Enter') { handleSearch(e.currentTarget.value) } }}
                 defaultValue={searchParams.get('query')?.toString()} // for populating the URL when its shared
             />
         </>

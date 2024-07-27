@@ -14,7 +14,7 @@ export default function Nav() {
         const handleMouseMove = (event: MouseEvent) => {
             const screenWidth = window.innerWidth;
             const mouseX = event.clientX;
-            const threshold = isContentVisible ? screenWidth / 6 : 20;
+            const threshold = isContentVisible ? screenWidth / 6 : 18;
             setIsContentVisible(mouseX < threshold);
         };
 

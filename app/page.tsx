@@ -4,12 +4,15 @@ import Nav from '@/components/nav/nav';
 
 export default function Page() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <SearchArea />
+    <>
+      <Nav />
+      <div className="container mx-auto px-4 py-8 relative">
+        <div className="max-w-2xl mx-auto ml-1/5">
+          <div className="mb-8">
+            <SearchArea />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

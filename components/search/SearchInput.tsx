@@ -28,21 +28,17 @@ export function SearchInput() {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2 rounded-md border shadow-md">
       <Textarea
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder="Ask anything..."
-        className="w-full p-2 resize-none overflow-y-auto min-h-[40px] max-h-[28rem] transition-all duration-200 ease-in-out"
-        style={{ height: 'auto' }}
-        onInput={(e) => {
-          const target = e.target as HTMLTextAreaElement;
-          target.style.height = 'auto';
-          target.style.height = `${Math.min(target.scrollHeight, 448)}px`;
-        }}
+        className="border-none w-full p-2 resize-none transition-all duration-200 ease-in-out"
       />
-      <Button onClick={handleSearch}>Search</Button>
+      {query.trim() && (
+        <Button onClick={handleSearch}>Search</Button>
+      )}
     </div>
   );
 }

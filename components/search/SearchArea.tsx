@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function SearchArea() {
   const [query, setQuery] = useState('');
@@ -29,17 +30,28 @@ export function SearchArea() {
   };
 
   return (
-    <div className="flex flex-row gap-2 rounded-md border  bg-card shadow-md bg-muted">
+    <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+        onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSearch()}
         placeholder="Ask anything..."
-        className="border-none min-h-[120px] bg-card w-full p-4 resize-none transition-all duration-200 ease-in-out"
+        className="border-none min-h-[120px] bg-transparent w-full resize-none transition-all duration-200 ease-in-out focus:outline-none"
       />
-      {query.trim() && (
-        <Button onClick={handleSearch}>Search</Button>
-      )}
+      <AnimatePresence>
+        {query.trim() && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          >
+            <Button onClick={handleSearch} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Send className="w-4 h-4 mr-2" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

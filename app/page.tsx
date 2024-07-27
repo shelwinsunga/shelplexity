@@ -1,5 +1,6 @@
 import { SearchArea } from '@/components/search/SearchArea';
 import { ModeToggle } from '@/components/theming/mode-toggle';
+import Nav from '@/components/nav/nav';
 
 export default function Page() {
   return (
@@ -7,9 +8,6 @@ export default function Page() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <SearchArea />
-        </div>
-        <div className="flex justify-end">
-          <ModeToggle />
         </div>
       </div>
     </div>

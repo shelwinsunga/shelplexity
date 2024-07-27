@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Send } from 'lucide-react';
 
 export function SearchArea() {
   const [query, setQuery] = useState('');
@@ -28,13 +29,13 @@ export function SearchArea() {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-md border shadow-md">
+    <div className="flex flex-row gap-2 rounded-md border  bg-card shadow-md bg-muted">
       <Textarea
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder="Ask anything..."
-        className="border-none w-full p-2 resize-none transition-all duration-200 ease-in-out"
+        className="border-none bg-card w-full p-2 resize-none transition-all duration-200 ease-in-out"
       />
       {query.trim() && (
         <Button onClick={handleSearch}>Search</Button>

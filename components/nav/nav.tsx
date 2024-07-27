@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Snail } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import NavFooter from "./nav-footer";
+
 export default function Nav() {
-    const [gradientOpacity, setGradientOpacity] = useState(0);
     const [isContentVisible, setIsContentVisible] = useState(false);
 
     useEffect(() => {
@@ -14,8 +14,6 @@ export default function Nav() {
             const screenWidth = window.innerWidth;
             const mouseX = event.clientX;
             const threshold = screenWidth / 6; // Adjust this value to change when content fully appears
-            const newOpacity = mouseX < threshold ? 1 - (mouseX / threshold) : 0;
-            setGradientOpacity(Math.max(newOpacity, 0));
             setIsContentVisible(mouseX < threshold);
         };
 
@@ -26,13 +24,9 @@ export default function Nav() {
     }, []);
 
     return (
-        <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50 bg-background">
-            <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent to-background"
-                style={{ opacity: isContentVisible ? 0 : gradientOpacity }}
-            />
+        <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
             <motion.div
-                className="w-full h-full relative z-10 py-2"
+                className="w-full h-full relative z-10 py-2 bg-background"
                 initial={{ x: "-100%" }}
                 animate={{ x: isContentVisible ? 0 : "-100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}

@@ -44,7 +44,7 @@ export default function Nav() {
                 </div>
             </motion.div>
             <motion.div
-                className="w-full h-full relative z-10 py-2 bg-background"
+                className="w-full h-full relative z-10 py-2 bg-card"
                 initial={{ x: "-100%" }}
                 animate={{ x: isContentVisible ? 0 : "-100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}

@@ -35,7 +35,7 @@ export function SearchArea() {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder="Ask anything..."
-        className="border-none bg-card w-full p-2 resize-none transition-all duration-200 ease-in-out"
+        className="border-none min-h-[120px] bg-card w-full p-4 resize-none transition-all duration-200 ease-in-out"
       />
       {query.trim() && (
         <Button onClick={handleSearch}>Search</Button>

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 
-export function SearchInput() {
+export function SearchArea() {
   const [query, setQuery] = useState('');
   const router = useRouter();
 

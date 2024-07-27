@@ -1,4 +1,4 @@
-import { SearchInput } from '@/components/search/SearchInput';
+import { SearchArea } from '@/components/search/SearchArea';
 import { SearchResults } from '@/components/search/SearchResults';
 
 export default function SearchResultPage({ params }: { params: { slug: string } }) {

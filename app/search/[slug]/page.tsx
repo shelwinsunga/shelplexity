@@ -7,7 +7,6 @@ export default function SearchResultPage({ params }: { params: { slug: string } 
   return (
     <div>
       <h1>Search Results</h1>
-      <SearchInput />
       <SearchResults query={query} />
     </div>
   );

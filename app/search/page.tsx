@@ -12,7 +12,6 @@ export default function SearchPage({
   return (
     <div>
       <h1>Search</h1>
-      <SearchInput />
       {q === 'pending' ? (
         <p>Searching...</p>
       ) : q ? (

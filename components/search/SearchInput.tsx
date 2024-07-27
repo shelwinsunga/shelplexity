@@ -13,12 +13,13 @@ export function SearchInput() {
     if (query.trim()) {
       const pendingUrl = `/search?q=pending`;
       router.push(pendingUrl);
-      
+
       // Simulate API call
       try {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
-        const finalUrl = `/search/${encodeURIComponent(query)}-${generateHash()}`;
+        const slug = query.toLowerCase().replace(/\s+/g, '-');
+        const finalUrl = `/search/${slug}-${generateHash()}`;
         router.push(finalUrl);
       } catch (error) {
         console.error('Search failed:', error);

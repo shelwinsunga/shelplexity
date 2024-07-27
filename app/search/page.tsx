@@ -1,5 +1,5 @@
+
 import { Suspense } from 'react';
-import { SearchInput } from '@/components/search/SearchInput';
 import { SearchResults } from '@/components/search/SearchResults';
 
 export default function SearchPage({
@@ -8,6 +8,7 @@ export default function SearchPage({
   searchParams: { q?: string }
 }) {
   const { q } = searchParams;
+  console.log(q);
 
   return (
     <div>

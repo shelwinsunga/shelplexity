@@ -14,9 +14,7 @@ export function SearchInput() {
       const pendingUrl = `/search?q=pending`;
       router.push(pendingUrl);
 
-      // Simulate API call
       try {
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
         const slug = query.toLowerCase().replace(/\s+/g, '-');
         const finalUrl = `/search/${slug}-${generateHash()}`;

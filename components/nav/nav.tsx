@@ -26,12 +26,7 @@ export default function Nav() {
 
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
-            <motion.div
-                className="absolute left-4 bottom-4 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isContentVisible ? 0 : 1 }}
-                transition={{ duration: 0.3 }}
-            >
+            <div className="absolute left-4 bottom-4 flex items-center justify-center">
                 <div className="flex flex-col space-y-2 mt-auto">
                     <Button variant="ghost" className="w-full justify-start">
                         <User className="h-5 w-5 mr-2" />
@@ -42,14 +37,14 @@ export default function Nav() {
                         <span>Settings</span>
                     </Button>
                 </div>
-            </motion.div>
+            </div>
             <motion.div
-                className="w-full h-full relative z-10 py-2 bg-card"
+                className="w-full h-full relative z-10 py-2"
                 initial={{ x: "-100%" }}
                 animate={{ x: isContentVisible ? 0 : "-100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border">
+                <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border bg-card">
                     <div className="flex items-center mb-4 px-6 ">
                         <Snail className="w-6 h-6 mr-2" />
                         <h1 className="text-lg font-semibold">Shelpexity</h1>

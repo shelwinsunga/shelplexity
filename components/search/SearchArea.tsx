@@ -47,7 +47,7 @@ export function SearchArea() {
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           >
             <Button onClick={handleSearch} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-4 h-4" />
             </Button>
           </motion.div>
         )}

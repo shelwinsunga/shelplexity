@@ -4,6 +4,7 @@ import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 
 export function SearchInput() {
   const [query, setQuery] = useState('');
@@ -28,13 +29,18 @@ export function SearchInput() {
 
   return (
     <div className="flex gap-2">
-      <Input
-        type="text"
+      <Textarea
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder="Ask anything..."
-        style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+        className="w-full p-2 resize-none overflow-y-auto min-h-[40px] max-h-[28rem] transition-all duration-200 ease-in-out"
+        style={{ height: 'auto' }}
+        onInput={(e) => {
+          const target = e.target as HTMLTextAreaElement;
+          target.style.height = 'auto';
+          target.style.height = `${Math.min(target.scrollHeight, 448)}px`;
+        }}
       />
       <Button onClick={handleSearch}>Search</Button>
     </div>

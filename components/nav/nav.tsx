@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Snail } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import NavFooter from "./nav-footer";
+import { User } from 'lucide-react';
 
 export default function Nav() {
     const [isContentVisible, setIsContentVisible] = useState(false);
@@ -25,6 +26,23 @@ export default function Nav() {
 
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
+            <motion.div
+                className="absolute left-4 bottom-4 flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isContentVisible ? 0 : 1 }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className="flex flex-col space-y-2 mt-auto">
+                    <Button variant="ghost" className="w-full justify-start">
+                        <User className="h-5 w-5 mr-2" />
+                        <span>Shelwin Sunga</span>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                        <Settings className="h-5 w-5 mr-2" />
+                        <span>Settings</span>
+                    </Button>
+                </div>
+            </motion.div>
             <motion.div
                 className="w-full h-full relative z-10 py-2 bg-background"
                 initial={{ x: "-100%" }}

@@ -36,7 +36,7 @@ export function SearchArea() {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSearch()}
         placeholder="Ask anything..."
-        className="border-none min-h-[120px] bg-transparent w-full resize-none transition-all duration-200 ease-in-out focus:outline-none"
+        className="border-none min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
       />
       <AnimatePresence>
         {query.trim() && (

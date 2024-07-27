@@ -14,7 +14,7 @@ export default function Nav() {
         const handleMouseMove = (event: MouseEvent) => {
             const screenWidth = window.innerWidth;
             const mouseX = event.clientX;
-            const threshold = screenWidth / 6; // Adjust this value to change when content fully appears
+            const threshold = isContentVisible ? screenWidth / 6 : 20;
             setIsContentVisible(mouseX < threshold);
         };
 
@@ -22,7 +22,7 @@ export default function Nav() {
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
         };
-    }, []);
+    }, [isContentVisible]);
 
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">

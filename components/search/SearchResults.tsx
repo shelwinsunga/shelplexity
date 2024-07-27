@@ -1,6 +1,7 @@
 import { searchAPI } from '@/lib/api';
 
 export async function SearchResults({ query }: { query: string }) {
+  console.log(query);
   const results = await searchAPI(query);
 
   return (

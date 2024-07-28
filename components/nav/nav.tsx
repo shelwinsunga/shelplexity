@@ -47,7 +47,7 @@ export default function Nav() {
                 <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border bg-card">
                     <div className="flex items-center mb-4 px-6 ">
                         <Snail className="w-6 h-6 mr-2" />
-                        <h1 className="text-lg font-semibold">Shelpexity</h1>
+                        <h1 className="text-lg font-semibold">Shelplexity</h1>
                     </div>
                     <div className="px-6">
                         <Button variant="outline" className="mb-6 w-full ">

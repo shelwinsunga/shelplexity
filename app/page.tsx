@@ -1,18 +1,61 @@
-import { SearchArea } from '@/components/search/SearchArea';
-import { Snail } from 'lucide-react';
+'use client';
 
-export default function Page() {
+import { useState } from 'react';
+import { ClientMessage } from './actions';
+import { useActions, useUIState } from 'ai/rsc';
+import { generateId } from 'ai';
+import { useRouter } from 'next/navigation';
+import { useFrontend } from '@/contexts/FrontendContext';
+
+export const maxDuration = 30;
+
+export default function Home() {
+  const [input, setInput] = useState<string>('');
+  const [conversation, setConversation] = useUIState();
+  const { continueConversation } = useActions();
+  const { query, setQuery } = useFrontend();
+
   return (
-    <>
-      <div className="container mx-auto px-4 py-8 relative flex flex-col items-center justify-center h-screen">
-        <div className="flex items-center mb-8">
-          <Snail className="w-12 h-12 mr-4" />
-          <h1 className="text-3xl font-semibold">Shelplexity</h1>
-        </div>
-        <div className="w-full max-w-2xl">
-          <SearchArea />
-        </div>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div>
+        {conversation.map((message: ClientMessage) => (
+          <div key={message.id}>
+            {message.role}: {message.display}
+          </div>
+        ))}
       </div>
-    </>
+
+      <div>
+        <input
+          type="text"
+          value={input}
+          onChange={event => {
+            setInput(event.target.value);
+          }}
+        />
+        <button
+          onClick={async () => {
+            setQuery(input);
+            // create new frontend context
+            // store query in the frontend context
+            // store status of query in the frontend 
+
+            // setConversation((currentConversation: ClientMessage[]) => [
+            //   ...currentConversation,
+            //   { id: generateId(), role: 'user', display: input },
+            // ]);
+
+            // const message = await continueConversation(input);
+
+            // setConversation((currentConversation: ClientMessage[]) => [
+            //   ...currentConversation,
+            //   message,
+            // ]);
+          }}
+        >
+          Send Message
+        </button>
+      </div>
+    </div>
   );
 }

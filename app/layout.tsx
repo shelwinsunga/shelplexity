@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theming/theme-provider"
 import Nav from "@/components/nav/nav";
-import { FrontendProvider } from "@/contexts/FrontendContext";
+import { AI } from './actions';
+import { FrontendProvider } from '@/contexts/FrontendContext';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,10 +26,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <FrontendProvider>
-            <Nav />
-            {children}
-          </FrontendProvider>
+          <Nav />
+          <AI>
+            <FrontendProvider>
+              {children}
+            </FrontendProvider>
+          </AI>
         </ThemeProvider>
       </body>
     </html>

@@ -6,7 +6,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 
-export function SearchResults({ children }: { children: React.ReactNode }) {
+export function SearchTextRender({ children }: { children: React.ReactNode }) {
   const content = children as string;
   const containsLaTeX = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/.test(content || '')
   const processedData = preprocessLaTeX(content || '')

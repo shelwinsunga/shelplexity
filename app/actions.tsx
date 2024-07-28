@@ -9,7 +9,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { SearchResults } from '@/components/search/SearchResults';
+import { SearchTextRender } from '@/components/search/SearchTextRender';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -66,9 +66,9 @@ export async function continueConversation(
                 ]);
             }
 
-            return <SearchResults>
+            return <SearchTextRender>
                 {content}
-            </SearchResults>;
+            </SearchTextRender>;
         },
         tools: {
             getWeatherForecast: {

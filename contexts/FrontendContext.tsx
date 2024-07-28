@@ -14,6 +14,7 @@ interface FrontendContextType {
   query: string;
   queryId: string;
   handleQuery: (query: string) => void;
+  setQuery: (query: string) => void;
   setQueryId: (queryId: string) => void;
 }
 
@@ -56,7 +57,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   }, [AIState, router]);
 
   return (
-    <FrontendContext.Provider value={{ query, queryId, handleQuery, setQueryId }}>
+    <FrontendContext.Provider value={{ query, queryId, handleQuery, setQuery, setQueryId }}>
       {children}
     </FrontendContext.Provider>
   );

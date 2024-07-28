@@ -9,18 +9,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
-  const { query, handleQuery, setQueryId } = useFrontend();
+  const { query, handleQuery, setQuery } = useFrontend();
   const router = useRouter();
 
   const handleSearch = async () => {
-
+    handleQuery(query);
   };
 
   return (
     <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
         value={query}
-        onChange={(e) => handleQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();

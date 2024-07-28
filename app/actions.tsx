@@ -5,6 +5,8 @@ import { openai } from '@ai-sdk/openai';
 import { ReactNode } from 'react';
 import { z } from 'zod';
 import { generateId } from 'ai';
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -49,7 +51,6 @@ export async function continueConversation(
     'use server';
 
     const history = getMutableAIState();
-    console.log(history);
 
     const result = await streamUI({
         model: openai('gpt-4o-mini'),
@@ -62,7 +63,7 @@ export async function continueConversation(
                 ]);
             }
 
-            return <div>{content}</div>;
+            return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
         },
         async onFinish() {
             console.log('onFinish');
@@ -87,7 +88,6 @@ export async function continueConversation(
                             content: `Showing weather forecast for ${location}`,
                         },
                     ]);
-
                     return <WeatherForecast location={location} days={days} />;
                 },
             },

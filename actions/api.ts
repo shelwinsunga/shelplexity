@@ -16,4 +16,4 @@ export async function searchAPI(query: string): Promise<string[]> {
     
     const numberOfResults = Math.floor(Math.random() * 5) + 3; // Return 3 to 7 results
     return fakeResults.sort(() => 0.5 - Math.random()).slice(0, numberOfResults);
-  }
+}

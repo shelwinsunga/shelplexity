@@ -1,4 +1,4 @@
-import { searchAPI } from '@/lib/api';
+import { searchAPI } from '@/actions/api';
 
 export async function SearchResults({ query }: { query: string }) {
   console.log(query);

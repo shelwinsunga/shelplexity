@@ -6,20 +6,24 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
-  const [query, setQuery] = useState('');
+  const { query, setQuery, setQueryId } = useFrontend();
   const router = useRouter();
 
   const handleSearch = async () => {
     if (query.trim()) {
+      const hash = generateHash();
+      setQuery(query);
+      setQueryId(hash);
       const pendingUrl = `/search?q=pending`;
       router.push(pendingUrl);
 
       try {
         await new Promise(resolve => setTimeout(resolve, 2000));
         const slug = query.toLowerCase().replace(/\s+/g, '-');
-        const finalUrl = `/search/${slug}-${generateHash()}`;
+        const finalUrl = `/search/${slug}-${hash}`;
         router.push(finalUrl);
       } catch (error) {
         console.error('Search failed:', error);

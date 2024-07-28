@@ -9,34 +9,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
-  const { query, setQuery, setQueryId } = useFrontend();
+  const { query, handleQuery, setQueryId } = useFrontend();
   const router = useRouter();
 
   const handleSearch = async () => {
-    if (query.trim()) {
-      const hash = generateHash();
-      setQuery(query);
-      setQueryId(hash);
-      const pendingUrl = `/search?q=pending`;
-      router.push(pendingUrl);
 
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const slug = query.toLowerCase().replace(/\s+/g, '-');
-        const finalUrl = `/search/${slug}-${hash}`;
-        router.push(finalUrl);
-      } catch (error) {
-        console.error('Search failed:', error);
-        router.push('/search?error=true');
-      }
-    }
   };
 
   return (
     <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => handleQuery(e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();

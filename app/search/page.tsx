@@ -13,7 +13,7 @@ export default function Home() {
   const [input, setInput] = useState<string>('');
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
-  const { query, setQuery } = useFrontend();
+  const { query, handleQuery } = useFrontend();
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -35,7 +35,7 @@ export default function Home() {
       <button
         className="bg-blue-500 text-white p-2 rounded-md"
         onClick={async () => {
-          setQuery(input);
+          handleQuery(input);
           // create new frontend context
           // store query in the frontend context
           // store status of query in the frontend 

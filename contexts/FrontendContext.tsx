@@ -7,34 +7,30 @@ import { generateId } from 'ai';
 import { useEffect } from 'react';
 import { useAIState } from 'ai/rsc';
 import { useSearchParams } from 'next/navigation';
+import { generateHash } from '@/lib/utils';
+
+
 interface FrontendContextType {
   query: string;
   queryId: string;
-  setQuery: (query: string) => void;
+  handleQuery: (query: string) => void;
   setQueryId: (queryId: string) => void;
 }
 
 const FrontendContext = createContext<FrontendContextType | undefined>(undefined);
 
 export function FrontendProvider({ children }: { children: React.ReactNode }) {
-  const [query, setQueryState] = useState('');
-  const [route, setRoute] = useState('');
-  const [queryStatus, setQueryStatus] = useState('');
+  const [query, setQuery] = useState('');
   const [queryId, setQueryId] = useState('');
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const [AIState, setAIState] = useAIState();
   const searchParams = useSearchParams();
-
   const router = useRouter();
 
 
-  const setQuery = async (newQuery: string) => {
-    if (newQuery === '') {
-      setQueryStatus('pending');
-      setQueryState(newQuery);
-    }
-
+  const handleQuery = async (newQuery: string) => {
+    setQuery(newQuery);
     router.push(`/search?q=pending`);
 
     setConversation((currentConversation: ClientMessage[]) => [
@@ -48,22 +44,23 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       ...currentConversation,
       message,
     ]);
-
   };
 
   useEffect(() => {
     if (searchParams.get('q') === 'pending') {
-      router.push(`/search?q=done`);
+      const slug = query.toLowerCase().replace(/\s+/g, '-');
+      const hash = generateHash();
+      const finalUrl = `/search/${slug}-${hash}`;
+      router.push(finalUrl);
     }
   }, [AIState, router]);
 
   return (
-    <FrontendContext.Provider value={{ query, queryId, setQuery, setQueryId }}>
+    <FrontendContext.Provider value={{ query, queryId, handleQuery, setQueryId }}>
       {children}
     </FrontendContext.Provider>
   );
 }
-
 export function useFrontend() {
   const context = useContext(FrontendContext);
   if (context === undefined) {

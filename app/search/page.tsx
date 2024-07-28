@@ -8,7 +8,6 @@ export default function SearchPage({
   searchParams: { q?: string }
 }) {
   const { q } = searchParams;
-  console.log(q);
 
   return (
     <div>

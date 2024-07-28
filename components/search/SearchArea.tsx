@@ -2,7 +2,6 @@
 
 import { useState, KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Send } from 'lucide-react';

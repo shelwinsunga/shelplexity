@@ -28,14 +28,14 @@ export default function Nav() {
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
             <div className="absolute left-4 bottom-4 flex items-center justify-center">
                 <div className="flex flex-col space-y-2 mt-auto">
-                    <Button variant="ghost" className="w-full justify-start">
+                    {/* <Button variant="ghost" className="w-full justify-start">
                         <User className="h-5 w-5 mr-2" />
                         <span>Shelwin Sunga</span>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start">
                         <Settings className="h-5 w-5 mr-2" />
                         <span>Settings</span>
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
             <motion.div

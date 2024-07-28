@@ -23,7 +23,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center h-screen">
       <div>
         {conversation.map((message: ClientMessage) => (
-          <div key={message.id}>
+          <div className="prose" key={message.id}>
             {message.display}
           </div>
         ))}

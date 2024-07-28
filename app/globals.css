@@ -71,3 +71,80 @@
   }
 }
 
+@layer base {
+  .prose {
+    @apply text-foreground;
+  }
+
+  .prose a {
+    @apply text-primary hover:underline;
+  }
+
+  .prose strong {
+    @apply font-semibold;
+  }
+
+  .prose em {
+    @apply italic;
+  }
+
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply font-bold text-foreground mt-6 mb-4;
+  }
+
+  .prose h1 {
+    @apply text-3xl;
+  }
+
+  .prose h2 {
+    @apply text-2xl;
+  }
+
+  .prose h3 {
+    @apply text-xl;
+  }
+
+  .prose ul, .prose ol {
+    @apply pl-6 my-4;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-muted pl-4 italic my-4;
+  }
+
+  .prose code {
+    @apply bg-secondary text-secondary-foreground px-1 py-0.5 rounded;
+  }
+
+  .prose pre {
+    @apply bg-secondary text-secondary-foreground p-4 rounded-md overflow-x-auto my-4;
+  }
+
+  .prose table {
+    @apply w-full border-collapse my-4;
+  }
+
+  .prose th, .prose td {
+    @apply border border-border p-2;
+  }
+
+  .prose th {
+    @apply bg-secondary font-semibold;
+  }
+
+  .prose img {
+    @apply max-w-full h-auto my-4;
+  }
+
+  .prose hr {
+    @apply border-t border-border my-8;
+  }
+}

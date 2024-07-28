@@ -7,6 +7,9 @@ import { z } from 'zod';
 import { generateId } from 'ai';
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import { SearchResults } from '@/components/search/SearchResults';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -63,10 +66,9 @@ export async function continueConversation(
                 ]);
             }
 
-            return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
-        },
-        async onFinish() {
-            console.log('onFinish');
+            return <SearchResults>
+                {content}
+            </SearchResults>;
         },
         tools: {
             getWeatherForecast: {

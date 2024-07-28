@@ -34,7 +34,12 @@ export function SearchArea() {
       <Textarea
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSearch()}
+        onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSearch();
+          }
+        }}
         placeholder="Ask anything"
         className="border-none min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
       />

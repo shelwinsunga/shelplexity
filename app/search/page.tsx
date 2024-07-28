@@ -36,21 +36,6 @@ export default function Home() {
         className="bg-blue-500 text-white p-2 rounded-md"
         onClick={async () => {
           handleQuery(input);
-          // create new frontend context
-          // store query in the frontend context
-          // store status of query in the frontend 
-
-          // setConversation((currentConversation: ClientMessage[]) => [
-          //   ...currentConversation,
-          //   { id: generateId(), role: 'user', display: input },
-          // ]);
-
-          // const message = await continueConversation(input);
-
-          // setConversation((currentConversation: ClientMessage[]) => [
-          //   ...currentConversation,
-          //   message,
-          // ]);
         }}
       ></button>
     </div>

@@ -35,21 +35,6 @@ export default function Home() {
         <button
           onClick={async () => {
             handleQuery(input);
-            // create new frontend context
-            // store query in the frontend context
-            // store status of query in the frontend 
-
-            // setConversation((currentConversation: ClientMessage[]) => [
-            //   ...currentConversation,
-            //   { id: generateId(), role: 'user', display: input },
-            // ]);
-
-            // const message = await continueConversation(input);
-
-            // setConversation((currentConversation: ClientMessage[]) => [
-            //   ...currentConversation,
-            //   message,
-            // ]);
           }}
         >
           Send Message

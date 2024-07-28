@@ -1,5 +1,4 @@
 import { SearchArea } from '@/components/search/SearchArea';
-import StarryBackground from '@/components/ui/starry-background';
 import { Snail } from 'lucide-react';
 
 export default function Page() {

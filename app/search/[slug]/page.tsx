@@ -10,7 +10,7 @@ export default function Home() {
   const [conversation] = useUIState();
 
   return (
-    <div className="flex flex-col items-start justify-start border h-screen">
+    <div className="flex flex-col items-start justify-start h-screen">
       {conversation.map((message: ClientMessage) => (
         message.role === 'assistant' && (
           <div className="prose" key={message.id}>

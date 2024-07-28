@@ -9,9 +9,8 @@ export default function SearchLayout({
 }) {
     const { query } = useFrontend();
 
-
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-16 w-[40%]">
             <h1 className="text-3xl font-semibold mb-6">{query}</h1>
             <div className="mt-8">
                 {children}

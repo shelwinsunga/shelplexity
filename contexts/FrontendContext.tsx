@@ -51,8 +51,8 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     if (searchParams.get('q') === 'pending') {
       const slug = query.toLowerCase().replace(/\s+/g, '-');
       const hash = generateHash();
-      const finalUrl = `/search/${slug}-${hash}`;
-      router.push(finalUrl);
+      const newPath = `/search/${slug}-${hash}`;
+      window.history.replaceState(null, '', newPath);
     }
   }, [AIState, router]);
 

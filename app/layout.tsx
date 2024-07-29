@@ -32,9 +32,6 @@ export default function RootLayout({
           <Nav />
           <AI>
             <FrontendProvider>
-              <div style={{ padding: '20px' }}>
-              {folder1}
-            </div>
               {children}
             </FrontendProvider>
           </AI>

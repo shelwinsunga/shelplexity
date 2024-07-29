@@ -56,11 +56,17 @@ export async function continueConversation(
     'use server';
 
     const history = getMutableAIState();
+    history.update([]);
     const isComplete = createStreamableValue(false);
 
     const result = await streamUI({
         model: openai('gpt-4o-mini'),
-        messages: [...history.get(), { role: 'user', content: input }],
+        messages: (() => {
+            const messages = [...history.get(), { role: 'user', content: input }];
+            // debug
+            // console.log('Messages:', JSON.stringify(messages, null, 2));
+            return messages;
+        })(),
         text: ({ content, done }) => {
             if (done) {
                 history.done((messages: ServerMessage[]) => [
@@ -69,7 +75,6 @@ export async function continueConversation(
                 ]);
                 isComplete.done(true);
             }
-
             return <SearchTextRender>
                 {content}
             </SearchTextRender>;

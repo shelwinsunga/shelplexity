@@ -1,16 +1,14 @@
 'use client'
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClientMessage } from '@/app/actions';
-import { useActions, useUIState } from 'ai/rsc';
+import { useActions, useUIState, useAIState, readStreamableValue } from 'ai/rsc';
 import { generateId } from 'ai';
-import { useEffect } from 'react';
-import { useAIState } from 'ai/rsc';
 import { useSearchParams } from 'next/navigation';
 import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { saveFrontendContext } from '@/actions/saveQuery';
-import { readStreamableValue } from 'ai/rsc';
+
 
 interface FrontendContextType {
   query: string | null;
@@ -18,6 +16,8 @@ interface FrontendContextType {
   setQuery: (query: string) => void;
   frontendContextId: string | null;
   setFrontendContextId: (frontendContextId: string | null) => void;
+  sourceResults: any;
+  setSourceResults: (sourceResults: any) => void;
 }
 
 const FrontendContext = createContext<FrontendContextType | undefined>(undefined);
@@ -25,6 +25,7 @@ const FrontendContext = createContext<FrontendContextType | undefined>(undefined
 export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [query, setQuery] = useState('');
   const [frontendContextId, setFrontendContextId] = useState<string | null>(null);
+  const [sourceResults, setSourceResults] = useState<any>([]);
   const [queryStatus, setQueryStatus] = useState<'pending' | 'complete' | 'error'>('pending');
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
@@ -33,6 +34,8 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const handleQuery = async (newQuery: string) => {
+    setAIState([]);
+    setConversation([]);
     const newFrontendContextId = uuidv4();
     const queryStatus = 'pending';
     setFrontendContextId(newFrontendContextId);
@@ -40,14 +43,13 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setQueryStatus(queryStatus);
     saveFrontendContext(newFrontendContextId, newQuery, queryStatus);
     router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
-
-    setConversation((currentConversation: ClientMessage[]) => [
-      ...currentConversation,
+  
+    setConversation([
       { id: generateId(), role: 'user', display: newQuery },
     ]);
-
+  
     const message = await continueConversation(newQuery);
-
+  
     setConversation((currentConversation: ClientMessage[]) => [
       ...currentConversation,
       message,
@@ -65,6 +67,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  
   // useEffect(() => {
   //   if (searchParams.get('q') === 'pending') {
   //     const slug = query.toLowerCase().replace(/\s+/g, '-');
@@ -75,7 +78,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   // }, [AIState, router]);
 
   return (
-    <FrontendContext.Provider value={{ query, handleQuery, setQuery, frontendContextId, setFrontendContextId }}>
+    <FrontendContext.Provider value={{ query, handleQuery, setQuery, frontendContextId, setFrontendContextId, sourceResults, setSourceResults }}>
       {children}
     </FrontendContext.Provider>
   );

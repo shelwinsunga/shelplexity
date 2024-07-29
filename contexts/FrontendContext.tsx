@@ -62,16 +62,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  
-  // useEffect(() => {
-  //   if (searchParams.get('q') === 'pending') {
-  //     const slug = query.toLowerCase().replace(/\s+/g, '-');
-  //     const hash = generateHash();
-  //     const newPath = `/search/${slug}-${hash}`;
-  //     window.history.replaceState(null, '', newPath);
-  //   }
-  // }, [AIState, router]);
-
   return (
     <FrontendContext.Provider value={{ query, handleQuery, setQuery, frontendContextId, setFrontendContextId, sourceResults, setSourceResults }}>
       {children}

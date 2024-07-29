@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { saveFrontendContext } from '@/actions/saveQuery';
+import { readStreamableValue } from 'ai/rsc';
 
 interface FrontendContextType {
   query: string | null;
@@ -51,6 +52,12 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       ...currentConversation,
       message,
     ]);
+
+    if (message.isComplete) {
+      for await (const complete of readStreamableValue(message.isComplete)) {
+        console.log("complete", complete);
+      }
+    }
   };
 
   // useEffect(() => {

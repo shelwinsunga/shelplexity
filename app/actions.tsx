@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { SearchTextRender } from '@/components/search/SearchTextRender';
-import { createStreamableUI } from 'ai/rsc';
+import { createStreamableValue, StreamableValue } from 'ai/rsc';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -21,6 +21,7 @@ export interface ClientMessage {
     id: string;
     role: 'user' | 'assistant';
     display: ReactNode;
+    isComplete?: StreamableValue<boolean, any>;
 }
 
 const WeatherForecast: React.FC<{ location: string; days: number }> = async ({ location, days }) => {
@@ -49,24 +50,13 @@ const WeatherForecast: React.FC<{ location: string; days: number }> = async ({ l
     );
 };
 
-export async function getWeather() {
-    const weatherUI = createStreamableUI();
-  
-    weatherUI.update(<div style={{ color: 'gray' }}>Loading...</div>);
-  
-    setTimeout(() => {
-      weatherUI.done(<div>It's a sunny day!</div>);
-    }, 1000);
-  
-    return weatherUI.value;
-  }
-
 export async function continueConversation(
     input: string,
 ): Promise<ClientMessage> {
     'use server';
 
     const history = getMutableAIState();
+    const isComplete = createStreamableValue(false);
 
     const result = await streamUI({
         model: openai('gpt-4o-mini'),
@@ -77,6 +67,7 @@ export async function continueConversation(
                     ...messages,
                     { role: 'assistant', content },
                 ]);
+                isComplete.done(true);
             }
 
             return <SearchTextRender>
@@ -94,6 +85,7 @@ export async function continueConversation(
                     days: z
                         .number()
                         .describe('The number of days to get forecast for'),
+                        
                 }),
                 generate: async ({ location, days }) => {
                     history.done((messages: ServerMessage[]) => [
@@ -113,6 +105,7 @@ export async function continueConversation(
         id: generateId(),
         role: 'assistant',
         display: result.value,
+        isComplete: isComplete.value,
     };
 }
 

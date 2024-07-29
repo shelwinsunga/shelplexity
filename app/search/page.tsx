@@ -9,8 +9,10 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-start justify-start h-screen">
-      <SearchSourcesDisplay query={query} />
-      <SearchResultsDisplay />
+      <div className="flex flex-col gap-6">
+        <SearchSourcesDisplay query={query} />
+        <SearchResultsDisplay />
+      </div>
     </div>
   );
 }

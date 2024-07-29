@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
 export default function SourceGallery({ SourceResults }: { SourceResults: any }) {
-    const visibleResults = SourceResults.web.results.slice(0, 3);
-    const restResults = SourceResults.web.results.slice(3);
+    console.log(SourceResults);
+    const visibleResults = SourceResults.slice(0, 3);
+    const restResults = SourceResults.slice(3);
 
     return (
         <div className="flex overflow-x-auto space-x-4">

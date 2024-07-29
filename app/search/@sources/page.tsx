@@ -16,8 +16,6 @@ export default async function Sources({ searchParams }: { searchParams: any }) {
         await saveThread(indexedPath, results);
     }
 
-
-    
     return (
         <SourceGallery SourceResults={results} />
     );

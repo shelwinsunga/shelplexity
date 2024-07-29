@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function SourceGallery({ SourceResults }: { SourceResults: any }) {
-    console.log(SourceResults);
     const visibleResults = SourceResults.slice(0, 3);
     const restResults = SourceResults.slice(3);
 

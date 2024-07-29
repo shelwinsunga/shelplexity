@@ -11,7 +11,6 @@ export default function SearchPage() {
     <>
       <div className="mt-8">
         <h1 className="text-3xl font-semibold mb-6">{query}</h1>
-
         <div className="flex flex-col items-start justify-start h-screen">
           <div className="flex flex-col gap-6">
             <SearchSourcesDisplay query={query} />

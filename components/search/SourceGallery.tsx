@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
 export default function SourceGallery({ SourceResults }: { SourceResults: any }) {
-    console.log(SourceResults);
     const visibleResults = SourceResults.slice(0, 3);
     const restResults = SourceResults.slice(3);
 

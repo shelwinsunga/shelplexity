@@ -11,8 +11,6 @@ export default async function Sources({   searchParams,
     const results: any = await searchWeb(queryData?.query || null);
 
     return (
-        <div className="space-y-2">
-            <SourceGallery SourceResults={results} />
-        </div>
+        <SourceGallery SourceResults={results} />
     );
 }

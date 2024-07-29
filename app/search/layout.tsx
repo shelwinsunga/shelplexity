@@ -12,12 +12,10 @@ export default function SearchLayout({
         <div className="container mx-auto px-4 py-16 w-[40%]">
             <SearchHeader />
             <div className="mt-8">
-            <div className="flex flex-col items-start justify-start h-screen">
-            <div className="flex flex-col gap-6">
-                {sources}
-                {children}
+                <div className="flex flex-col items-start justify-start h-screen">
+                        {sources}
+                        {children}
                 </div>
-            </div>
             </div>
         </div>
     );

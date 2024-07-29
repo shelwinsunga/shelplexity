@@ -1,21 +1,28 @@
 'use server'
 import { kv } from "@vercel/kv";
+import { generateHash } from "@/lib/utils";
 type QueryStatus = 'pending' | 'complete' | 'error';
 
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
   try {
+    const hash = generateHash();
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
-      status: queryStatus
+      status: queryStatus,
+      hash: hash
     });
+    await createThread(hash);
+    return { hash };
   } catch (e) {
-    throw new Error('Failed to save frontend context')
+    console.error('Failed to save frontend context:', e);
+    throw new Error('Failed to save frontend context');
   }
 }
 
 export async function createThread(hash: string): Promise<void> {
   try {
-    await kv.hmset(`thread-id:${hash}`, {});
+    // The hmset command requires at least one field-value pair
+    await kv.hmset(`thread-id:${hash}`, { created: Date.now() });
   } catch (e) {
     console.error('Failed to create thread:', e);
     throw new Error('Failed to create thread');

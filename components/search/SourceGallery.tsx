@@ -10,9 +10,9 @@ export default function SourceGallery({ SourceResults }: { SourceResults: any })
     const restResults = SourceResults.slice(3);
 
     return (
-        <div className="flex overflow-x-auto space-x-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
             {visibleResults.map((result: any, index: any) => (
-                <Card key={index} className="flex-shrink-0 w-64">
+                <Card key={index} className="w-full">
                     <CardHeader>
                         <CardTitle className="text-sm truncate">{result.title}</CardTitle>
                     </CardHeader>
@@ -25,7 +25,7 @@ export default function SourceGallery({ SourceResults }: { SourceResults: any })
             {restResults.length > 0 && (
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Card className="flex-shrink-0 w-64 cursor-pointer">
+                        <Card className="w-full cursor-pointer">
                             <CardContent className="flex items-center justify-center h-full">
                                 <p className="text-lg font-semibold">+{restResults.length} more</p>
                             </CardContent>

@@ -4,7 +4,10 @@ import fs from 'fs/promises'
 import path from 'path'
 import { cache } from 'react'
 
-export const searchWeb = cache(async (query: string): Promise<any[]> => {
+export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
+    if (!query) {
+        return []
+    }
     const dataPath = path.join(process.cwd(), 'data', 'data.json')
     try {
         const rawData = await fs.readFile(dataPath, 'utf-8')

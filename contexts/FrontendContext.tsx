@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { saveFrontendContext } from '@/actions/saveQuery';
 
 interface FrontendContextType {
-  query: string;
+  query: string | null;
   handleQuery: (query: string) => void;
   setQuery: (query: string) => void;
   frontendContextId: string | null;

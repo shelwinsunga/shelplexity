@@ -32,7 +32,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
 
   const handleQuery = async (newQuery: string) => {
     setQuery(newQuery);
-    router.push(`/search?q=pending`);
+    router.push(`/search?q=${encodeURIComponent(newQuery)}`);
 
     setConversation((currentConversation: ClientMessage[]) => [
       ...currentConversation,

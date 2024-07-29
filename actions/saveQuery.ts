@@ -8,7 +8,7 @@ export async function saveFrontendContext(frontendContextId: string, query: stri
       query: query,
       status: queryStatus
     });
-    console.log(`Frontend context saved: ID - ${frontendContextId}, Query - ${query}`);
+    console.log(`Frontend context saved: ID - ${frontendContextId}, Query - ${query}, Status - ${queryStatus}`);
   } catch (e) {
     console.error(`Failed to save frontend context: ID - ${frontendContextId}, Query - ${query}`);
     throw new Error('Failed to save frontend context')

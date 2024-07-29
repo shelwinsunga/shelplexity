@@ -37,7 +37,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setConversation([]);
     
     const newFrontendContextId = uuidv4();
-    const { hash } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
+    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
     setFrontendContextId(newFrontendContextId);    
     setQuery(newQuery);
     router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
@@ -56,9 +56,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
-          const slug = query.toLowerCase().replace(/\s+/g, '-').slice(0, 26);
-          const newPath = `/search/${slug}-${hash}`;
-          window.history.replaceState(null, '', newPath);
+          window.history.replaceState(null, '', indexedPath);
         }
       }
     }

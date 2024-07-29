@@ -6,13 +6,16 @@ type QueryStatus = 'pending' | 'complete' | 'error';
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
   try {
     const hash = generateHash();
+    const slug = query.toLowerCase().replace(/\s+/g, '-').slice(0, 26);
+    const indexedPath = `/search/${slug}-${hash}`;
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
-      hash: hash
+      hash: hash,
+      indexedPath: indexedPath
     });
     await createThread(hash);
-    return { hash };
+    return { indexedPath };
   } catch (e) {
     console.error('Failed to save frontend context:', e);
     throw new Error('Failed to save frontend context');

@@ -11,10 +11,9 @@ export async function saveFrontendContext(frontendContextId: string, query: stri
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
-      hash: hash,
       indexedPath: indexedPath
     });
-    await createThread(hash);
+    await createThread(indexedPath, query);
     return { indexedPath };
   } catch (e) {
     console.error('Failed to save frontend context:', e);
@@ -22,13 +21,40 @@ export async function saveFrontendContext(frontendContextId: string, query: stri
   }
 }
 
-export async function createThread(hash: string): Promise<void> {
+export async function getThreadId(frontendContextId: string): Promise<{ indexedPath: string | null } | null> {
+  if (!frontendContextId) {
+    return null;
+  }
   try {
-    // The hmset command requires at least one field-value pair
-    await kv.hmset(`thread-id:${hash}`, { created: Date.now() });
+    const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
+    if (!result) {
+      return null;
+    }
+    return { indexedPath: result.indexedPath as string | null };
+  } catch (e) {
+    console.error(`Failed to retrieve frontend context: ID - ${frontendContextId}`);
+    throw new Error('Failed to retrieve frontend context');
+  }
+}
+
+export async function createThread(indexedPath: string, query: string): Promise<void> {
+  try {
+    await kv.hmset(`thread-id:${indexedPath}`, { query: query });
   } catch (e) {
     console.error('Failed to create thread:', e);
     throw new Error('Failed to create thread');
+  }
+}
+
+export async function saveThread(indexedPath: string, sourceResults: any): Promise<void> {
+  
+  try {
+    console.info(`Saving thread for indexedPath: ${indexedPath}`);
+    console.info(`Source results:`, JSON.stringify(sourceResults, null, 2));
+    await kv.hmset(`thread-id:${indexedPath}`, { sourceResults: JSON.stringify(sourceResults)});
+  } catch (e) {
+    console.error('Failed to save thread:', e);
+    throw new Error('Failed to save thread');
   }
 }
 

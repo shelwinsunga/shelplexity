@@ -7,7 +7,7 @@ import { generateId } from 'ai';
 import { useSearchParams } from 'next/navigation';
 import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
-import { saveFrontendContext, createThread } from '@/actions/saveQuery';
+import { saveFrontendContext } from '@/actions/threadActions';
 
 interface FrontendContextType {
   query: string | null;

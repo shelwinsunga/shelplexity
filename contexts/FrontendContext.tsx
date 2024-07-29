@@ -40,17 +40,17 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     saveFrontendContext(newFrontendContextId, newQuery, queryStatus);
     router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
 
-    // setConversation((currentConversation: ClientMessage[]) => [
-    //   ...currentConversation,
-    //   { id: generateId(), role: 'user', display: newQuery },
-    // ]);
+    setConversation((currentConversation: ClientMessage[]) => [
+      ...currentConversation,
+      { id: generateId(), role: 'user', display: newQuery },
+    ]);
 
-    // const message = await continueConversation(newQuery);
+    const message = await continueConversation(newQuery);
 
-    // setConversation((currentConversation: ClientMessage[]) => [
-    //   ...currentConversation,
-    //   message,
-    // ]);
+    setConversation((currentConversation: ClientMessage[]) => [
+      ...currentConversation,
+      message,
+    ]);
   };
 
   // useEffect(() => {

@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { SearchTextRender } from '@/components/search/SearchTextRender';
+import { createStreamableUI } from 'ai/rsc';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -47,6 +48,18 @@ const WeatherForecast: React.FC<{ location: string; days: number }> = async ({ l
         </div>
     );
 };
+
+export async function getWeather() {
+    const weatherUI = createStreamableUI();
+  
+    weatherUI.update(<div style={{ color: 'gray' }}>Loading...</div>);
+  
+    setTimeout(() => {
+      weatherUI.done(<div>It's a sunny day!</div>);
+    }, 1000);
+  
+    return weatherUI.value;
+  }
 
 export async function continueConversation(
     input: string,

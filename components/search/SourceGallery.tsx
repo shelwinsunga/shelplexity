@@ -36,8 +36,15 @@ export default function SourceGallery({ SourceResults }: { SourceResults: any })
                     <Sheet>
                         <SheetTrigger asChild>
                             <Card className="flex-shrink-0 w-1/4 h-full cursor-pointer">
-                                <CardContent className="flex items-center justify-center h-full">
-                                    <p className="text-base font-semibold">+{restResults.length} more</p>
+                                <CardHeader className="py-3 px-3">
+                                    <CardTitle className="text-xs truncate">Additional Sources</CardTitle>
+                                </CardHeader>
+                                <CardContent className="pb-3 pt-1 px-3">
+                                    <div className="flex items-center">
+                                        <div className="flex items-center gap-1">
+                                            <span className="text-muted-foreground/80 text-xs">+{restResults.length} more</span>
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </SheetTrigger>

@@ -13,13 +13,15 @@ export function SearchArea() {
   const router = useRouter();
 
   const handleSearch = async () => {
-    handleQuery(query);
+    if (query !== null) {
+      handleQuery(query);
+    }
   };
 
   return (
     <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
-        value={query}
+        value={query ?? ''}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
@@ -31,7 +33,7 @@ export function SearchArea() {
         className="border-none min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
       />
       <AnimatePresence>
-        {query.trim() && (
+        {query?.trim() && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

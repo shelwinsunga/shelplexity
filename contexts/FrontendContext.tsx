@@ -7,8 +7,7 @@ import { generateId } from 'ai';
 import { useSearchParams } from 'next/navigation';
 import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
-import { saveFrontendContext } from '@/actions/saveQuery';
-
+import { saveFrontendContext, createThread } from '@/actions/saveQuery';
 
 interface FrontendContextType {
   query: string | null;
@@ -37,8 +36,11 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setAIState([]);
     setConversation([]);
     const newFrontendContextId = uuidv4();
+    const hash = generateHash();
+    createThread(hash);
     const queryStatus = 'pending';
     setFrontendContextId(newFrontendContextId);
+    
     setQuery(newQuery);
     setQueryStatus(queryStatus);
     saveFrontendContext(newFrontendContextId, newQuery, queryStatus);
@@ -59,7 +61,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
           const slug = query.toLowerCase().replace(/\s+/g, '-').slice(0, 26);
-          const hash = generateHash();
           const newPath = `/search/${slug}-${hash}`;
           window.history.replaceState(null, '', newPath);
         }

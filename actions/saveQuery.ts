@@ -13,6 +13,15 @@ export async function saveFrontendContext(frontendContextId: string, query: stri
   }
 }
 
+export async function createThread(hash: string): Promise<void> {
+  try {
+    await kv.hmset(`thread-id:${hash}`, {});
+  } catch (e) {
+    console.error('Failed to create thread:', e);
+    throw new Error('Failed to create thread');
+  }
+}
+
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
   if (!frontendContextId) {
     return null;

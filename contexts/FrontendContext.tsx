@@ -55,7 +55,12 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
 
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
-        console.log("complete", complete);
+        if (complete) {
+          const slug = query.toLowerCase().replace(/\s+/g, '-').slice(0, 26);
+          const hash = generateHash();
+          const newPath = `/search/${slug}-${hash}`;
+          window.history.replaceState(null, '', newPath);
+        }
       }
     }
   };

@@ -8,11 +8,9 @@ export default function SearchPage() {
   const { query } = useFrontend();
 
   return (
-    <div className="flex flex-col items-start justify-start h-screen">
-      <div className="flex flex-col gap-6">
-        <SearchSourcesDisplay query={query} />
-        <SearchResultsDisplay />
-      </div>
-    </div>
+    <>
+        {/* <SearchSourcesDisplay query={query} /> */}
+        {/* <SearchResultsDisplay /> */}
+    </>
   );
 }

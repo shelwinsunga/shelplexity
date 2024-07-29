@@ -1,19 +1,23 @@
-'use client';
-import { SearchArea } from '@/components/search/SearchArea';
-import { useFrontend } from '@/contexts/FrontendContext';
+import SearchHeader from '@/components/search/SearchHeader';
 
 export default function SearchLayout({
+    sources,
     children,
 }: {
+    sources: React.ReactNode
     children: React.ReactNode
 }) {
-    const { query } = useFrontend();
 
     return (
         <div className="container mx-auto px-4 py-16 w-[40%]">
-            <h1 className="text-3xl font-semibold mb-6">{query}</h1>
+            <SearchHeader />
             <div className="mt-8">
+            <div className="flex flex-col items-start justify-start h-screen">
+            <div className="flex flex-col gap-6">
+                {sources}
                 {children}
+                </div>
+            </div>
             </div>
         </div>
     );

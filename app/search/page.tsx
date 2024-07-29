@@ -1,27 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ClientMessage } from '@/app/actions';
-import { useUIState } from 'ai/rsc';
+import { SearchResultsDisplay } from '@/components/search/SearchResultsDisplay';
+import { useFrontend } from '@/contexts/FrontendContext';
+import { SearchSourcesDisplay } from '@/components/search/SearchSourcesDisplay';
 
-export const maxDuration = 30;
-
-export default function Home() {
-  const [conversation] = useUIState();
-  useEffect(() => {
-    console.log(conversation);
-  }, [conversation]);
-
+export default function Page() {
+  const { query } = useFrontend();
 
   return (
-    <div className="flex flex-col items-start justify-start border h-screen">
-      {conversation.map((message: ClientMessage) => (
-        message.role === 'assistant' && (
-          <div className="prose" key={message.id}>
-            {message.display}
-          </div>
-        )
-      ))}
+    <div className="flex flex-col items-start justify-start h-screen">
+      <SearchSourcesDisplay query={query} />
+      <SearchResultsDisplay />
     </div>
   );
 }

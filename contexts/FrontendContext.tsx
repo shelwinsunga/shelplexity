@@ -34,7 +34,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
   const updateRecentThreads = useCallback(async () => {
-    const threads = await getRecentThreads(30);
+    const threads = await getRecentThreads(10);
     setRecentThreads(threads);
   }, []);
 

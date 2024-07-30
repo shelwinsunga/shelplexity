@@ -1,6 +1,9 @@
 import { getThreadData } from '@/actions/threadActions';
 import SourceGallery from '@/components/search/SourceGallery';
 import { Separator } from '@/components/ui/separator'
+import { kv } from '@vercel/kv';
+
+const dynamic = 'force-dynamic'
 
 export default async function Page(searchParams: { params: any }) {
   const indexedPath = `/search/${searchParams.params.slug}`;

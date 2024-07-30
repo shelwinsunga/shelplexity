@@ -17,7 +17,7 @@ export default async function Sources({ searchParams }: { searchParams: any }) {
     }
 
     return (
-        <div>
+        <div className="w-full">
             <h2 className="text-2xl font-semibold mb-4">Sources</h2>
             <SourceGallery SourceResults={results} />
         </div>

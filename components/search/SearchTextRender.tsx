@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Snail } from 'lucide-react'
 
 export function SearchTextRender({ children }: { children: React.ReactNode }) {
   const content = children as string;
@@ -33,7 +34,12 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
     ),
     h1: ({ children, ...props }: ComponentPropsWithoutRef<'h1'>) => {
       if (children === 'Answer') {
-        return <h1 {...props}>{children}</h1>;
+        return (
+          <h3 className='font-semibold flex items-center' {...props}>
+            <Snail className='w-6 h-6 mr-2' />
+            {children}
+          </h3>
+        );
       }
       return null;
     },
@@ -45,7 +51,7 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
 
   if (containsLaTeX) {
     return (
-      <div className="prose">
+      <div className="prose mb-20">
         <ReactMarkdown
           rehypePlugins={[
             rehypeKatex
@@ -59,9 +65,8 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
       </div>
     )
   }
-
   return (
-    <div className="prose">
+    <div className="prose mb-20">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         className="prose-sm prose-neutral"

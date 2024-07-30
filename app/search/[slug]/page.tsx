@@ -2,9 +2,11 @@ import { getThreadData } from '@/actions/threadActions';
 import SourceGallery from '@/components/search/SourceGallery';
 import { Separator } from '@/components/ui/separator'
 import { kv } from '@vercel/kv';
+import { Suspense } from 'react';
 
 export const dynamicParams = true // true | false,
 export const revalidate = false
+export const dynamic = 'force-dynamic'
 
 export default async function Page(searchParams: { params: any }) {
   const indexedPath = `/search/${searchParams.params.slug}`;
@@ -26,7 +28,9 @@ export default async function Page(searchParams: { params: any }) {
                 <h1 className="text-3xl font-semibold mb-6">{query}</h1>
             )}
         <h2 className="text-2xl font-semibold mb-4">Sources</h2>
-        <SourceGallery SourceResults={sourceResults} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SourceGallery SourceResults={sourceResults} />
+        </Suspense>
       </div>
   </>
   );

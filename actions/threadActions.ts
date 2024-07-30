@@ -2,6 +2,8 @@
 import { kv } from "@vercel/kv";
 import { generateHash } from "@/lib/utils";
 type QueryStatus = 'pending' | 'complete' | 'error';
+import { revalidatePath } from 'next/cache'
+import { unstable_noStore as noStore } from 'next/cache';
 
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
   try {
@@ -88,6 +90,8 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {
+  noStore()
+
   if (!indexedPath) {
     return null;
   }
@@ -119,6 +123,9 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
     }
     await new Promise(resolve => setTimeout(resolve, retryDelay));
   }
+  
+  revalidatePath('/search/[slug]/page')
+
   return null;
 }
 

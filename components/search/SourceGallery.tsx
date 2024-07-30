@@ -7,6 +7,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function SourceGallery({ SourceResults }: { SourceResults: any }) {
+    if (!SourceResults || !Array.isArray(SourceResults)) {
+        return <div>Error: Invalid source results</div>;
+    }
+
     const visibleResults = SourceResults.slice(0, 3);
     const restResults = SourceResults.slice(3);
 
@@ -22,7 +26,7 @@ export default function SourceGallery({ SourceResults }: { SourceResults: any })
                             <div className="flex items-center">
                                 <img src={result.profile.img} alt={result.title} width={16} height={16} className="rounded-full mr-2" />
                                 <div className="flex items-center gap-1">
-                                    <span className="text-muted-foreground/80 hover:underline text-xs truncate">{result.profile.name}</span>
+                                    <span className="text-muted-foreground/80 hover:underline text-xs truncate">{result.profile.name.length > 15 ? result.profile.name.slice(0, 15) + '...' : result.profile.name}</span>
                                     <span className="text-muted-foreground/80 text-xs">•</span>
                                     <span className="text-muted-foreground/80 text-xs">{index + 1}</span>
                                 </div>

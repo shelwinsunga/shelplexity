@@ -13,7 +13,7 @@ export function SearchArea() {
   const router = useRouter();
 
   const handleSearch = async () => {
-    if (query !== null) {
+    if (query && query.trim() !== '') {
       handleQuery(query);
     }
   };
@@ -33,7 +33,7 @@ export function SearchArea() {
         className="border-none min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
       />
       <AnimatePresence>
-        {query?.trim() && (
+        {query && query.trim() !== '' && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

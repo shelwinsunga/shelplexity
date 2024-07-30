@@ -100,21 +100,7 @@ export async function continueConversation(
 
     let webResults;
 
-    let retries = 0;
-    const maxRetries = 3;
-    const retryDelay = 500; 
-
-    while (retries < maxRetries) {
-        webResults = await getThreadData(indexedPath);
-        if (webResults) {
-            break;
-        }
-        
-        retries++;
-        if (retries < maxRetries) {
-            await new Promise(resolve => setTimeout(resolve, retryDelay));
-        }
-    }
+    webResults = await getThreadData(indexedPath);
 
     const parsedWebResults = Array.isArray(webResults?.sourceResults) 
         ? (typeof webResults.sourceResults === 'string' 

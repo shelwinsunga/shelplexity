@@ -61,7 +61,6 @@ export async function saveThread(indexedPath: string, sourceResults: any): Promi
 
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
   if (!frontendContextId) {
-    console.log('No frontendContextId provided');
     return null;
   }
 
@@ -70,31 +69,21 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      console.log(`Attempt ${attempt + 1} to retrieve frontend context: ID - ${frontendContextId}`);
       const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
       if (!result) {
-        console.log(`No result found for frontend context: ID - ${frontendContextId}`);
         if (attempt === maxRetries - 1) {
           return null;
         }
       } else {
-        console.log(`Successfully retrieved frontend context: ID - ${frontendContextId}`, result);
         return result as { query: string | null; status: QueryStatus };
       }
     } catch (e) {
       if (attempt === maxRetries - 1) {
-        console.error(`Failed to retrieve frontend context after ${maxRetries} attempts: ID - ${frontendContextId}`, e);
         throw new Error('Failed to retrieve frontend context');
       }
-      console.warn(`Attempt ${attempt + 1} failed, retrying in ${retryDelay}ms...`);
     }
     await new Promise(resolve => setTimeout(resolve, retryDelay));
   }
-  return null;
-
-  // This line should never be reached due to the throw in the last iteration,
-  // but TypeScript requires a return statement here
-  console.log('Unexpected execution path reached');
   return null;
 }
 

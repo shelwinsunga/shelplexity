@@ -45,7 +45,8 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
     },
   };
 
-  const processContent = (content: string) => {
+  const processContent = (content: string | null) => {
+    if (content === null) return '';
     return content.replace('<answer>', '# Answer').replace('</answer>', '');
   };
 

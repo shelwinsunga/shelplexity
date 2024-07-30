@@ -33,29 +33,32 @@ export default function Nav() {
 
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
-            <div className="absolute left-4 bottom-4 flex items-center justify-center">
-                <div className="flex flex-col space-y-2 mt-auto">
-                    {/* <Button variant="ghost" className="w-full justify-start">
-                        <User className="h-5 w-5 mr-2" />
-                        <span>Shelwin Sunga</span>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start">
-                        <Settings className="h-5 w-5 mr-2" />
-                        <span>Settings</span>
-                    </Button> */}
+            <div className="absolute top-0 left-0 w-full h-full z-10 py-2">
+                <div className="w-full h-full rounded-md py-4 flex flex-col text-sm mt-[1px]">
+                    <div className="flex items-center mb-4 px-6 text-muted-foreground/70">
+                        <Link href="/" className="flex items-center hover:text-foreground ease-in-out duration-200">
+                            <Snail className="w-6 h-6 mr-2" />
+                            <h1 className="text-lg font-semibold">Shelplexity</h1>
+                        </Link>
+                    </div>
                 </div>
             </div>
             <motion.div
                 className="w-full h-full relative z-10 py-2"
-                initial={{ x: "-100%" }}
-                animate={{ x: isContentVisible ? 0 : "-100%" }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isContentVisible ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
             >
                 <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border bg-card">
-                    <div className="flex items-center mb-4 px-6 ">
+                    <motion.div
+                        className="flex items-center mb-4 px-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                    >
                         <Snail className="w-6 h-6 mr-2" />
                         <h1 className="text-lg font-semibold">Shelplexity</h1>
-                    </div>
+                    </motion.div>
                     <div className="px-6">
                         <Button variant="outline" className="mb-6 w-full ">
                             New Thread

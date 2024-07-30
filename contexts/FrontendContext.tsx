@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { saveFrontendContext } from '@/actions/threadActions';
-import { fetchRecentThreads } from '@/actions/fetchThreads';
+import { getRecentThreads } from '@/actions/threadActions';
 
 interface FrontendContextType {
   query: string | null;
@@ -37,7 +37,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
   const updateRecentThreads = useCallback(async () => {
-    const threads = await fetchRecentThreads();
+    const threads = await getRecentThreads(30);
     setRecentThreads(threads);
   }, []);
 

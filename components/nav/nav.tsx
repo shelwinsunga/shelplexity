@@ -33,7 +33,7 @@ export default function Nav() {
 
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
-            <div className="absolute top-0 left-0 w-full h-full z-10 py-2">
+            <div className="absolute top-0 left-0 w-full h-full z-10 py-2 bg-gradient-to-r from-muted/10 to-background/90 rounded-md">
                 <div className="w-full h-full rounded-md py-4 flex flex-col justify-between text-sm mt-[1px]">
                     <div className="flex items-center mb-4 px-6 text-muted-foreground/70">
                         <Link href="/" className="flex items-center hover:text-foreground ease-in-out duration-200">

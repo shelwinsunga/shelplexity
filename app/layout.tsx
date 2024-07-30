@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theming/theme-provider"
 import Nav from "@/components/nav/nav";
 import { AI } from './actions';
 import { FrontendProvider } from '@/contexts/FrontendContext';
+import { getRecentThreads } from '@/actions/threadActions';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -12,13 +14,13 @@ export const metadata: Metadata = {
   description: "Shelplexity is a search engine for the Shelly ecosystem.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  folder1,
 }: Readonly<{
   children: React.ReactNode;
-  folder1: React.ReactNode;
 }>) {
+  const recentThreads = await getRecentThreads(5);
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -29,7 +31,7 @@ export default function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          <Nav />
+          <Nav recentThreads={recentThreads} />
           <AI>
             <FrontendProvider>
               {children}

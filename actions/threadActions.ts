@@ -39,7 +39,11 @@ export async function getThreadId(frontendContextId: string): Promise<{ indexedP
 
 export async function createThread(indexedPath: string, query: string): Promise<void> {
   try {
-    await kv.hmset(`thread-id:${indexedPath}`, { query: query });
+    const currentTime = new Date().toISOString();
+    await kv.hmset(`thread-id:${indexedPath}`, { 
+      query: query,
+      createdAt: currentTime
+    });
   } catch (e) {
     console.error('Failed to create thread:', e);
     throw new Error('Failed to create thread');
@@ -86,3 +90,36 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
     throw new Error('Failed to retrieve thread data');
   }
 }
+
+export async function getRecentThreads(limit: number): Promise<any[]> {
+  try {
+    const keys = await kv.keys('thread-id:*');
+    
+    const sortedKeys = await Promise.all(keys.map(async (key) => {
+      const threadData = await kv.hgetall(key);
+      return {
+        key,
+        createdAt: threadData?.createdAt ? new Date(threadData.createdAt as string) : new Date(0)
+      };
+    }));
+
+    sortedKeys.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const recentThreadKeys = sortedKeys.slice(0, limit);
+
+    const recentThreads = await Promise.all(recentThreadKeys.map(async (thread) => {
+      const threadData = await kv.hgetall(thread.key);
+      return {
+        ...thread,
+        query: threadData?.query || null
+      };
+    }));
+
+    return recentThreads;
+
+  } catch (e) {
+    console.error('Failed to retrieve recent threads:', e);
+    throw new Error('Failed to retrieve recent threads');
+  }
+}
+
+

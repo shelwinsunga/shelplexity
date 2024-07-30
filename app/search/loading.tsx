@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
     return (
-        <div className="container mx-auto px-4 py-16 w-[40%]">
+        <div className="container mx-auto px-4 py-16 w-[100%]">
             {/* Search Header Skeleton */}
             <div className="mb-8">
                 <Skeleton className="h-8 w-3/4 mb-2" />

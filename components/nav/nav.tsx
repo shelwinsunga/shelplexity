@@ -6,8 +6,10 @@ import { Snail } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import NavFooter from "./nav-footer";
 import { User } from 'lucide-react';
+import Link from "next/link";
 
-export default function Nav() {
+export default function Nav({ recentThreads }: { recentThreads: any[] | undefined }) {
+    console.log(recentThreads);
     const [isContentVisible, setIsContentVisible] = useState(false);
 
     useEffect(() => {
@@ -55,11 +57,24 @@ export default function Nav() {
                         </Button>
                     </div>
                     <div className="flex-grow overflow-y-auto w-full">
-                        <h2 className="font-medium text-xs mb-2 text-muted-foreground px-6">Yesterday</h2>
+                        <h2 className="font-medium text-xs mb-2 text-muted-foreground px-6">Recent</h2>
                         <ul className="space-y-2 px-2">
-                            <li><Button variant="ghost" className="w-full justify-start text-sm text-left">How to implement dark mode?</Button></li>
-                            <li><Button variant="ghost" className="w-full justify-start text-sm text-left">Best practices for React hooks</Button></li>
-                            <li><Button variant="ghost" className="w-full justify-start text-sm text-left">Optimizing Next.js performance</Button></li>
+                            {recentThreads && recentThreads.map((thread) => {
+                                const slug = thread.key.split(':')[1];
+                                return (
+                                    <li key={thread.key}>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start text-sm text-left"
+                                            asChild
+                                        >
+                                            <Link href={slug}>
+                                                {thread.query}
+                                            </Link>
+                                        </Button>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                     <NavFooter />

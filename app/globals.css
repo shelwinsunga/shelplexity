@@ -77,7 +77,7 @@
   }
 
   .prose a {
-    @apply text-primary hover:underline;
+    @apply text-primary;
   }
 
   .prose strong {

@@ -6,6 +6,12 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import { ComponentPropsWithoutRef } from 'react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export function SearchTextRender({ children }: { children: React.ReactNode }) {
   const content = children as string;
@@ -14,10 +20,27 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
 
   const components = {
     a: ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => (
-      <a className="bg-accent-foreground/10 text-accent-foreground rounded px-1 py-0.5" {...props}>
-        {children}
-      </a>
+      <Tooltip delayDuration={100}>
+        <TooltipTrigger asChild>
+          <a className="text-xs bg-card hover:bg-card/10 shadow-md border text-accent-foreground rounded ml-1 px-1.5 py-0.5 no-underline hover:no-underline" {...props}>
+            {children}
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{props.href}</p>
+        </TooltipContent>
+      </Tooltip>
     ),
+    h1: ({ children, ...props }: ComponentPropsWithoutRef<'h1'>) => {
+      if (children === 'Answer') {
+        return <h1 {...props}>{children}</h1>;
+      }
+      return null;
+    },
+  };
+
+  const processContent = (content: string) => {
+    return content.replace('<answer>', '# Answer').replace('</answer>', '');
   };
 
   if (containsLaTeX) {
@@ -31,7 +54,7 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
           className="prose-sm prose-neutral"
           components={components}
         >
-          {processedData}
+          {processContent(processedData)}
         </ReactMarkdown>
       </div>
     )
@@ -44,7 +67,7 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
         className="prose-sm prose-neutral"
         components={components}
       >
-        {content}
+        {processContent(content)}
       </ReactMarkdown>
     </div>
   )

@@ -39,15 +39,15 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleQuery = async (newQuery: string) => {
+
     setAIState([]);
     setConversation([]);
 
     const newFrontendContextId = uuidv4();
+    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
     const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
-    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
-
     setConversation([
       { id: generateId(), role: 'user', display: newQuery },
     ]);

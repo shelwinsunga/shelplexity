@@ -63,8 +63,10 @@ export default function Nav() {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                        <Snail className="w-6 h-6 mr-2" />
-                        <h1 className="text-lg font-semibold">Shelplexity</h1>
+                        <Link href="/" className="flex items-center hover:text-foreground ease-in-out duration-200">
+                            <Snail className="w-6 h-6 mr-2" />
+                            <h1 className="text-lg font-semibold">Shelplexity</h1>
+                        </Link>
                     </motion.div>
                     <div className="px-6">
                         <Button variant="outline" className="mb-6 w-full ">

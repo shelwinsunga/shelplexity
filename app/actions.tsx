@@ -12,6 +12,8 @@ import rehypeKatex from 'rehype-katex'
 import { SearchTextRender } from '@/components/search/SearchTextRender';
 import { createStreamableValue, StreamableValue } from 'ai/rsc';
 import { searchWeb } from '@/actions/searchWeb';
+import { kv } from '@vercel/kv';
+import { getThreadData } from '@/actions/threadActions';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -90,17 +92,31 @@ export async function continueConversation(
     indexedPath: string,
 ): Promise<ClientMessage> {
     'use server';
-    console.log('continueConversation', indexedPath);
 
     const history = getMutableAIState();
     history.update([]);
     const isComplete = createStreamableValue(false);
+    let webResults;
 
-    const webResults = await searchWeb(input);
-    const parsedWebResults = webResults.map(result => ({
+    let retries = 0;
+    const maxRetries = 3;
+    const retryDelay = 500; 
+
+    while (retries < maxRetries) {
+        webResults = await getThreadData(indexedPath);
+        if (webResults) break;
+        
+        retries++;
+        if (retries < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+        }
+    }
+    
+    const parsedWebResults = webResults ? webResults.map((result: any, index: number) => ({
         url: result.url,
-        description: result.description
-    }));
+        description: result.description,
+        index: index + 1
+    })) : [];
 
 
     const result = await streamUI({
@@ -166,7 +182,7 @@ export const AI = createAI<ServerMessage[], ClientMessage[]>({
     onSetAIState: async ({ state, done }) => {
         'use server';
         if (done) {
-            console.log('onSetAIState', state, done);
+            // console.log('onSetAIState', state, done);
         }
     },
     initialAIState: [],

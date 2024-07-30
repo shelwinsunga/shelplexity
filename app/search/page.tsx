@@ -5,7 +5,7 @@ export default function SearchPage() {
   return (
     <>
       {/* <SearchSourcesDisplay query={query} /> */}
-      <div className="w-full h-full mt-4">
+      <div className="w-full h-full ">
         <Suspense fallback={<div>Loading...</div>}>
           <SearchResultsDisplay />
         </Suspense>

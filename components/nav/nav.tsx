@@ -86,7 +86,9 @@ export default function Nav() {
                                             asChild
                                         >
                                             <Link href={slug}>
-                                                {thread.query}
+                                                <span className="truncate block">
+                                                    {thread.query}
+                                                </span>
                                             </Link>
                                         </Button>
                                     </li>

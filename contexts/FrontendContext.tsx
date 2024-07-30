@@ -52,7 +52,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       { id: generateId(), role: 'user', display: newQuery },
     ]);
 
-    const message = await continueConversation(newQuery);
+    const message = await continueConversation(newQuery, indexedPath);
 
     setConversation((currentConversation: ClientMessage[]) => [
       ...currentConversation,

@@ -11,6 +11,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { SearchTextRender } from '@/components/search/SearchTextRender';
 import { createStreamableValue, StreamableValue } from 'ai/rsc';
+import { searchWeb } from '@/actions/searchWeb';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -52,17 +53,35 @@ const WeatherForecast: React.FC<{ location: string; days: number }> = async ({ l
 
 export async function continueConversation(
     input: string,
+    indexedPath: string,
 ): Promise<ClientMessage> {
     'use server';
+    console.log('continueConversation', indexedPath);
 
     const history = getMutableAIState();
     history.update([]);
     const isComplete = createStreamableValue(false);
 
+
+
+    const webResults = await searchWeb(input);
+    const parsedWebResults = webResults.map(result => ({
+        url: result.url,
+        description: result.description
+    }));
+
+
+    const prompt = `
+    Fetched Results:
+    ${parsedWebResults.map(result => `- ${result.url}: ${result.description}`).join('\n')}
+    User Query: ${input}
+    `;
+
     const result = await streamUI({
         model: openai('gpt-4o-mini'),
+        system: "You are an intelligent search engine assistant. Your primary role is to help users find information based on their queries. You will be provided with search results relevant to the user's input. Use these results to formulate comprehensive, accurate, and helpful responses. Format your answers in markdown, using the provided URLs and descriptions to create hyperlinks in your response. Use footnotes like [1] to reference the sources you used to answer the users question. Example: [1] (https://www.example.com/france-facts). Do not ever link without the [n] notation.",
         messages: (() => {
-            const messages = [...history.get(), { role: 'user', content: input }];
+            const messages = [...history.get(), { role: 'user', content: prompt }];
             // debug
             // console.log('Messages:', JSON.stringify(messages, null, 2));
             return messages;
@@ -90,7 +109,7 @@ export async function continueConversation(
                     days: z
                         .number()
                         .describe('The number of days to get forecast for'),
-                        
+
                 }),
                 generate: async ({ location, days }) => {
                     history.done((messages: ServerMessage[]) => [
@@ -117,6 +136,12 @@ export async function continueConversation(
 export const AI = createAI<ServerMessage[], ClientMessage[]>({
     actions: {
         continueConversation,
+    },
+    onSetAIState: async ({ state, done }) => {
+        'use server';
+        if (done) {
+            console.log('onSetAIState', state, done);
+        }
     },
     initialAIState: [],
     initialUIState: [],

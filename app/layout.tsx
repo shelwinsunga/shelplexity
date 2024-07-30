@@ -19,7 +19,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const recentThreads = await getRecentThreads(5);
 
   return (
     <html lang="en">
@@ -31,9 +30,9 @@ export default async function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          <Nav recentThreads={recentThreads} />
           <AI>
             <FrontendProvider>
+              <Nav />
               {children}
             </FrontendProvider>
           </AI>

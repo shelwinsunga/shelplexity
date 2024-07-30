@@ -7,10 +7,15 @@ import { Settings } from 'lucide-react';
 import NavFooter from "./nav-footer";
 import { User } from 'lucide-react';
 import Link from "next/link";
+import { useFrontend } from '@/contexts/FrontendContext';
 
-export default function Nav({ recentThreads }: { recentThreads: any[] | undefined }) {
-    console.log(recentThreads);
+export default function Nav() {
+    const { recentThreads, updateRecentThreads } = useFrontend();
     const [isContentVisible, setIsContentVisible] = useState(false);
+
+    useEffect(() => {
+        updateRecentThreads();
+    }, [updateRecentThreads]);
 
     useEffect(() => {
         const handleMouseMove = (event: MouseEvent) => {

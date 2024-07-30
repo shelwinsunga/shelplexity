@@ -3,6 +3,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { cache } from 'react'
+import { performance } from 'perf_hooks'
 
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY
 
@@ -23,7 +24,12 @@ const BRAVE_API_KEY = process.env.BRAVE_API_KEY
 
 // Commented out code for Brave API integration
 export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
+    console.log('searchWeb function started')
+    const startTime = performance.now()
+
     if (!query) {
+        console.log('searchWeb function ended: No query provided')
+        console.log(`Execution time: ${performance.now() - startTime} ms`)
         return []
     }
     const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&extra_snippets=true`;
@@ -55,7 +61,11 @@ export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
         }
     };
 
-    return fetchWithRetry();
+    const results = await fetchWithRetry();
+    
+    console.log('searchWeb function ended')
+    console.log(`Execution time: ${performance.now() - startTime} ms`)
+    return results;
 })
 
 // curl -s --compressed "https://api.search.brave.com/res/v1/web/search?q=brave+search" -H "Accept: application/json" -H "Accept-Encoding: gzip" -H "X-Subscription-Token: ${BRAVE_API_KEY}"

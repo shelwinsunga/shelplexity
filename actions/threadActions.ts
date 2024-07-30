@@ -4,8 +4,12 @@ import { generateHash } from "@/lib/utils";
 type QueryStatus = 'pending' | 'complete' | 'error';
 import { revalidatePath } from 'next/cache'
 import { unstable_noStore as noStore } from 'next/cache';
+import { performance } from 'perf_hooks';
 
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
+  console.log('Starting saveFrontendContext function');
+  const startTime = performance.now();
+
   try {
     const hash = generateHash();
     const slug = query.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 26).replace(/-+$/, '');
@@ -21,9 +25,15 @@ export async function saveFrontendContext(frontendContextId: string, query: stri
     console.error('Failed to save frontend context:', e);
     throw new Error('Failed to save frontend context');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending saveFrontendContext function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function getThreadId(frontendContextId: string): Promise<{ indexedPath: string | null } | null> {
+  console.log('Starting getThreadId function');
+  const startTime = performance.now();
+
   if (!frontendContextId) {
     return null;
   }
@@ -37,9 +47,15 @@ export async function getThreadId(frontendContextId: string): Promise<{ indexedP
     console.error(`Failed to retrieve frontend context: ID - ${frontendContextId}`);
     throw new Error('Failed to retrieve frontend context');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending getThreadId function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function createThread(indexedPath: string, query: string): Promise<void> {
+  console.log('Starting createThread function');
+  const startTime = performance.now();
+
   try {
     const currentTime = new Date().toISOString();
     await kv.hmset(`thread-id:${indexedPath}`, { 
@@ -50,27 +66,45 @@ export async function createThread(indexedPath: string, query: string): Promise<
     console.error('Failed to create thread:', e);
     throw new Error('Failed to create thread');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending createThread function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function saveThread(indexedPath: string, sourceResults: any): Promise<void> {
+  console.log('Starting saveThread function');
+  const startTime = performance.now();
+
   try {
     await kv.hmset(`thread-id:${indexedPath}`, { sourceResults: JSON.stringify(sourceResults) });
   } catch (e) {
     console.error('Failed to save thread:', e); 
     throw new Error('Failed to save thread');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending saveThread function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function saveConversationToThread(indexedPath: string, state: any): Promise<void> {
+  console.log('Starting saveConversationToThread function');
+  const startTime = performance.now();
+
   try {
     await kv.hmset(`thread-id:${indexedPath}`, { conversationState: JSON.stringify(state) });
   } catch (e) {
     console.error('Failed to save conversation to thread:', e);
     throw new Error('Failed to save conversation to thread');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending saveConversationToThread function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function getConversation(indexedPath: string): Promise<any | null> {
+  console.log('Starting getConversation function');
+  const startTime = performance.now();
+
   if (!indexedPath) {
     return null;
   }
@@ -86,10 +120,16 @@ export async function getConversation(indexedPath: string): Promise<any | null> 
     console.error('Failed to retrieve conversation:', e);
     throw new Error('Failed to retrieve conversation');
   }
+
+  const endTime = performance.now();
+  console.log(`Ending getConversation function. Execution time: ${endTime - startTime} ms`);
 }
 
 
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
+  console.log('Starting getQuery function');
+  const startTime = performance.now();
+
   if (!frontendContextId) {
     return null;
   }
@@ -115,9 +155,15 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
     await new Promise(resolve => setTimeout(resolve, retryDelay));
   }
   return null;
+
+  const endTime = performance.now();
+  console.log(`Ending getQuery function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {
+  console.log('Starting getThreadData function');
+  const startTime = performance.now();
+
   noStore()
 
   if (!indexedPath) {
@@ -154,9 +200,15 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   revalidatePath('/search/[slug]/page')
 
   return null;
+
+  const endTime = performance.now();
+  console.log(`Ending getThreadData function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function getRecentThreads(limit: number): Promise<any[]> {
+  console.log('Starting getRecentThreads function');
+  const startTime = performance.now();
+
   try {
     const keys = await kv.keys('thread-id:*');
     
@@ -185,5 +237,7 @@ export async function getRecentThreads(limit: number): Promise<any[]> {
     console.error('Failed to retrieve recent threads:', e);
     throw new Error('Failed to retrieve recent threads');
   }
-}
 
+  const endTime = performance.now();
+  console.log(`Ending getRecentThreads function. Execution time: ${endTime - startTime} ms`);
+}

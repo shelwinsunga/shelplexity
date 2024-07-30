@@ -15,6 +15,7 @@ import { searchWeb } from '@/actions/searchWeb';
 import { kv } from '@vercel/kv';
 import { getThreadData } from '@/actions/threadActions';
 import { saveConversationToThread } from '@/actions/threadActions';
+import { performance } from 'perf_hooks';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -93,6 +94,9 @@ export async function continueConversation(
     indexedPath: string,
 ): Promise<ClientMessage> {
     'use server';
+    console.log('Starting continueConversation function');
+    const startTime = performance.now();
+
     const history = getMutableAIState();
     history.update([]);
 
@@ -100,8 +104,16 @@ export async function continueConversation(
 
     let webResults;
 
-    webResults = await getThreadData(indexedPath);
+    let retries = 0;
+    const maxRetries = 3;
+    const retryDelay = 500; 
 
+    console.log('Fetching thread data');
+    webResults = await getThreadData(indexedPath);
+    console.log('Thread data fetched');
+
+    console.log('Parsing web results');
+    const parseStartTime = performance.now();
     const parsedWebResults = Array.isArray(webResults?.sourceResults) 
         ? (typeof webResults.sourceResults === 'string' 
             ? JSON.parse(webResults.sourceResults)
@@ -112,8 +124,10 @@ export async function continueConversation(
             index: index + 1
           }))
         : [];
+    console.log(`Web results parsed. Time taken: ${performance.now() - parseStartTime} ms`);
 
-
+    console.log('Starting streamUI');
+    const streamUIStartTime = performance.now();
     const result = await streamUI({
         model: openai('gpt-4o'),
         system: systemPrompt(input, parsedWebResults),
@@ -123,13 +137,15 @@ export async function continueConversation(
         })(),
         text: async ({ content, done }) => {
             if (done) {
+                console.log('Updating history and saving conversation');
+                const saveStartTime = performance.now();
                 history.done((messages: ServerMessage[]) => [
                     ...messages,
                     { role: 'assistant', content },
                 ]);
                 isComplete.done(true);
-                console.log("Saving");
                 await saveConversationToThread(indexedPath, content);
+                console.log(`Conversation saved. Time taken: ${performance.now() - saveStartTime} ms`);
             }
             return <SearchTextRender>
                 {content}
@@ -149,6 +165,8 @@ export async function continueConversation(
 
                 }),
                 generate: async ({ location, days }) => {
+                    console.log('Generating weather forecast');
+                    const forecastStartTime = performance.now();
                     history.done((messages: ServerMessage[]) => [
                         ...messages,
                         {
@@ -156,11 +174,17 @@ export async function continueConversation(
                             content: `Showing weather forecast for ${location}`,
                         },
                     ]);
-                    return <WeatherForecast location={location} days={days} />;
+                    const forecast = <WeatherForecast location={location} days={days} />;
+                    console.log(`Weather forecast generated. Time taken: ${performance.now() - forecastStartTime} ms`);
+                    return forecast;
                 },
             },
         },
     });
+    console.log(`streamUI completed. Time taken: ${performance.now() - streamUIStartTime} ms`);
+
+    const endTime = performance.now();
+    console.log(`Ending continueConversation function. Total execution time: ${endTime - startTime} ms`);
 
     return {
         id: generateId(),

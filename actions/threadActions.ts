@@ -61,6 +61,16 @@ export async function saveThread(indexedPath: string, sourceResults: any): Promi
   }
 }
 
+export async function saveConversationToThread(indexedPath: string, state: any): Promise<void> {
+  try {
+    await kv.hmset(`thread-id:${indexedPath}`, { conversationState: JSON.stringify(state) });
+  } catch (e) {
+    console.error('Failed to save conversation to thread:', e);
+    throw new Error('Failed to save conversation to thread');
+  }
+}
+
+
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
   if (!frontendContextId) {
     return null;
@@ -102,7 +112,6 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const result = await kv.hgetall(`thread-id:${indexedPath}`);
-      console.log('result', result);
       
       if (!result || !result.query || !result.sourceResults) {
         if (attempt === maxRetries - 1) {

@@ -14,6 +14,7 @@ import { createStreamableValue, StreamableValue } from 'ai/rsc';
 import { searchWeb } from '@/actions/searchWeb';
 import { kv } from '@vercel/kv';
 import { getThreadData } from '@/actions/threadActions';
+import { saveConversationToThread } from '@/actions/threadActions';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -92,16 +93,10 @@ export async function continueConversation(
     indexedPath: string,
 ): Promise<ClientMessage> {
     'use server';
-    console.log('Starting continueConversation function');
-    console.log('Input:', input);
-    console.log('IndexedPath:', indexedPath);
-
     const history = getMutableAIState();
     history.update([]);
-    console.log('History updated');
 
     const isComplete = createStreamableValue(false);
-    console.log('isComplete streamable value created');
 
     let webResults;
 
@@ -109,23 +104,18 @@ export async function continueConversation(
     const maxRetries = 3;
     const retryDelay = 500; 
 
-    console.log('Starting retry loop for getThreadData');
     while (retries < maxRetries) {
-        console.log(`Attempt ${retries + 1} to get thread data`);
         webResults = await getThreadData(indexedPath);
         if (webResults) {
-            console.log('Thread data retrieved successfully');
             break;
         }
         
         retries++;
         if (retries < maxRetries) {
-            console.log(`Retry attempt ${retries}. Waiting for ${retryDelay}ms`);
             await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
     }
 
-    console.log('Web results:', webResults);
     const parsedWebResults = Array.isArray(webResults?.sourceResults) 
         ? (typeof webResults.sourceResults === 'string' 
             ? JSON.parse(webResults.sourceResults)
@@ -137,25 +127,23 @@ export async function continueConversation(
           }))
         : [];
 
-    console.log('Parsed web results:', parsedWebResults);
-
 
     const result = await streamUI({
         model: openai('gpt-4o'),
         system: systemPrompt(input, parsedWebResults),
         messages: (() => {
             const messages = [...history.get(), { role: 'user', content: input }];
-            // debug
-            // console.log('Messages:', JSON.stringify(messages, null, 2));
             return messages;
         })(),
-        text: ({ content, done }) => {
+        text: async ({ content, done }) => {
             if (done) {
                 history.done((messages: ServerMessage[]) => [
                     ...messages,
                     { role: 'assistant', content },
                 ]);
                 isComplete.done(true);
+                console.log("Saving");
+                await saveConversationToThread(indexedPath, content);
             }
             return <SearchTextRender>
                 {content}
@@ -202,9 +190,9 @@ export const AI = createAI<ServerMessage[], ClientMessage[]>({
     },
     onSetAIState: async ({ state, done }) => {
         'use server';
-        if (done) {
-            // console.log('onSetAIState', state, done);
-        }
+        // if (done) {
+        //     await saveConversationToThread(indexedPath, state);
+        // }
     },
     initialAIState: [],
     initialUIState: [],

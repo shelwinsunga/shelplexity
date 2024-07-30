@@ -59,6 +59,10 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
+          console.log('complete', complete);
+          console.log('messages', message);
+          console.log('conversation', conversation);
+          console.log('AI State:', AIState);
           window.history.replaceState(null, '', indexedPath);
           await updateRecentThreads();
         }

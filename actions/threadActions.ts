@@ -70,6 +70,24 @@ export async function saveConversationToThread(indexedPath: string, state: any):
   }
 }
 
+export async function getConversation(indexedPath: string): Promise<any | null> {
+  if (!indexedPath) {
+    return null;
+  }
+
+  try {
+    const result = await kv.hget(`thread-id:${indexedPath}`, 'conversationState');
+    if (!result) {
+      return null;
+    }
+    
+    return result;
+  } catch (e) {
+    console.error('Failed to retrieve conversation:', e);
+    throw new Error('Failed to retrieve conversation');
+  }
+}
+
 
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
   if (!frontendContextId) {

@@ -34,12 +34,19 @@ export default function Nav() {
     return (
         <div className="absolute left-0 top-0 w-72 h-screen overflow-hidden z-50">
             <div className="absolute top-0 left-0 w-full h-full z-10 py-2">
-                <div className="w-full h-full rounded-md py-4 flex flex-col text-sm mt-[1px]">
+                <div className="w-full h-full rounded-md py-4 flex flex-col justify-between text-sm mt-[1px]">
                     <div className="flex items-center mb-4 px-6 text-muted-foreground/70">
                         <Link href="/" className="flex items-center hover:text-foreground ease-in-out duration-200">
                             <Snail className="w-6 h-6 mr-2" />
                             <h1 className="text-lg font-semibold">Shelplexity</h1>
                         </Link>
+                    </div>
+                    <div className="mb-[1px]">
+                        <div className="flex flex-col space-y-2 mt-auto">
+                            <Button variant="ghost" className="w-full justify-start">
+                                <User className="h-5 w-5 mr-2" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

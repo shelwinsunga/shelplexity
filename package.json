@@ -22,6 +22,8 @@
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.19",
     "fs": "^0.0.1-security",
+    "html-to-text": "^9.0.5",
+    "jsdom": "^24.1.1",
     "lucide-react": "^0.416.0",
     "next": "^14.2.5",
     "next-themes": "^0.3.0",
@@ -37,6 +39,8 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/html-to-text": "^9.0.4",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "20.14.12",
     "@types/react": "18.3.3",
     "@types/react-dom": "^18",

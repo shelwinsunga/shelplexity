@@ -58,7 +58,7 @@ const systemPrompt = (input: string, parsedWebResults: { url: string; descriptio
 
 Here are the search results related to the user's query:
 
-${parsedWebResults.map(result => `- ${result.url}: ${result.description}`).join('\n')}
+${parsedWebResults.map((result, index) => `${index + 1}. ${result.url}: ${result.description}`).join('\n')}
 
 Carefully review the search results provided above. Use the information from these results to answer the user's query. If the search results do not contain relevant information to answer the query, state that you don't have enough information to provide an accurate response.
 
@@ -92,31 +92,52 @@ export async function continueConversation(
     indexedPath: string,
 ): Promise<ClientMessage> {
     'use server';
+    console.log('Starting continueConversation function');
+    console.log('Input:', input);
+    console.log('IndexedPath:', indexedPath);
 
     const history = getMutableAIState();
     history.update([]);
+    console.log('History updated');
+
     const isComplete = createStreamableValue(false);
+    console.log('isComplete streamable value created');
+
     let webResults;
 
     let retries = 0;
     const maxRetries = 3;
     const retryDelay = 500; 
 
+    console.log('Starting retry loop for getThreadData');
     while (retries < maxRetries) {
+        console.log(`Attempt ${retries + 1} to get thread data`);
         webResults = await getThreadData(indexedPath);
-        if (webResults) break;
+        if (webResults) {
+            console.log('Thread data retrieved successfully');
+            break;
+        }
         
         retries++;
         if (retries < maxRetries) {
+            console.log(`Retry attempt ${retries}. Waiting for ${retryDelay}ms`);
             await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
     }
-    
-    const parsedWebResults = Array.isArray(webResults) ? webResults.map((result: any, index: number) => ({
-        url: result.url,
-        description: result.description,
-        index: index + 1
-    })) : [];
+
+    console.log('Web results:', webResults);
+    const parsedWebResults = Array.isArray(webResults?.sourceResults) 
+        ? (typeof webResults.sourceResults === 'string' 
+            ? JSON.parse(webResults.sourceResults)
+            : webResults.sourceResults
+          ).map((result: any, index: number) => ({
+            url: result.url,
+            description: result.description,
+            index: index + 1
+          }))
+        : [];
+
+    console.log('Parsed web results:', parsedWebResults);
 
 
     const result = await streamUI({

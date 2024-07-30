@@ -91,19 +91,37 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   if (!indexedPath) {
     return null;
   }
-  try {
-    const result = await kv.hgetall(`thread-id:${indexedPath}`);
-    if (!result) {
-      return null;
+
+  const maxRetries = 3;
+  const retryDelay = 1000; // 1 second
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const result = await kv.hgetall(`thread-id:${indexedPath}`);
+      
+      if (!result || !result.query || !result.sourceResults) {
+        if (attempt === maxRetries - 1) {
+          return null;
+        }
+      } else {
+        const threadData = {
+          query: result.query,
+          sourceResults: result.sourceResults
+        };
+        return threadData;
+      }
+    } catch (e) {
+      if (attempt === maxRetries - 1) {
+        throw new Error('Failed to retrieve thread data after multiple attempts');
+      }
     }
-    return {
-      query: result.query || null,
-      sourceResults: result.sourceResults ?result.sourceResults : null
-    };
-  } catch (e) {
-    console.error(`Failed to retrieve thread data: Path - ${indexedPath}`, e);
-    throw new Error('Failed to retrieve thread data');
+    
+    if (attempt < maxRetries - 1) {
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
   }
+
+  return null;
 }
 
 export async function getRecentThreads(limit: number): Promise<any[]> {

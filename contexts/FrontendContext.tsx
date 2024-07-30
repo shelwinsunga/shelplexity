@@ -1,11 +1,9 @@
 'use client'
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClientMessage } from '@/app/actions';
 import { useActions, useUIState, useAIState, readStreamableValue } from 'ai/rsc';
 import { generateId } from 'ai';
-import { useSearchParams } from 'next/navigation';
-import { generateHash } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { saveFrontendContext } from '@/actions/threadActions';
 import { getRecentThreads } from '@/actions/threadActions';
@@ -32,7 +30,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const [AIState, setAIState] = useAIState();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
@@ -67,7 +64,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         if (complete) {
           window.history.replaceState(null, '', indexedPath);
           await updateRecentThreads();
-
         }
       }
     }

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Snail } from 'lucide-react';
-import { Settings } from 'lucide-react';
 import NavFooter from "./nav-footer";
 import { User } from 'lucide-react';
 import Link from "next/link";

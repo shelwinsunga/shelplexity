@@ -63,16 +63,30 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
   if (!frontendContextId) {
     return null;
   }
-  try {
-    const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
-    if (!result) {
-      return null;
+
+  const maxRetries = 3;
+  const retryDelay = 1000; // 1 second
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
+      if (!result) {
+        return null;
+      }
+      return result as { query: string | null; status: QueryStatus };
+    } catch (e) {
+      if (attempt === maxRetries - 1) {
+        console.error(`Failed to retrieve frontend context after ${maxRetries} attempts: ID - ${frontendContextId}`);
+        throw new Error('Failed to retrieve frontend context');
+      }
+      console.warn(`Attempt ${attempt + 1} failed, retrying in ${retryDelay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
     }
-    return result as { query: string | null; status: QueryStatus };
-  } catch (e) {
-    console.error(`Failed to retrieve frontend context: ID - ${frontendContextId}`);
-    throw new Error('Failed to retrieve frontend context');
   }
+
+  // This line should never be reached due to the throw in the last iteration,
+  // but TypeScript requires a return statement here
+  return null;
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {

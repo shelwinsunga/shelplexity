@@ -1,10 +1,7 @@
 
-'use client'
-import { useFrontend } from '@/contexts/FrontendContext'
 import { Separator } from '@/components/ui/separator'
 
-export default function SearchHeader() {
-    const { query } = useFrontend();
+export default function SearchHeader({ query }: { query: string | null }) {
     const isLongQuery = query && query.length > 50; // Adjust this threshold as needed
 
     return (

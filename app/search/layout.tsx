@@ -12,7 +12,6 @@ export default function SearchLayout({
         <div className="container mx-auto px-4 py-16 w-[40%]">
                 <div className="flex flex-col items-start justify-start h-screen">
                     <SearchHeader />
-                        {sources}
                         {children}
                 </div>
         </div>

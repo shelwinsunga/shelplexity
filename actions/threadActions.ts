@@ -84,7 +84,10 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
     if (!result) {
       return null;
     }
-    return result.sourceResults ? result.sourceResults : null;
+    return {
+      query: result.query || null,
+      sourceResults: result.sourceResults ?result.sourceResults : null
+    };
   } catch (e) {
     console.error(`Failed to retrieve thread data: Path - ${indexedPath}`, e);
     throw new Error('Failed to retrieve thread data');

@@ -112,7 +112,7 @@ export async function continueConversation(
         }
     }
     
-    const parsedWebResults = webResults ? webResults.map((result: any, index: number) => ({
+    const parsedWebResults = Array.isArray(webResults) ? webResults.map((result: any, index: number) => ({
         url: result.url,
         description: result.description,
         index: index + 1

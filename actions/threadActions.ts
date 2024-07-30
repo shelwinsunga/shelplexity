@@ -66,8 +66,8 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
     return null;
   }
 
-  const maxRetries = 3;
-  const retryDelay = 1000; // 1 second
+  const maxRetries = 10;
+  const retryDelay = 250; // 1 second
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {

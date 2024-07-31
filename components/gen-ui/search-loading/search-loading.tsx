@@ -17,8 +17,8 @@ const searchQueries: SearchQuery[] = [
 export function SearchLoading({ queries }: { queries: SearchQuery[] }) {
     return (
         <Card className="w-full">
-            <CardContent className="p-4">
-                <div className="flex items-center mb-2">
+            <CardContent className="p-4 w-full">
+                <div className="flex items-center mb-2 h-[36px]">
                     <Snail className="w-6 h-6 mr-2" />
                     <h3 className="text-lg font-semibold">Deep Search</h3>
                 </div>

@@ -12,6 +12,7 @@ import { saveConversationToThread } from '@/actions/threadActions';
 import { saveThreadSourceResults } from '@/actions/threadActions';
 import { systemPrompt } from '@/lib/prompt';
 import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/search-loading';
+import { userPrompt } from '@/lib/prompt';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -39,20 +40,25 @@ export async function continueConversation(
     const webResults = await searchWeb(input);
     await saveThreadSourceResults(indexedPath, webResults);
 
-    const parsedWebResults = Array.isArray(webResults)
-        ? (typeof webResults === 'string'
-            ? JSON.parse(webResults)
-            : webResults
-        ).map((result: any, index: number) => ({
+    function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
+        if (!Array.isArray(webResults)) {
+            return [];
+        }
+
+        const results = typeof webResults === 'string' ? JSON.parse(webResults) : webResults;
+
+        return results.map((result: any, index: number) => ({
             url: result.url,
             description: result.description,
             index: index + 1
-        }))
-        : [];
+        }));
+    }
+
+    const initialWebResults = parseWebResults(webResults);
 
     const result = await streamUI({
         model: openai('gpt-4o'),
-        system: systemPrompt(input, parsedWebResults),
+        system: systemPrompt(),
         messages: (() => {
             const messages = [...history.get(), { role: 'user', content: input }];
             return messages;
@@ -83,10 +89,11 @@ export async function continueConversation(
                 }),
                 generate: async function* ({ queries }) {
                     const searchQueries: SearchQuery[] = queries.map(query => ({ query, status: 'searching' }));
+                    const results = []
                     yield <SearchLoading queries={searchQueries} />;
 
                     for (let i = 0; i < searchQueries.length; i++) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        results.push({ [searchQueries[i].query]: await searchWeb(searchQueries[i].query) });
                         searchQueries[i].status = 'complete';
                         yield (
                             <>
@@ -95,6 +102,17 @@ export async function continueConversation(
                         );
                     }
 
+                    const deepParsedWebResults = results.reduce((acc, result) => {
+                        const [query, webResults] = Object.entries(result)[0];
+                        acc[query] = webResults.map((webResult: any) => ({
+                            url: webResult.url,
+                            description: webResult.description
+                        }));
+                        return acc;
+                    }, {} as Record<string, Array<{ url: string; description: string }>>);
+
+                    const prompt = userPrompt(input, initialWebResults, deepParsedWebResults);
+                    console.log('Prompt:', prompt);
                     // const result = await streamText({
                     //     model: openai('gpt-4o-mini'),
                     //     prompt: 'Invent a new holiday and describe its traditions.',

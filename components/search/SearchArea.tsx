@@ -12,7 +12,7 @@ export function SearchArea() {
   const { query, handleQuery, setQuery } = useFrontend();
   const router = useRouter();
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (query && query.trim() !== '') {
       handleQuery(query);
     }
@@ -49,8 +49,4 @@ export function SearchArea() {
       </AnimatePresence>
     </div>
   );
-}
-
-function generateHash() {
-  return Math.random().toString(36).substring(2, 15);
 }

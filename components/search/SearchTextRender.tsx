@@ -23,8 +23,13 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
     a: ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => (
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>
-          <a className="text-xs sm:text-sm md:text-base bg-card hover:bg-card/10 shadow-md border text-accent-foreground rounded ml-1 px-1.5 py-0.5 no-underline hover:no-underline" {...props}>
-            {children}
+          <a className={`${typeof children === 'string' && !isNaN(Number(children)) && children.trim().split(' ').length === 1
+            ? 'p-1 opacity-90 bg-foreground/15 border m-1 text-[11px] rounded-md'
+            : 'text-xs sm:text-sm md:text-base bg-foreground/10 hover:bg-card/10 shadow-md border text-accent-foreground rounded ml-1 px-1.5 py-0.5 no-underline hover:no-underline'
+            }`} {...props}>
+            {typeof children === 'string' && !isNaN(Number(children)) && children.trim().split(' ').length === 1
+              ? <span className="numeric-content">{children}</span>
+              : children}
           </a>
         </TooltipTrigger>
         <TooltipContent>

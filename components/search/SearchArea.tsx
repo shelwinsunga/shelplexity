@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea({ onClose }: { onClose?: () => void }) {
+  const [localQuery, setLocalQuery] = useState('');
   const { query, handleQuery, setQuery } = useFrontend();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +20,9 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
   }
 
   const handleSearch = async () => {
-    if (query && query.trim() !== '') {
+    if (localQuery && localQuery.trim() !== '') {
       setIsLoading(true);
-      handleQuery(query);
+      handleQuery(localQuery);
       if (onClose) {
         onClose();
       }
@@ -39,8 +40,8 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex flex-col sm:flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
-        value={query ?? ''}
-        onChange={(e) => setQuery(e.target.value)}
+        value={localQuery}
+        onChange={(e) => setLocalQuery(e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();

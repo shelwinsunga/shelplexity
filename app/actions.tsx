@@ -5,15 +5,9 @@ import { openai } from '@ai-sdk/openai';
 import { ReactNode } from 'react';
 import { z } from 'zod';
 import { generateId } from 'ai';
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
 import { SearchTextRender } from '@/components/search/SearchTextRender';
 import { createStreamableValue, StreamableValue } from 'ai/rsc';
 import { searchWeb } from '@/actions/searchWeb';
-import { kv } from '@vercel/kv';
-import { getThreadData } from '@/actions/threadActions';
 import { saveConversationToThread } from '@/actions/threadActions';
 import { performance } from 'perf_hooks';
 import { saveThreadSourceResults } from '@/actions/threadActions';
@@ -29,32 +23,6 @@ export interface ClientMessage {
     display: ReactNode;
     isComplete?: StreamableValue<boolean, any>;
 }
-
-const WeatherForecast: React.FC<{ location: string; days: number }> = async ({ location, days }) => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // Hardcoded weather data
-    const weatherData = [
-        { day: "Monday", temp: 72, condition: "Sunny" },
-        { day: "Tuesday", temp: 68, condition: "Partly Cloudy" },
-        { day: "Wednesday", temp: 75, condition: "Clear" },
-        { day: "Thursday", temp: 70, condition: "Cloudy" },
-        { day: "Friday", temp: 73, condition: "Sunny" },
-    ];
-
-    return (
-        <div>
-            <h2>Weather Forecast for {location}</h2>
-            <ul>
-                {weatherData.slice(0, days).map((day, index) => (
-                    <li key={index}>
-                        {day.day}: {day.temp}°F, {day.condition}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-};
 
 const systemPrompt = (input: string, parsedWebResults: { url: string; description: string }[]): string => {
     return `You are an intelligent search engine assistant. Your primary role is to help users find information based on their queries. You will be provided with search results relevant to the user's input. Use these results to formulate comprehensive, accurate, and helpful responses.
@@ -142,35 +110,6 @@ export async function continueConversation(
                 {content}
             </SearchTextRender>;
         },
-        tools: {
-            getWeatherForecast: {
-                description:
-                    'Get weather forecast for a location for the specified number of days',
-                parameters: z.object({
-                    location: z
-                        .string()
-                        .describe('The location to get weather forecast for'),
-                    days: z
-                        .number()
-                        .describe('The number of days to get forecast for'),
-
-                }),
-                generate: async ({ location, days }) => {
-                    console.log('Generating weather forecast');
-                    const forecastStartTime = performance.now();
-                    history.done((messages: ServerMessage[]) => [
-                        ...messages,
-                        {
-                            role: 'assistant',
-                            content: `Showing weather forecast for ${location}`,
-                        },
-                    ]);
-                    const forecast = <WeatherForecast location={location} days={days} />;
-                    console.log(`Weather forecast generated. Time taken: ${performance.now() - forecastStartTime} ms`);
-                    return forecast;
-                },
-            },
-        },
     });
     console.log(`streamUI completed. Time taken: ${performance.now() - streamUIStartTime} ms`);
 
@@ -188,12 +127,6 @@ export async function continueConversation(
 export const AI = createAI<ServerMessage[], ClientMessage[]>({
     actions: {
         continueConversation,
-    },
-    onSetAIState: async ({ state, done }) => {
-        'use server';
-        // if (done) {
-        //     await saveConversationToThread(indexedPath, state);
-        // }
     },
     initialAIState: [],
     initialUIState: [],

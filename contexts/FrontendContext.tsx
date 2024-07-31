@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClientMessage } from '@/app/actions';
 import { useActions, useUIState, useAIState, readStreamableValue } from 'ai/rsc';
@@ -38,40 +38,47 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setRecentThreads(threads);
   }, []);
 
-  const handleQuery = async (newQuery: string) => {
+  const handleQuery = useCallback(async (newQuery: string) => {
     setAIState([]);
     setConversation([]);
     const newFrontendContextId = uuidv4();
-
-    // Perform navigation immediately
-    router.push(`/search?q=${encodeURIComponent(newQuery)}&newFrontendContextUUID=${newFrontendContextId}`);
-
-    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
+    router.push(`/search?q=${newQuery}&newFrontendContextUUID=${newFrontendContextId}`);
+
+    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
+
     setConversation([
       { id: generateId(), role: 'user', display: newQuery },
     ]);
 
-    // Continue conversation after navigation
-    setTimeout(async () => {
-      const message = await continueConversation(newQuery, indexedPath);
+    return indexedPath;
+  }, [setAIState, setConversation, router, setFrontendContextId, setQuery]);
 
-      setConversation((currentConversation: ClientMessage[]) => [
-        ...currentConversation,
-        message,
-      ]);
+  useEffect(() => {
+    if (query && frontendContextId) {
+      const generateConversation = async () => {
+        const indexedPath = await handleQuery(query);
+        const message = await continueConversation(query, indexedPath);
 
-      if (message.isComplete) {
-        for await (const complete of readStreamableValue(message.isComplete)) {
-          if (complete) {
-            window.history.replaceState(null, '', indexedPath);
-            await updateRecentThreads();
+        setConversation((currentConversation: ClientMessage[]) => [
+          ...currentConversation,
+          message,
+        ]);
+
+        if (message.isComplete) {
+          for await (const complete of readStreamableValue(message.isComplete)) {
+            if (complete) {
+              window.history.replaceState(null, '', indexedPath);
+              await updateRecentThreads();
+            }
           }
         }
-      }
-    }, 0);
-  };
+      };
+
+      generateConversation();
+    }
+  }, [query, frontendContextId, handleQuery, continueConversation, updateRecentThreads]);
 
   return (
     <FrontendContext.Provider value={{

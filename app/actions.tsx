@@ -41,6 +41,11 @@ export async function continueConversation(
 
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
+    if (webImageResults !== null) {
+        console.log('\x1b[32mwebImageResults retrieved\x1b[0m');
+    } else {
+        console.log('\x1b[31mwebImageResults not retrieved\x1b[0m');
+    }
     await saveThreadSourceResults(indexedPath, webResults, webImageResults);
 
 

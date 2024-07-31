@@ -35,7 +35,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     const [validImages, setValidImages] = useState<ImageResult[]>([]);
 
     useEffect(() => {
-        setValidImages(images);
+        setValidImages(images || []);
     }, [images]);
 
     const removeInvalidImage = useCallback((imageUrl: string) => {
@@ -54,7 +54,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     };
 
     useEffect(() => {
-        if (isGalleryOpen && !selectedImage && validImages && validImages.length > 0) {
+        if (isGalleryOpen && !selectedImage && validImages.length > 0) {
             setSelectedImage(validImages[0]);
         }
     }, [isGalleryOpen, selectedImage, validImages]);
@@ -72,9 +72,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         setIsGalleryOpen(true);
     };
 
-    const paginatedImages = validImages && validImages.length > 0
-        ? validImages.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
-        : [];
+    const paginatedImages = validImages.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage);
 
     return (
         <>
@@ -196,8 +194,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                         Previous
                                     </Button>
                                     <Button
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil((validImages.length || 0) / imagesPerPage)))}
-                                        disabled={currentPage === Math.ceil((validImages.length || 0) / imagesPerPage)}
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(validImages.length / imagesPerPage)))}
+                                        disabled={currentPage === Math.ceil(validImages.length / imagesPerPage)}
                                     >
                                         Next
                                     </Button>

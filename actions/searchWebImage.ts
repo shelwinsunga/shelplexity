@@ -10,7 +10,13 @@ export const searchWebImage = cache(async (query: string | null, count: number =
     if (!query) {
         return []
     }
+    // Sanitize the query
+    const sanitizedQuery = query.replace(/[^\w\s]/gi, '').trim();
+    if (!sanitizedQuery) {
+        return [];
+    }
     const url = `https://api.search.brave.com/res/v1/images/search?q=${encodeURIComponent(query)}&safesearch=strict&count=${count}&search_lang=en&country=us&spellcheck=1`;
+
     console.log('Constructed URL:', url);
     
     const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
@@ -23,8 +29,6 @@ export const searchWebImage = cache(async (query: string | null, count: number =
                     'X-Subscription-Token': BRAVE_API_KEY || ''
                 }
             });
-
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 if (response.status === 429 && retryCount < 3) {
                     console.log('Rate limit hit, retrying after delay');
@@ -36,6 +40,8 @@ export const searchWebImage = cache(async (query: string | null, count: number =
 
             const data = await response.json();
             const images = data.results || [];
+            const queryFilePath = path.join(process.cwd(), 'query.json');
+            console.log('Query written to query.json');
 
             return images;
         } catch (error) {

@@ -11,6 +11,7 @@ import { searchWeb } from '@/actions/searchWeb';
 import { saveConversationToThread } from '@/actions/threadActions';
 import { saveThreadSourceResults } from '@/actions/threadActions';
 import { systemPrompt } from '@/lib/prompt';
+import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/search-loading';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -23,8 +24,6 @@ export interface ClientMessage {
     display: ReactNode;
     isComplete?: StreamableValue<boolean, any>;
 }
-
-
 
 export async function continueConversation(
     input: string,
@@ -71,7 +70,56 @@ export async function continueConversation(
                 {content}
             </SearchTextRender>;
         },
+        toolChoice: 'required', // force the model to call a tool
+        tools: {
+            search: {
+
+                description: 'Search the web for information',
+                parameters: z.object({
+                    queries: z
+                        .array(z.string())
+                        .length(5)
+                        .describe('Ten search objectives'),
+                }),
+                generate: async function* ({ queries }) {
+                    const searchQueries: SearchQuery[] = queries.map(query => ({ query, status: 'searching' }));
+                    yield <SearchLoading queries={searchQueries} />;
+
+                    for (let i = 0; i < searchQueries.length; i++) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        searchQueries[i].status = 'complete';
+                        yield (
+                            <>
+                                <SearchLoading queries={searchQueries} />
+                            </>
+                        );
+                    }
+
+                    // const result = await streamText({
+                    //     model: openai('gpt-4o-mini'),
+                    //     prompt: 'Invent a new holiday and describe its traditions.',
+                    // });
+
+                    // let accumulatedText = '';
+                    // for await (const textPart of result.textStream) {
+                    //     accumulatedText += textPart;
+                    //     yield (
+                    //         <>
+                    //             <SearchProgress queries={searchQueries} />
+                    //             <div>{accumulatedText}</div>
+                    //         </>
+                    //     );
+                    // }
+
+                    return <>
+                        <SearchLoading queries={searchQueries} />
+                        {/* <div>{accumulatedText}</div> */}
+                    </>;
+                },
+            },
+        },
     });
+
 
     return {
         id: generateId(),

@@ -1,6 +1,5 @@
 import { SearchArea } from '@/components/search/SearchArea';
 import { Snail } from 'lucide-react';
-import { SearchTextRender } from '@/components/search/SearchTextRender';
 
 export default function Page() {
   return (

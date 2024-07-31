@@ -130,6 +130,7 @@ export async function continueConversation(
                             </>
                         );
                     }
+                    isComplete.done(true);
                     await saveConversationToThread(indexedPath, accumulatedText);
                     return <SearchTextRender>{accumulatedText}</SearchTextRender>;
                 },

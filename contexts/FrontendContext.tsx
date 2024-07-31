@@ -40,10 +40,13 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
 
   const handleQuery = async (newQuery: string) => {
     const startTime = performance.now();
+    const newFrontendContextId = uuidv4();
+
+    // Make router.push a blocking operation
+    await router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
+
     setAIState([]);
     setConversation([]);
-    const newFrontendContextId = uuidv4();
-    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
     const endTime = performance.now();
     console.log(`Time taken from handleQuery start to router.push: ${endTime - startTime} milliseconds`);
 

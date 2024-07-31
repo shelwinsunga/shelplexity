@@ -10,6 +10,7 @@ import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
   const { query, handleQuery, setQuery } = useFrontend();
+  const router = useRouter();
 
   const handleSearch = () => {
     if (query && query.trim() !== '') {
@@ -25,6 +26,7 @@ export function SearchArea() {
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
+            router.push(`/search?q=pending`);
             handleSearch();
           }
         }}

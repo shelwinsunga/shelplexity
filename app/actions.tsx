@@ -13,6 +13,7 @@ import { saveThreadSourceResults } from '@/actions/threadActions';
 import { systemPrompt } from '@/lib/prompt';
 import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/search-loading';
 import { userPrompt } from '@/lib/prompt';
+import { streamText } from 'ai';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -112,27 +113,25 @@ export async function continueConversation(
                     }, {} as Record<string, Array<{ url: string; description: string }>>);
 
                     const prompt = userPrompt(input, initialWebResults, deepParsedWebResults);
-                    console.log('Prompt:', prompt);
-                    // const result = await streamText({
-                    //     model: openai('gpt-4o-mini'),
-                    //     prompt: 'Invent a new holiday and describe its traditions.',
-                    // });
 
-                    // let accumulatedText = '';
-                    // for await (const textPart of result.textStream) {
-                    //     accumulatedText += textPart;
-                    //     yield (
-                    //         <>
-                    //             <SearchProgress queries={searchQueries} />
-                    //             <div>{accumulatedText}</div>
-                    //         </>
-                    //     );
-                    // }
+                    const result = await streamText({
+                        model: openai('gpt-4o-mini'),
+                        system: systemPrompt(),
+                        messages: [{ role: 'user', content: prompt }],
+                    });
 
-                    return <>
-                        <SearchLoading queries={searchQueries} />
-                        {/* <div>{accumulatedText}</div> */}
-                    </>;
+                    let accumulatedText = '';
+                    for await (const textPart of result.textStream) {
+                        accumulatedText += textPart;
+                        yield (
+                            <>
+
+                                <SearchTextRender>{accumulatedText}</SearchTextRender>
+                            </>
+                        );
+                    }
+
+                    return <SearchTextRender>{accumulatedText}</SearchTextRender>;
                 },
             },
         },

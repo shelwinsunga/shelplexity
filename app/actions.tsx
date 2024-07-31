@@ -14,6 +14,7 @@ import { systemPrompt } from '@/lib/prompt';
 import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/search-loading';
 import { userPrompt } from '@/lib/prompt';
 import { streamText } from 'ai';
+import { searchWebImage } from '@/actions/searchWebImage';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -39,7 +40,10 @@ export async function continueConversation(
     const isComplete = createStreamableValue(false);
 
     const webResults = await searchWeb(input, 15);
-    await saveThreadSourceResults(indexedPath, webResults);
+    const webImageResults = await searchWebImage(input);
+    await saveThreadSourceResults(indexedPath, webResults, webImageResults);
+
+
 
     function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
         if (!Array.isArray(webResults)) {
@@ -85,8 +89,8 @@ export async function continueConversation(
                 parameters: z.object({
                     queries: z
                         .array(z.string())
-                        .length(5)
-                        .describe('Ten search objectives'),
+                        .length(1)
+                        .describe('Search objective'),
                 }),
                 generate: async function* ({ queries }) {
                     const searchQueries: SearchQuery[] = queries.map(query => ({ query, status: 'searching' }));

@@ -49,9 +49,9 @@ export async function createThread(indexedPath: string, query: string): Promise<
   }
 }
 
-export async function saveThreadSourceResults(indexedPath: string, sourceResults: any): Promise<void> {
+export async function saveThreadSourceResults(indexedPath: string, sourceResults: any, imageResults: any): Promise<void> {
   try {
-    await kv.hmset(`thread-id:${indexedPath}`, { sourceResults: JSON.stringify(sourceResults) });
+    await kv.hmset(`thread-id:${indexedPath}`, { sourceResults: JSON.stringify(sourceResults), imageResults: JSON.stringify(imageResults) });
   } catch (e) {
     throw new Error('Failed to save thread');
   }
@@ -123,14 +123,15 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
     try {
       const result = await kv.hgetall(`thread-id:${indexedPath}`);
       
-      if (!result || !result.query || !result.sourceResults) {
+      if (!result || !result.query || !result.sourceResults || !result.imageResults) {
         if (attempt === maxRetries - 1) {
           return null;
         }
       } else {
         const threadData = {
           query: result.query,
-          sourceResults: result.sourceResults
+          sourceResults: result.sourceResults,
+          imageResults: result.imageResults
         };
         return threadData;
       }

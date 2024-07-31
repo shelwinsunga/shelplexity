@@ -1,5 +1,6 @@
 import { SearchArea } from '@/components/search/SearchArea';
 import { Snail } from 'lucide-react';
+import ImageGallery from '@/components/search/ImageGallery';
 
 export default function Page() {
   return (

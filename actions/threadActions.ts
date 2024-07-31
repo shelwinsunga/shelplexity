@@ -71,8 +71,8 @@ export async function createThread(indexedPath: string, query: string): Promise<
   console.log(`Ending createThread function. Execution time: ${endTime - startTime} ms`);
 }
 
-export async function saveThread(indexedPath: string, sourceResults: any): Promise<void> {
-  console.log('Starting saveThread function');
+export async function saveThreadSourceResults(indexedPath: string, sourceResults: any): Promise<void> {
+  console.log('\x1b[32m%s\x1b[0m', 'Starting saveThreadSourceResults function');
   const startTime = performance.now();
 
   try {
@@ -83,7 +83,7 @@ export async function saveThread(indexedPath: string, sourceResults: any): Promi
   }
 
   const endTime = performance.now();
-  console.log(`Ending saveThread function. Execution time: ${endTime - startTime} ms`);
+  console.log('\x1b[32m%s\x1b[0m', `Ending saveThreadSourceResults function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function saveConversationToThread(indexedPath: string, state: any): Promise<void> {
@@ -106,15 +106,20 @@ export async function getConversation(indexedPath: string): Promise<any | null> 
   const startTime = performance.now();
 
   if (!indexedPath) {
+    const endTime = performance.now();
+    console.log(`Ending getConversation function. Execution time: ${endTime - startTime} ms`);
     return null;
   }
 
   try {
     const result = await kv.hget(`thread-id:${indexedPath}`, 'conversationState');
     if (!result) {
+      const endTime = performance.now();
+      console.log(`Ending getConversation function. Execution time: ${endTime - startTime} ms`);
       return null;
     }
-    
+    const endTime = performance.now();
+    console.log(`Ending getConversation function. Execution time: ${endTime - startTime} ms`);
     return result;
   } catch (e) {
     console.error('Failed to retrieve conversation:', e);
@@ -161,7 +166,7 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {
-  console.log('Starting getThreadData function');
+  console.log('\x1b[33m%s\x1b[0m', 'Starting getThreadData function');
   const startTime = performance.now();
 
   noStore()
@@ -171,11 +176,12 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   }
 
   const maxRetries = 10;
-  const retryDelay = 250; // 1 second
+  const retryDelay = 250; 
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const result = await kv.hgetall(`thread-id:${indexedPath}`);
+      console.log('\x1b[33m%s\x1b[0m', 'Result from kv.hgetall of thread-id:', indexedPath, JSON.stringify(result).substring(0, 100) + '...');
       
       if (!result || !result.query || !result.sourceResults) {
         if (attempt === maxRetries - 1) {
@@ -190,7 +196,7 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
       }
     } catch (e) {
       if (attempt === maxRetries - 1) {
-        console.error('Failed to retrieve thread data:', e);
+        console.error('\x1b[33m%s\x1b[0m', 'Failed to retrieve thread data:', e);
         throw new Error('Failed to retrieve thread data');
       }
     }
@@ -200,9 +206,6 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   revalidatePath('/search/[slug]/page')
 
   return null;
-
-  const endTime = performance.now();
-  console.log(`Ending getThreadData function. Execution time: ${endTime - startTime} ms`);
 }
 
 export async function getRecentThreads(limit: number): Promise<any[]> {

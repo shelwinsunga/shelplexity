@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { SearchResultsDisplay } from '@/components/search/SearchResultsDisplay';
 import { searchWeb } from '@/actions/searchWeb';
 import SourceGallery from '@/components/search/SourceGallery';
-import { getQuery, getThreadId, saveThread, getThreadData } from '@/actions/threadActions';
+import { getQuery, getThreadId, getThreadData, saveThreadSourceResults } from '@/actions/threadActions';
 import SearchHeader from '@/components/search/SearchHeader';
 
 export const dynamicParams = true
@@ -22,12 +22,7 @@ export default async function SearchPage({ searchParams }: { searchParams: any }
     const threadData = await getThreadData(indexedPath);
     if (threadData && threadData.sourceResults) {
       results = threadData.sourceResults;
-    } else {
-      results = await searchWeb(queryData?.query || null);
-      await saveThread(indexedPath, results);
     }
-  } else {
-    results = await searchWeb(queryData?.query || null);
   }
 
   return (

@@ -16,6 +16,7 @@ import { kv } from '@vercel/kv';
 import { getThreadData } from '@/actions/threadActions';
 import { saveConversationToThread } from '@/actions/threadActions';
 import { performance } from 'perf_hooks';
+import { saveThreadSourceResults } from '@/actions/threadActions';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -102,29 +103,19 @@ export async function continueConversation(
 
     const isComplete = createStreamableValue(false);
 
-    let webResults;
+    const webResults = await searchWeb(input);
+    await saveThreadSourceResults(indexedPath, webResults);
 
-    let retries = 0;
-    const maxRetries = 3;
-    const retryDelay = 500; 
-
-    console.log('Fetching thread data');
-    webResults = await getThreadData(indexedPath);
-    console.log('Thread data fetched');
-
-    console.log('Parsing web results');
-    const parseStartTime = performance.now();
-    const parsedWebResults = Array.isArray(webResults?.sourceResults) 
-        ? (typeof webResults.sourceResults === 'string' 
-            ? JSON.parse(webResults.sourceResults)
-            : webResults.sourceResults
-          ).map((result: any, index: number) => ({
+    const parsedWebResults = Array.isArray(webResults)
+        ? (typeof webResults === 'string'
+            ? JSON.parse(webResults)
+            : webResults
+        ).map((result: any, index: number) => ({
             url: result.url,
             description: result.description,
             index: index + 1
-          }))
+        }))
         : [];
-    console.log(`Web results parsed. Time taken: ${performance.now() - parseStartTime} ms`);
 
     console.log('Starting streamUI');
     const streamUIStartTime = performance.now();

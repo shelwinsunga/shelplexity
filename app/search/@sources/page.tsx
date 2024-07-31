@@ -1,6 +1,6 @@
 import { searchWeb } from '@/actions/searchWeb';
 import SourceGallery from '@/components/search/SourceGallery';
-import { getQuery, getThreadId, saveThread, getThreadData } from '@/actions/threadActions';
+import { getQuery, getThreadId, getThreadData, saveThreadSourceResults } from '@/actions/threadActions';
 
 export default async function Sources({ searchParams }: { searchParams: any }) {
     const frontendContextId = searchParams.newFrontendContextUUID;
@@ -16,7 +16,7 @@ export default async function Sources({ searchParams }: { searchParams: any }) {
             results = threadData.sourceResults;
         } else {
             results = await searchWeb(queryData?.query || null);
-            await saveThread(indexedPath, results);
+            await saveThreadSourceResults(indexedPath, results);
         }
     } else {
         results = await searchWeb(queryData?.query || null);

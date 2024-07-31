@@ -9,11 +9,6 @@ export interface SearchQuery {
     status: 'searching' | 'complete';
 }
 
-const searchQueries: SearchQuery[] = [
-    { query: 'Search 1', status: 'complete' },
-    { query: 'Search 2', status: 'complete' },
-];
-
 export function SearchLoading({ queries }: { queries: SearchQuery[] }) {
     return (
         <Card className="w-full">

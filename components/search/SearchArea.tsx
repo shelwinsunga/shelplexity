@@ -1,22 +1,37 @@
 'use client';
 
 import { useState, KeyboardEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Send } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
   const { query, handleQuery, setQuery } = useFrontend();
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const currentQuery = searchParams.get('q');
+  if (currentQuery && currentQuery !== query) {
+    setQuery(currentQuery);
+  }
 
   const handleSearch = async () => {
     if (query && query.trim() !== '') {
+      setIsLoading(true);
       handleQuery(query);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[120px] rounded-md border bg-card shadow-md p-4">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col sm:flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">

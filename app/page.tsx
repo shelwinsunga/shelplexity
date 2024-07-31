@@ -1,6 +1,7 @@
 import { SearchArea } from '@/components/search/SearchArea';
 import { Snail } from 'lucide-react';
-import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/search-loading';
+
+export const maxDuration = 30;
 
 export default function Page() {
 

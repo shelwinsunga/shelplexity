@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const dynamicParams = true
 export const revalidate = false
 export const dynamic = 'force-dynamic'
+export const maxDuration = 30;
 
 function SourceGalleryLoading() {
   return (

@@ -48,9 +48,9 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
 
-    setConversation([
-      { id: generateId(), role: 'user', display: newQuery },
-    ]);
+    // setConversation([
+    //   { id: generateId(), role: 'user', display: newQuery },
+    // ]);
     const message = await continueConversation(newQuery, indexedPath);
 
     // setConversation((currentConversation: ClientMessage[]) => [

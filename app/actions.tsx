@@ -130,7 +130,7 @@ export async function continueConversation(
                             </>
                         );
                     }
-
+                    await saveConversationToThread(indexedPath, accumulatedText);
                     return <SearchTextRender>{accumulatedText}</SearchTextRender>;
                 },
             },

@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
-import { Snail, Image as ImageIcon } from 'lucide-react'
+import { Snail, Image as ImageIcon, X } from 'lucide-react'
 import Link from 'next/link';
-import { X } from 'lucide-react'
 
 interface ImageResult {
     type: string;
@@ -33,11 +32,32 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const imagesPerPage = 8;
 
+    const [validImages, setValidImages] = useState<ImageResult[]>([]);
+
     useEffect(() => {
-        if (isGalleryOpen && !selectedImage && images && images.length > 0) {
-            setSelectedImage(images[0]);
+        setValidImages(images);
+    }, [images]);
+
+    const removeInvalidImage = useCallback((imageUrl: string) => {
+        setValidImages(prev => prev.filter(img => img.thumbnail.src !== imageUrl && img.properties.url !== imageUrl));
+    }, []);
+
+    const ImageWithErrorHandling = ({ src, alt, ...props }: any) => {
+        return (
+            <Image
+                src={src}
+                alt={alt}
+                {...props}
+                onError={() => removeInvalidImage(src)}
+            />
+        );
+    };
+
+    useEffect(() => {
+        if (isGalleryOpen && !selectedImage && validImages && validImages.length > 0) {
+            setSelectedImage(validImages[0]);
         }
-    }, [isGalleryOpen, selectedImage, images]);
+    }, [isGalleryOpen, selectedImage, validImages]);
 
     const openGallery = () => {
         setIsGalleryOpen(true);
@@ -52,56 +72,45 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         setIsGalleryOpen(true);
     };
 
-    const paginatedImages = images && images.length > 0
-        ? images.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
+    const paginatedImages = validImages && validImages.length > 0
+        ? validImages.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
         : [];
-
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.src = '/placeholder-image.png'; // todo: make this
-    };
-
-    const handleFaviconError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.style.display = 'none';
-        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-    };
 
     return (
         <>
             <div className="grid grid-cols-2 gap-4">
-                {images && images.slice(0, 4).map((image, index) => (
+                {validImages.slice(0, 4).map((image, index) => (
                     <div key={index}
                         className={`cursor-pointer ${index === 0 ? 'col-span-2' : ''}`}
                         onClick={() => handleImageClick(image)}>
                         <div className={`relative ${index === 0 ? 'w-full pb-[66.67%]' : 'w-full pb-[66.67%]'}`}>
-                            <Image
+                            <ImageWithErrorHandling
                                 src={image.thumbnail.src}
                                 alt={image.title}
                                 fill
                                 className="object-cover rounded-lg"
-                                loader={({ src }) => src}
-                                onError={handleImageError}
+                                loader={({ src }: { src: string }) => src}
                             />
                         </div>
                     </div>
                 ))}
-                {images && images.length > 4 && (
+                {validImages.length > 4 && (
                     <div className="cursor-pointer relative" onClick={openGallery}>
                         <div className="grid grid-cols-3 gap-1 h-full">
-                            {images.slice(4, 7).map((image, index) => (
+                            {validImages.slice(4, 7).map((image, index) => (
                                 <div key={index} className="relative h-full">
-                                    <Image
+                                    <ImageWithErrorHandling
                                         src={image.thumbnail.src}
                                         alt={image.title}
                                         fill
                                         className="object-cover rounded-lg"
-                                        loader={({ src }) => src}
-                                        onError={handleImageError}
+                                        loader={({ src }: { src: string }) => src}
                                     />
                                 </div>
                             ))}
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                            <Button onClick={(e) => { e.stopPropagation(); openGallery(); }} className=" z-10">
+                            <Button onClick={(e) => { e.stopPropagation(); openGallery(); }} className="z-10">
                                 View More
                             </Button>
                         </div>
@@ -128,7 +137,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                                         width={16}
                                                         height={16}
                                                         className="mr-2 rounded-full"
-                                                        onError={handleFaviconError}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            removeInvalidImage(target.src);
+                                                        }}
                                                     />
                                                     <ImageIcon className="w-4 h-4 mr-2 hidden" />
                                                 </>
@@ -149,13 +161,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                 {selectedImage && (
                                     <div className="h-full flex flex-col">
                                         <div className="relative w-full h-[calc(100%-4rem)] rounded-lg overflow-hidden">
-                                            <Image
+                                            <ImageWithErrorHandling
                                                 src={selectedImage.properties.url}
                                                 alt={selectedImage.title}
                                                 fill
                                                 className="object-contain rounded-lg"
-                                                loader={({ src }) => src}
-                                                onError={handleImageError}
+                                                loader={({ src }: { src: string }) => src}
                                             />
                                         </div>
                                     </div>
@@ -166,13 +177,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                     {paginatedImages.map((image, index) => (
                                         <div key={index} className="cursor-pointer" onClick={() => setSelectedImage(image)}>
                                             <div className="relative w-full pb-[66.67%]">
-                                                <Image
+                                                <ImageWithErrorHandling
                                                     src={image.thumbnail.src}
                                                     alt={image.title}
                                                     fill
                                                     className="object-cover rounded-lg"
-                                                    loader={({ src }) => src}
-                                                    onError={handleImageError}
+                                                    loader={({ src }: { src: string }) => src}
                                                 />
                                             </div>
                                         </div>
@@ -186,8 +196,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                         Previous
                                     </Button>
                                     <Button
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil((images?.length || 0) / imagesPerPage)))}
-                                        disabled={currentPage === Math.ceil((images?.length || 0) / imagesPerPage)}
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil((validImages.length || 0) / imagesPerPage)))}
+                                        disabled={currentPage === Math.ceil((validImages.length || 0) / imagesPerPage)}
                                     >
                                         Next
                                     </Button>

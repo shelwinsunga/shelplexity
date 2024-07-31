@@ -38,7 +38,7 @@ export async function continueConversation(
 
     const isComplete = createStreamableValue(false);
 
-    const webResults = await searchWeb(input);
+    const webResults = await searchWeb(input, 15);
     await saveThreadSourceResults(indexedPath, webResults);
 
     function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
@@ -94,7 +94,7 @@ export async function continueConversation(
                     yield <SearchLoading queries={searchQueries} />;
 
                     for (let i = 0; i < searchQueries.length; i++) {
-                        results.push({ [searchQueries[i].query]: await searchWeb(searchQueries[i].query) });
+                        results.push({ [searchQueries[i].query]: await searchWeb(searchQueries[i].query, 3) });
                         searchQueries[i].status = 'complete';
                         yield (
                             <>

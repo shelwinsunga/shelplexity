@@ -6,27 +6,11 @@ import { cache } from 'react'
 
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY
 
-// export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
-//     if (!query) {
-//         return []
-//     }
-//     const dataPath = path.join(process.cwd(), 'data', 'data.json')
-//     try {
-//         const rawData = await fs.readFile(dataPath, 'utf-8')
-//         const data = JSON.parse(rawData)
-//         return data.web.results
-//     } catch (error) {
-//         console.error('Error reading or parsing data:', error)
-//         return []
-//     }
-// })
-
-// Commented out code for Brave API integration
-export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
+export const searchWeb = cache(async (query: string | null, count: number = 5): Promise<any[]> => {
     if (!query) {
         return []
     }
-    const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&extra_snippets=true`;
+    const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${count}`;
     
     const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
         try {

@@ -10,7 +10,6 @@ import { useFrontend } from '@/contexts/FrontendContext';
 
 export function SearchArea() {
   const { query, handleQuery, setQuery } = useFrontend();
-  const router = useRouter();
 
   const handleSearch = () => {
     if (query && query.trim() !== '') {

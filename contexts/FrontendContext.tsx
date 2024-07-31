@@ -42,30 +42,36 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setAIState([]);
     setConversation([]);
     const newFrontendContextId = uuidv4();
-    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
-    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
-    const message = await continueConversation(newQuery, indexedPath);
+    router.push(`/search?q=${newQuery}&newFrontendContextUUID=${newFrontendContextId}`);
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
 
-    // setConversation([
-    //   { id: generateId(), role: 'user', display: newQuery },
-    // ]);
+    // Trigger the conversation handling after navigation
+    setTimeout(() => {
+      handleConversation(newQuery, newFrontendContextId);
+    }, 0);
+  };
 
+  const handleConversation = async (newQuery: string, newFrontendContextId: string) => {
+    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
+    const message = await continueConversation(newQuery, indexedPath);
 
-    // setConversation((currentConversation: ClientMessage[]) => [
-    //   ...currentConversation,
-    //   message,
-    // ]);
+    setConversation([
+      { id: generateId(), role: 'user', display: newQuery },
+    ]);
+    setConversation((currentConversation: ClientMessage[]) => [
+      ...currentConversation,
+      message,
+    ]);
 
-    // if (message.isComplete) {
-    //   for await (const complete of readStreamableValue(message.isComplete)) {
-    //     if (complete) {
-    //       window.history.replaceState(null, '', indexedPath);
-    //       await updateRecentThreads();
-    //     }
-    //   }
-    // }
+    if (message.isComplete) {
+      for await (const complete of readStreamableValue(message.isComplete)) {
+        if (complete) {
+          window.history.replaceState(null, '', indexedPath);
+          await updateRecentThreads();
+        }
+      }
+    }
   };
 
   return (

@@ -28,16 +28,23 @@ Provide your response inside <answer> tags.`;
 
 // ${parsedWebResults.map((result, index) => `${index + 1}. ${result.url}: ${result.description}`).join('\n')}
 export const userPrompt = (input: string, initialWebResults: Array<{ url: string; description: string; index: number }>, deepParsedWebResults: Record<string, Array<{ url: string; description: string }>>): string => {
+    const initialResultsString = initialWebResults.map(result => `${result.index}. ${result.url}: ${result.description}`).join('\n');
+
+    const additionalResultsString = Object.entries(deepParsedWebResults)
+        .map(([query, results]) => {
+            const resultsString = results.map((result, index) => 
+                `${index + 1}. ${result.url}: ${result.description}`
+            ).join('\n');
+            return `Search Engine Query by AI: ${query}\n${resultsString}`;
+        })
+        .join('\n\n');
+
     return `
     Initial search results:
-    ${initialWebResults.map(result => `${result.index}. ${result.url}: ${result.description}`).join('\n')}
+    ${initialResultsString}
 
     Additional search results:
-    ${Object.entries(deepParsedWebResults).map(([query, results]) => 
-        `Search Engine Query by AI: ${query}\n${results.map((result, index) => 
-            `${index + 1}. ${result.url}: ${result.description}`
-        ).join('\n')}`
-    ).join('\n\n')}
+    ${additionalResultsString}
 
     User query:
     ${input}

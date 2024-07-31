@@ -31,7 +31,7 @@ export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
         console.log(`Execution time: ${performance.now() - startTime} ms`)
         return []
     }
-    const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&extra_snippets=true`;
+    const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}result_filter=web`;
     
     try {
         const response = await fetch(url, {
@@ -48,9 +48,7 @@ export const searchWeb = cache(async (query: string | null): Promise<any[]> => {
 
         const data = await response.json();
         const results = data.web?.results || [];
-        
-        console.log('searchWeb function ended')
-        console.log(`Execution time: ${performance.now() - startTime} ms`)
+        console.log(`searchWeb function ended - Execution time: ${performance.now() - startTime} ms`)
         return results;
     } catch (error) {
         console.error('Error fetching data from Brave Search API:', error);

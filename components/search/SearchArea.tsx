@@ -8,7 +8,7 @@ import { Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFrontend } from '@/contexts/FrontendContext';
 
-export function SearchArea() {
+export function SearchArea({ onClose }: { onClose?: () => void }) {
   const { query, handleQuery, setQuery } = useFrontend();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +22,9 @@ export function SearchArea() {
     if (query && query.trim() !== '') {
       setIsLoading(true);
       handleQuery(query);
+      if (onClose) {
+        onClose();
+      }
     }
   };
 

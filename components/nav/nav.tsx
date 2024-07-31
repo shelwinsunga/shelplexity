@@ -2,16 +2,25 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Snail, Menu } from 'lucide-react';
+import { Snail, Menu, Plus } from 'lucide-react';
 import NavFooter from "./nav-footer";
 import { User } from 'lucide-react';
 import Link from "next/link";
 import { useFrontend } from '@/contexts/FrontendContext';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { SearchArea } from "@/components/search/SearchArea";
 
 export default function Nav() {
     const { recentThreads, updateRecentThreads } = useFrontend();
     const [isContentVisible, setIsContentVisible] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
         updateRecentThreads();
@@ -87,9 +96,20 @@ export default function Nav() {
                             </Link>
                         </motion.div>
                         <div className="px-6">
-                            <Button variant="outline" className="mb-6 w-full ">
-                                New Thread
-                            </Button>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" className="mb-6 w-full">
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        New Thread
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Create a New Thread</DialogTitle>
+                                    </DialogHeader>
+                                    <SearchArea onClose={() => setIsDialogOpen(false)} />
+                                </DialogContent>
+                            </Dialog>
                         </div>
                         <div className="flex-grow overflow-y-auto w-full">
                             <h2 className="font-medium text-xs mb-2 text-muted-foreground px-6">Recent</h2>

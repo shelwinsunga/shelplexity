@@ -43,6 +43,29 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setConversation([]);
     const newFrontendContextId = uuidv4();
     router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
+
+    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
+    // setFrontendContextId(newFrontendContextId);
+    // setQuery(newQuery);
+
+    // setConversation([
+    //   { id: generateId(), role: 'user', display: newQuery },
+    // ]);
+    // const message = await continueConversation(newQuery, indexedPath);
+
+    // setConversation((currentConversation: ClientMessage[]) => [
+    //   ...currentConversation,
+    //   message,
+    // ]);
+
+    // if (message.isComplete) {
+    //   for await (const complete of readStreamableValue(message.isComplete)) {
+    //     if (complete) {
+    //       window.history.replaceState(null, '', indexedPath);
+    //       await updateRecentThreads();
+    //     }
+    //   }
+    // }
   };
 
   return (

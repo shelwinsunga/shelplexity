@@ -42,28 +42,35 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setAIState([]);
     setConversation([]);
     const newFrontendContextId = uuidv4();
-    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
+
+    // Perform navigation immediately
+    router.push(`/search?q=${encodeURIComponent(newQuery)}&newFrontendContextUUID=${newFrontendContextId}`);
+
     const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
     setConversation([
       { id: generateId(), role: 'user', display: newQuery },
     ]);
-    const message = await continueConversation(newQuery, indexedPath);
 
-    setConversation((currentConversation: ClientMessage[]) => [
-      ...currentConversation,
-      message,
-    ]);
+    // Continue conversation after navigation
+    setTimeout(async () => {
+      const message = await continueConversation(newQuery, indexedPath);
 
-    if (message.isComplete) {
-      for await (const complete of readStreamableValue(message.isComplete)) {
-        if (complete) {
-          window.history.replaceState(null, '', indexedPath);
-          await updateRecentThreads();
+      setConversation((currentConversation: ClientMessage[]) => [
+        ...currentConversation,
+        message,
+      ]);
+
+      if (message.isComplete) {
+        for await (const complete of readStreamableValue(message.isComplete)) {
+          if (complete) {
+            window.history.replaceState(null, '', indexedPath);
+            await updateRecentThreads();
+          }
         }
       }
-    }
+    }, 0);
   };
 
   return (

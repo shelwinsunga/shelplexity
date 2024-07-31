@@ -19,7 +19,7 @@ export function SearchArea() {
   };
 
   return (
-    <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
+    <div className="flex flex-col sm:flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
       <Textarea
         value={query ?? ''}
         onChange={(e) => setQuery(e.target.value)}
@@ -30,7 +30,7 @@ export function SearchArea() {
           }
         }}
         placeholder="Ask anything"
-        className="border-none min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
+        className="border-none min-h-[80px] sm:min-h-[120px] bg-transparent w-full resize-none focus-visible:outline-none"
       />
       <AnimatePresence>
         {query && query.trim() !== '' && (
@@ -39,8 +39,9 @@ export function SearchArea() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="mt-2 sm:mt-0"
           >
-            <Button onClick={handleSearch} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button onClick={handleSearch} className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
               <Send className="w-4 h-4" />
             </Button>
           </motion.div>

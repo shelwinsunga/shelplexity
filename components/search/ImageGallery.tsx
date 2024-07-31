@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
-import { Snail } from 'lucide-react'
+import { Snail, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link';
 import { X } from 'lucide-react'
 
@@ -56,6 +56,15 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         ? images.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
         : [];
 
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.src = '/placeholder-image.png'; // todo: make this
+    };
+
+    const handleFaviconError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.style.display = 'none';
+        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+    };
+
     return (
         <>
             <div className="grid grid-cols-2 gap-4">
@@ -70,6 +79,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                 fill
                                 className={`object-cover rounded-lg ${index === 4 ? 'filter blur-sm' : ''}`}
                                 loader={({ src }) => src}
+                                onError={handleImageError}
                             />
                         </div>
                         {index === 4 && (
@@ -95,13 +105,17 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                     <div className="border rounded-md p-2 flex items-center">
                                         <Link href={selectedImage.url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center">
                                             {selectedImage.meta_url && selectedImage.meta_url.favicon && (
-                                                <Image
-                                                    src={selectedImage.meta_url.favicon}
-                                                    alt="Website favicon"
-                                                    width={16}
-                                                    height={16}
-                                                    className="mr-2 rounded-full"
-                                                />
+                                                <>
+                                                    <Image
+                                                        src={selectedImage.meta_url.favicon}
+                                                        alt="Website favicon"
+                                                        width={16}
+                                                        height={16}
+                                                        className="mr-2 rounded-full"
+                                                        onError={handleFaviconError}
+                                                    />
+                                                    <ImageIcon className="w-4 h-4 mr-2 hidden" />
+                                                </>
                                             )}
                                             <span className="truncate">{selectedImage.url}</span>
                                         </Link>
@@ -125,6 +139,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                                 fill
                                                 className="object-contain rounded-lg"
                                                 loader={({ src }) => src}
+                                                onError={handleImageError}
                                             />
                                         </div>
                                     </div>
@@ -141,6 +156,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                                                     fill
                                                     className="object-cover rounded-lg"
                                                     loader={({ src }) => src}
+                                                    onError={handleImageError}
                                                 />
                                             </div>
                                         </div>

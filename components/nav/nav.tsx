@@ -67,8 +67,11 @@ export default function Nav() {
                 </div>
                 <motion.div
                     className="fixed w-72 h-full left-0 top-0 z-10 py-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: (isContentVisible || isMobileMenuOpen) ? 1 : 0 }}
+                    initial={{ opacity: 0, display: 'none' }}
+                    animate={{
+                        opacity: (isContentVisible || isMobileMenuOpen) ? 1 : 0,
+                        display: (isContentVisible || isMobileMenuOpen) ? 'block' : 'none'
+                    }}
                     transition={{ duration: 0.3 }}
                 >
                     <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border bg-card">

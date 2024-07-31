@@ -26,7 +26,6 @@ export function SearchArea() {
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            router.push(`/search?q=pending`);
             handleSearch();
           }
         }}

@@ -7,9 +7,7 @@ import { cache } from 'react'
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY
 
 export const searchWebImage = cache(async (query: string | null, count: number = 20): Promise<any[]> => {
-    console.log('searchWebImage called with query:', query, 'and count:', count);
     if (!query) {
-        console.log('No query provided, returning empty array');
         return []
     }
     const url = `https://api.search.brave.com/res/v1/images/search?q=${encodeURIComponent(query)}&safesearch=strict&count=${count}&search_lang=en&country=us&spellcheck=1`;
@@ -37,12 +35,7 @@ export const searchWebImage = cache(async (query: string | null, count: number =
             }
 
             const data = await response.json();
-            console.log('Received data:', data);
             const images = data.results || [];
-            console.log('Extracted images:', images);
-
-            console.log('Saving images to JSON file');
-            await fs.writeFile(path.join(process.cwd(), 'images.json'), JSON.stringify(images, null, 2));
 
             return images;
         } catch (error) {

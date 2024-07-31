@@ -89,7 +89,7 @@ export async function continueConversation(
                 parameters: z.object({
                     queries: z
                         .array(z.string())
-                        .length(1)
+                        .max(4)
                         .describe('Search objective'),
                 }),
                 generate: async function* ({ queries }) {

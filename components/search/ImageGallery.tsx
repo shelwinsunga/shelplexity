@@ -68,29 +68,45 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     return (
         <>
             <div className="grid grid-cols-2 gap-4">
-                {images && images.slice(0, 5).map((image, index) => (
+                {images && images.slice(0, 4).map((image, index) => (
                     <div key={index}
-                        className={`cursor-pointer ${index === 0 ? 'col-span-2' : ''} ${index === 4 ? 'relative' : ''}`}
+                        className={`cursor-pointer ${index === 0 ? 'col-span-2' : ''}`}
                         onClick={() => handleImageClick(image)}>
                         <div className={`relative ${index === 0 ? 'w-full pb-[66.67%]' : 'w-full pb-[66.67%]'}`}>
                             <Image
                                 src={image.thumbnail.src}
                                 alt={image.title}
                                 fill
-                                className={`object-cover rounded-lg ${index === 4 ? 'filter blur-sm' : ''}`}
+                                className="object-cover rounded-lg"
                                 loader={({ src }) => src}
                                 onError={handleImageError}
                             />
                         </div>
-                        {index === 4 && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <Button onClick={(e) => { e.stopPropagation(); openGallery(); }} className="z-10">
-                                    View More
-                                </Button>
-                            </div>
-                        )}
                     </div>
                 ))}
+                {images && images.length > 4 && (
+                    <div className="cursor-pointer relative" onClick={openGallery}>
+                        <div className="grid grid-cols-3 gap-1 h-full">
+                            {images.slice(4, 7).map((image, index) => (
+                                <div key={index} className="relative h-full">
+                                    <Image
+                                        src={image.thumbnail.src}
+                                        alt={image.title}
+                                        fill
+                                        className="object-cover rounded-lg"
+                                        loader={({ src }) => src}
+                                        onError={handleImageError}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                            <Button onClick={(e) => { e.stopPropagation(); openGallery(); }} className=" z-10">
+                                View More
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
             <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
                 <DialogContent className="max-w-none w-screen h-screen p-0 m-0 bg-black/30" hideCloseButton>

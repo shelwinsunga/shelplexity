@@ -53,10 +53,10 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     ]);
     const message = await continueConversation(newQuery, indexedPath);
 
-    setConversation((currentConversation: ClientMessage[]) => [
-      ...currentConversation,
-      message,
-    ]);
+    // setConversation((currentConversation: ClientMessage[]) => [
+    //   ...currentConversation,
+    //   message,
+    // ]);
 
     // if (message.isComplete) {
     //   for await (const complete of readStreamableValue(message.isComplete)) {

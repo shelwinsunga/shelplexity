@@ -10,14 +10,15 @@ export interface SearchQuery {
 
 export function PulseDot({ status }: { status: 'searching' | 'complete' }) {
     return (
-        <span className="relative flex h-5 w-5 mr-3">
+        <span className="relative flex h-4 w-4 mr-3">
             {status === 'searching' ? (
                 <>
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500"></span>
+
+                    <span className="ml-[2px] mt-0.5 animate-ping absolute inline-flex h-3 w-3 rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="ml-[2px] mt-0.5 relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
                 </>
             ) : (
-                <CircleCheck className="h-5 w-5 fill-current stroke-background text-green-500" />
+                <CircleCheck className="h-4 w-4 text-green-500" />
             )}
         </span>
     );

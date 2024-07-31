@@ -9,7 +9,6 @@ import { ComponentPropsWithoutRef } from 'react'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Snail } from 'lucide-react'

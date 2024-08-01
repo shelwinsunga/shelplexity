@@ -50,7 +50,8 @@ export default function Nav() {
     <>
       {/* Mobile menu button */}
       <div className="md:hidden fixed top-4 left-4 z-50">
-        <Button variant="ghost" onClick={toggleMobileMenu}>
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent backdrop-blur-sm rounded-full"></div>
+        <Button variant="ghost" onClick={toggleMobileMenu} className="relative z-10">
           <Menu className="h-6 w-6" />
         </Button>
       </div>

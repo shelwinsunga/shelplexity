@@ -41,18 +41,26 @@ export async function retry<T>(
 
 
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
+  console.log(`[saveFrontendContext] Starting with frontendContextId: ${frontendContextId}, query: ${query}, queryStatus: ${queryStatus}`);
   try {
     const hash = generateHash();
+    console.log(`[saveFrontendContext] Generated hash: ${hash}`);
     const slug = query.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 26).replace(/-+$/, '');
+    console.log(`[saveFrontendContext] Generated slug: ${slug}`);
     const indexedPath = `/search/${slug}-${hash}`;
+    console.log(`[saveFrontendContext] Generated indexedPath: ${indexedPath}`);
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
       indexedPath: indexedPath
     });
+    console.log(`[saveFrontendContext] Saved frontend context to KV store`);
     await createThread(indexedPath, query);
+    console.log(`[saveFrontendContext] Created thread`);
+    console.log(`[saveFrontendContext] Completed successfully`);
     return { indexedPath };
   } catch (e) {
+    console.error(`[saveFrontendContext] Error: ${e}`);
     throw new Error('Failed to save frontend context');
   }
 }

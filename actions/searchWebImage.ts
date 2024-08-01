@@ -25,9 +25,9 @@ export const searchWebImage = cache(async (query: string | null, count: number =
     console.log(`[searchWebImage] Constructed URL: ${url}`);
 
     const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
-        console.log(`[fetchWithRetry] Attempt ${retryCount + 1}`);
+        console.log(`[fetchWithRetry] [IMAGE] Attempt ${retryCount + 1}`);
         try {
-            console.log('[fetchWithRetry] Sending request to Brave Search API');
+            console.log('[fetchWithRetry] [IMAGE] Sending request to Brave Search API');
             const response = await fetch(url, {
                 headers: {
                     'Accept': 'application/json',
@@ -36,12 +36,12 @@ export const searchWebImage = cache(async (query: string | null, count: number =
                 }
             });
 
-            console.log(`[fetchWithRetry] Received response with status: ${response.status}`);
+            console.log(`[fetchWithRetry] [IMAGE] Received response with status: ${response.status}`);
 
             if (!response.ok) {
                 if (response.status === 429 && retryCount < 3) {
                     const delay = 300 * (retryCount + 1);
-                    console.warn(`[fetchWithRetry] Rate limit hit. Retrying in ${delay}ms`);
+                    console.warn(`[fetchWithRetry] [IMAGE] Rate limit hit. Retrying in ${delay}ms`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     return fetchWithRetry(retryCount + 1);
                 }
@@ -49,14 +49,14 @@ export const searchWebImage = cache(async (query: string | null, count: number =
             }
 
             const data = await response.json();
-            console.log(`[fetchWithRetry] Successfully parsed JSON response`);
+            console.log(`[fetchWithRetry] [IMAGE] Successfully parsed JSON response`);
             
             const images = data.results || [];
-            console.log(`[fetchWithRetry] Retrieved ${images.length} image results`);
+            console.log(`[fetchWithRetry] [IMAGE] Retrieved ${images.length} image results`);
 
             return images;
         } catch (error) {
-            console.error('[fetchWithRetry] Error fetching data from Brave Search API:', error);
+            console.error('[fetchWithRetry] [IMAGE] Error fetching data from Brave Search API:', error);
             return [];
         }
     };

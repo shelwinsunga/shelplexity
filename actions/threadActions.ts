@@ -117,16 +117,22 @@ export async function getConversation(indexedPath: string): Promise<any | null> 
 }
 
 export async function getQuery(frontendContextId: string): Promise<{ query: string | null; status: QueryStatus } | null> {
+  console.log(`[getQuery] Starting with frontendContextId: ${frontendContextId}`);
+  
   if (!frontendContextId) {
+    console.log('[getQuery] No frontendContextId provided, returning null');
     return null;
   }
 
   return await retry(
     async () => {
+      console.log(`[getQuery] Attempting to fetch data for frontendContextId: ${frontendContextId}`);
       const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
       if (!result) {
+        console.log('[getQuery] No result found, returning null');
         return null;
       }
+      console.log('[getQuery] Data retrieved successfully:', result);
       return result as { query: string | null; status: QueryStatus };
     },
     10,

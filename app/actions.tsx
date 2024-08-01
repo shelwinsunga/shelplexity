@@ -118,7 +118,7 @@ export async function continueConversation(
           );
 
           const result = await streamText({
-            model: openai("gpt-4o-mini"),
+            model: openai("gpt-4o"),
             system: systemPrompt(),
             messages: [{ role: "user", content: prompt }],
           });

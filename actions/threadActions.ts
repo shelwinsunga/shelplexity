@@ -9,7 +9,7 @@ import { QueryStatus } from "@/lib/types";
 
 const ERROR_MESSAGES = {
   SAVE_CONTEXT: "Failed to save frontend context",
-  RETRIEVE_CONTEXT: "Failed to retrieve frontend context",
+  RETRIEVE_CONTEXT: "Failed to retrieve frontend id",
   CREATE_THREAD: "Failed to create thread",
   SAVE_THREAD: "Failed to save thread",
   SAVE_CONVERSATION: "Failed to save conversation to thread",
@@ -18,7 +18,6 @@ const ERROR_MESSAGES = {
   RETRIEVE_RECENT_THREADS: "Failed to retrieve recent threads",
 };
 
-
 export async function saveFrontendContext(
   frontendContextId: string,
   query: string,
@@ -26,12 +25,15 @@ export async function saveFrontendContext(
 ) {
   try {
     const hash = generateHash();
+    // llm generated based off perplexity's slug
     const slug = query
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .slice(0, 26)
       .replace(/-+$/, "");
     const indexedPath = `/search/${slug}-${hash}`;
+
+    // todo: get rid of these keys after we index the thread
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
@@ -40,7 +42,7 @@ export async function saveFrontendContext(
     await createThread(indexedPath, query);
     return { indexedPath };
   } catch (e) {
-    throw new Error("Failed to save frontend context");
+    throw new Error(ERROR_MESSAGES.SAVE_CONTEXT);
   }
 }
 
@@ -57,7 +59,7 @@ export async function getThreadId(
     }
     return { indexedPath: result.indexedPath as string | null };
   } catch (e) {
-    throw new Error("Failed to retrieve frontend context");
+    throw new Error(ERROR_MESSAGES.RETRIEVE_CONTEXT);
   }
 }
 
@@ -72,7 +74,7 @@ export async function createThread(
       createdAt: currentTime,
     });
   } catch (e) {
-    throw new Error("Failed to create thread");
+    throw new Error(ERROR_MESSAGES.CREATE_THREAD);
   }
 }
 
@@ -87,7 +89,7 @@ export async function saveThreadSourceResults(
       imageResults: JSON.stringify(imageResults),
     });
   } catch (e) {
-    throw new Error("Failed to save thread");
+    throw new Error(ERROR_MESSAGES.SAVE_THREAD);
   }
 }
 
@@ -100,7 +102,7 @@ export async function saveConversationToThread(
       conversationState: JSON.stringify(state),
     });
   } catch (e) {
-    throw new Error("Failed to save conversation to thread");
+    throw new Error(ERROR_MESSAGES.SAVE_CONVERSATION);
   }
 }
 
@@ -121,7 +123,7 @@ export async function getConversation(
     }
     return result;
   } catch (e) {
-    throw new Error("Failed to retrieve conversation");
+    throw new Error(ERROR_MESSAGES.RETRIEVE_CONVERSATION);
   }
 }
 
@@ -180,7 +182,7 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
       }
     } catch (e) {
       if (attempt === maxRetries - 1) {
-        throw new Error("Failed to retrieve thread data");
+        throw new Error(ERROR_MESSAGES.RETRIEVE_THREAD_DATA);
       }
     }
     await setTimeout(retryDelay);
@@ -222,6 +224,6 @@ export async function getRecentThreads(limit: number): Promise<any[]> {
 
     return recentThreads;
   } catch (e) {
-    throw new Error("Failed to retrieve recent threads");
+    throw new Error(ERROR_MESSAGES.RETRIEVE_RECENT_THREADS);
   }
 }

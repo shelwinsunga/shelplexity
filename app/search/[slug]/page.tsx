@@ -1,6 +1,5 @@
 import { getThreadData } from "@/actions/threadActions";
 import SourceGallery from "@/components/search/SourceGallery";
-import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
 import { SearchTextRender } from "@/components/search/SearchTextRender";
 import { getConversation } from "@/actions/threadActions";
@@ -19,7 +18,6 @@ export default async function Page(searchParams: { params: any }) {
   const query = threadData?.query;
   const sourceResults = threadData?.sourceResults;
   const images = threadData?.imageResults;
-  const isLongQuery = query && query.length > 50; // Adjust this threshold as needed
   const conversation = await getConversation(indexedPath);
   return (
     <>

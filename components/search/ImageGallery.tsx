@@ -3,13 +3,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Snail, Image as ImageIcon, X } from "lucide-react";
+import { Snail, X } from "lucide-react";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ImageResult {
   type: string;
@@ -34,8 +34,6 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const imagesPerPage = 8;
 
   const [validImages, setValidImages] = useState<ImageResult[]>([]);
 
@@ -73,19 +71,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     setIsGalleryOpen(true);
   };
 
-  const closeGallery = () => {
-    setIsGalleryOpen(false);
-  };
-
   const handleImageClick = (image: ImageResult) => {
     setSelectedImage(image);
     setIsGalleryOpen(true);
   };
-
-  const paginatedImages = validImages.slice(
-    (currentPage - 1) * imagesPerPage,
-    currentPage * imagesPerPage
-  );
 
   return (
     <>
@@ -152,20 +141,17 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                     >
                       {selectedImage.meta_url &&
                         selectedImage.meta_url.favicon && (
-                          <>
-                            <Image
-                              src={selectedImage.meta_url.favicon}
-                              alt="Website favicon"
-                              width={16}
-                              height={16}
-                              className="mr-2 rounded-full"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                removeInvalidImage(target.src);
-                              }}
-                            />
-                            <ImageIcon className="w-4 h-4 mr-2 hidden" />
-                          </>
+                          <Image
+                            src={selectedImage.meta_url.favicon}
+                            alt="Website favicon"
+                            width={16}
+                            height={16}
+                            className="mr-2 rounded-full"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              removeInvalidImage(target.src);
+                            }}
+                          />
                         )}
                       <span className="truncate">{selectedImage.url}</span>
                     </Link>
@@ -198,52 +184,28 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                   </div>
                 )}
               </div>
-              <div className="w-1/3 p-4 overflow-y-auto">
-                <div className="grid grid-cols-2 gap-2">
-                  {paginatedImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className="cursor-pointer"
-                      onClick={() => setSelectedImage(image)}
-                    >
-                      <div className="relative w-full pb-[66.67%]">
-                        <ImageWrapper
-                          src={image.thumbnail.src}
-                          alt={image.title}
-                          fill
-                          className="object-cover rounded-lg"
-                          loader={({ src }: { src: string }) => src}
-                        />
+              <div className="w-1/3 p-4">
+                <ScrollArea className="h-[calc(100vh-200px)]">
+                  <div className="grid grid-cols-2 gap-2">
+                    {validImages.map((image, index) => (
+                      <div
+                        key={index}
+                        className="cursor-pointer"
+                        onClick={() => setSelectedImage(image)}
+                      >
+                        <div className="relative w-full pb-[66.67%]">
+                          <ImageWrapper
+                            src={image.thumbnail.src}
+                            alt={image.title}
+                            fill
+                            className="object-cover rounded-lg"
+                            loader={({ src }: { src: string }) => src}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prev) =>
-                        Math.min(
-                          prev + 1,
-                          Math.ceil(validImages.length / imagesPerPage)
-                        )
-                      )
-                    }
-                    disabled={
-                      currentPage ===
-                      Math.ceil(validImages.length / imagesPerPage)
-                    }
-                  >
-                    Next
-                  </Button>
-                </div>
+                    ))}
+                  </div>
+                </ScrollArea>
               </div>
             </div>
           </div>

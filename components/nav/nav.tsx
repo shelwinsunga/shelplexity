@@ -58,30 +58,30 @@ export default function Nav() {
 
       {/* Desktop and Mobile Nav */}
       <div
-        className={`fixed left-0 top-0 w-72 h-screen overflow-hidden z-40 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        className={`fixed left-0 top-0 w-48 sm:w-56 md:w-64 lg:w-72 h-screen overflow-hidden z-40 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
-        <div className="fixed top-0 left-0 w-72 h-full z-10 py-2 bg-gradient-to-r from-muted/10 to-transparent rounded-md">
+        <div className="fixed top-0 left-0 w-48 sm:w-56 md:w-64 lg:w-72 h-full z-10 py-2 bg-gradient-to-r from-muted/10 to-transparent rounded-md">
           <div className="w-full h-full rounded-md py-4 flex flex-col justify-between text-sm mt-[1px]">
-            <div className="flex items-center mb-4 px-6 text-muted-foreground/70">
+            <div className="flex items-center mb-4 px-4 sm:px-5 md:px-6 text-muted-foreground/70">
               <Link
                 href="/"
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
-                <Snail className="w-6 h-6 mr-2" />
-                <h1 className="text-lg font-semibold">Shelplexity</h1>
+                <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                <h1 className="text-base sm:text-lg font-semibold">Shelplexity</h1>
               </Link>
             </div>
             <div className="mb-[1px]">
               <div className="flex flex-col space-y-2 mt-auto">
                 <Button variant="ghost" className="w-full justify-start">
-                  <User className="h-5 w-5 mr-2" />
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 </Button>
               </div>
             </div>
           </div>
         </div>
         <motion.div
-          className="fixed w-72 h-full left-0 top-0 z-10 py-2"
+          className="fixed w-48 sm:w-56 md:w-64 lg:w-72 h-full left-0 top-0 z-10 py-2"
           initial={{ opacity: 0, display: "none" }}
           animate={{
             opacity: isContentVisible || isMobileMenuOpen ? 1 : 0,
@@ -89,9 +89,9 @@ export default function Nav() {
           }}
           transition={{ duration: 0.3 }}
         >
-          <div className="w-full h-full border rounded-md py-4 flex flex-col text-sm border bg-card">
+          <div className="w-full h-full border rounded-md py-4 flex flex-col text-xs sm:text-sm border bg-card">
             <motion.div
-              className="flex items-center mb-4 px-6"
+              className="flex items-center mb-4 px-4 sm:px-5 md:px-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -100,15 +100,15 @@ export default function Nav() {
                 href="/"
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
-                <Snail className="w-6 h-6 mr-2" />
-                <h1 className="text-lg font-semibold">Shelplexity</h1>
+                <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                <h1 className="text-base sm:text-lg font-semibold">Shelplexity</h1>
               </Link>
             </motion.div>
-            <div className="px-6">
+            <div className="px-4 sm:px-5 md:px-6">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="mb-6 w-full">
-                    <Plus className="w-4 h-4 mr-2" />
+                  <Button variant="outline" className="mb-4 sm:mb-6 w-full text-xs sm:text-sm">
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                     New Thread
                   </Button>
                 </DialogTrigger>
@@ -121,10 +121,10 @@ export default function Nav() {
               </Dialog>
             </div>
             <div className="flex-grow overflow-y-auto w-full">
-              <h2 className="font-medium text-xs mb-2 text-muted-foreground px-6">
+              <h2 className="font-medium text-2xs sm:text-xs mb-2 text-muted-foreground px-4 sm:px-5 md:px-6">
                 Recent
               </h2>
-              <ul className="space-y-2 px-2">
+              <ul className="space-y-1 sm:space-y-2 px-2">
                 {recentThreads &&
                   recentThreads.map((thread) => {
                     const slug = thread.key.split(":")[1];
@@ -132,7 +132,7 @@ export default function Nav() {
                       <li key={thread.key}>
                         <Button
                           variant="ghost"
-                          className="w-full justify-start text-sm text-left"
+                          className="w-full justify-start text-2xs sm:text-xs md:text-sm text-left"
                           asChild
                         >
                           <Link href={slug}>

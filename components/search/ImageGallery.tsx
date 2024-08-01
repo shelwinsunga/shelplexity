@@ -125,7 +125,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
               ))}
             </div>
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-              <Button className="z-10 text-sm sm:text-base">View More</Button>
+              <Button variant="outline" size="sm" className="w-[75%] h-[50%] text-[0.7vw] scale-100 hover:scale-105 transition-transform duration-200">View More</Button>
             </div>
           </div>
         )}

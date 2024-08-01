@@ -38,6 +38,7 @@ export const searchWeb = cache(
 
         return results;
       } catch (error) {
+        console.error("Error fetching web:", error);
         return [];
       }
     };

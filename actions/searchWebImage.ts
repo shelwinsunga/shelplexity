@@ -40,6 +40,7 @@ export const searchWebImage = cache(
 
         return images;
       } catch (error) {
+        console.error("Error fetching images:", error);
         return [];
       }
     };

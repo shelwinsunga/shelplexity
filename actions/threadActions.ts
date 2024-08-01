@@ -5,8 +5,19 @@ import { revalidatePath } from "next/cache";
 import { unstable_noStore as noStore } from "next/cache";
 import { setTimeout } from "timers/promises";
 import { retry } from "@/lib/retry";
+import { QueryStatus } from "@/lib/types";
 
-type QueryStatus = "pending" | "complete" | "error";
+const ERROR_MESSAGES = {
+  SAVE_CONTEXT: "Failed to save frontend context",
+  RETRIEVE_CONTEXT: "Failed to retrieve frontend context",
+  CREATE_THREAD: "Failed to create thread",
+  SAVE_THREAD: "Failed to save thread",
+  SAVE_CONVERSATION: "Failed to save conversation to thread",
+  RETRIEVE_CONVERSATION: "Failed to retrieve conversation",
+  RETRIEVE_THREAD_DATA: "Failed to retrieve thread data",
+  RETRIEVE_RECENT_THREADS: "Failed to retrieve recent threads",
+};
+
 
 export async function saveFrontendContext(
   frontendContextId: string,

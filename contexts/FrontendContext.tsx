@@ -12,18 +12,7 @@ import { generateId } from "ai";
 import { v4 as uuidv4 } from "uuid";
 import { saveFrontendContext } from "@/actions/threadActions";
 import { getRecentThreads } from "@/actions/threadActions";
-
-interface FrontendContextType {
-  query: string | null;
-  handleQuery: (query: string) => void;
-  setQuery: (query: string) => void;
-  frontendContextId: string | null;
-  setFrontendContextId: (frontendContextId: string | null) => void;
-  sourceResults: any;
-  setSourceResults: (sourceResults: any) => void;
-  recentThreads: any[];
-  updateRecentThreads: () => void;
-}
+import { QueryStatus, FrontendContextType } from "@/lib/types";
 
 const FrontendContext = createContext<FrontendContextType | undefined>(
   undefined
@@ -35,9 +24,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     null
   );
   const [sourceResults, setSourceResults] = useState<any>([]);
-  const [queryStatus, setQueryStatus] = useState<
-    "pending" | "complete" | "error"
-  >("pending");
+  const [queryStatus, setQueryStatus] = useState<QueryStatus>("pending");
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const [AIState, setAIState] = useAIState();

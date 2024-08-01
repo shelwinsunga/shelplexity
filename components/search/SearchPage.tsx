@@ -31,9 +31,7 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
   };
 
   if (isLoading) {
-    return (
-      <Loading />
-    );
+    return <Loading />;
   }
 
   return (

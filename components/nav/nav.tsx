@@ -51,7 +51,11 @@ export default function Nav() {
       {/* Mobile menu button */}
       <div className="md:hidden fixed top-4 left-4 z-50">
         <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent backdrop-blur-sm rounded-full"></div>
-        <Button variant="ghost" onClick={toggleMobileMenu} className="relative z-10">
+        <Button
+          variant="ghost"
+          onClick={toggleMobileMenu}
+          className="relative z-10"
+        >
           <Menu className="h-6 w-6" />
         </Button>
       </div>
@@ -68,7 +72,9 @@ export default function Nav() {
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
                 <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-                <h1 className="text-base sm:text-lg font-semibold">Shelplexity</h1>
+                <h1 className="text-base sm:text-lg font-semibold">
+                  Shelplexity
+                </h1>
               </Link>
             </div>
             <div className="mb-[1px]">
@@ -101,13 +107,18 @@ export default function Nav() {
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
                 <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-                <h1 className="text-base sm:text-lg font-semibold">Shelplexity</h1>
+                <h1 className="text-base sm:text-lg font-semibold">
+                  Shelplexity
+                </h1>
               </Link>
             </motion.div>
             <div className="px-4 sm:px-5 md:px-6">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="mb-4 sm:mb-6 w-full text-xs sm:text-sm">
+                  <Button
+                    variant="outline"
+                    className="mb-4 sm:mb-6 w-full text-xs sm:text-sm"
+                  >
                     <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                     New Thread
                   </Button>

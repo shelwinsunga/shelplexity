@@ -7,21 +7,27 @@ import { cache } from 'react'
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY
 
 export const searchWebImage = cache(async (query: string | null, count: number = 20): Promise<any[]> => {
+    console.log(`[searchWebImage] Starting image search with query: "${query}", count: ${count}`);
+    
     if (!query) {
+        console.warn('[searchWebImage] No query provided, returning empty array');
         return []
     }
+    
     // Sanitize the query
     const sanitizedQuery = query.replace(/[^\w\s]/gi, '').trim();
     if (!sanitizedQuery) {
+        console.warn('[searchWebImage] Query sanitized to empty string, returning empty array');
         return [];
     }
-    const url = `https://api.search.brave.com/res/v1/images/search?q=${encodeURIComponent(query)}&safesearch=strict&count=${count}&search_lang=en&country=us&spellcheck=1`;
-
-    console.log('Constructed URL:', url);
     
+    const url = `https://api.search.brave.com/res/v1/images/search?q=${encodeURIComponent(query)}&safesearch=strict&count=${count}&search_lang=en&country=us&spellcheck=1`;
+    console.log(`[searchWebImage] Constructed URL: ${url}`);
+
     const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
+        console.log(`[fetchWithRetry] Attempt ${retryCount + 1}`);
         try {
-            console.log('Attempting fetch, retry count:', retryCount);
+            console.log('[fetchWithRetry] Sending request to Brave Search API');
             const response = await fetch(url, {
                 headers: {
                     'Accept': 'application/json',
@@ -29,29 +35,34 @@ export const searchWebImage = cache(async (query: string | null, count: number =
                     'X-Subscription-Token': BRAVE_API_KEY || ''
                 }
             });
+
+            console.log(`[fetchWithRetry] Received response with status: ${response.status}`);
+
             if (!response.ok) {
                 if (response.status === 429 && retryCount < 3) {
-                    console.log('Rate limit hit, retrying after delay');
-                    await new Promise(resolve => setTimeout(resolve, 300 * (retryCount + 1)));
+                    const delay = 300 * (retryCount + 1);
+                    console.warn(`[fetchWithRetry] Rate limit hit. Retrying in ${delay}ms`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
                     return fetchWithRetry(retryCount + 1);
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log(`[fetchWithRetry] Successfully parsed JSON response`);
+            
             const images = data.results || [];
-            const queryFilePath = path.join(process.cwd(), 'query.json');
-            console.log('Query written to query.json');
+            console.log(`[fetchWithRetry] Retrieved ${images.length} image results`);
 
             return images;
         } catch (error) {
-            console.error('Error fetching data from Brave Image Search API:', error);
+            console.error('[fetchWithRetry] Error fetching data from Brave Search API:', error);
             return [];
         }
     };
 
     const result = await fetchWithRetry();
-    console.log('Final result:', result);
+    console.log(`[searchWebImage] Image search completed. Returning ${result.length} results`);
     return result;
 })
 

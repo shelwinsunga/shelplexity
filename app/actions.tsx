@@ -35,7 +35,6 @@ export async function continueConversation(
 ): Promise<ClientMessage> {
     'use server';
 
-    console.time('continueConversation');
     const startTime = performance.now();
 
     const history = getMutableAIState();
@@ -43,16 +42,9 @@ export async function continueConversation(
 
     const isComplete = createStreamableValue(false);
 
-    console.time('webSearches');
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
-    console.timeEnd('webSearches');
 
-    if (webImageResults !== null) {
-        console.log('\x1b[32mwebImageResults retrieved\x1b[0m');
-    } else {
-        console.log('\x1b[31mwebImageResults not retrieved\x1b[0m');
-    }
     await saveThreadSourceResults(indexedPath, webResults, webImageResults);
 
     function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
@@ -71,7 +63,6 @@ export async function continueConversation(
 
     const initialWebResults = parseWebResults(webResults);
 
-    console.time('streamUI');
     const result = await streamUI({
         model: openai('gpt-4o'),
         system: systemPrompt(),
@@ -129,7 +120,6 @@ export async function continueConversation(
 
                     const prompt = userPrompt(input, initialWebResults, deepParsedWebResults);
 
-                    console.time('streamText');
                     const result = await streamText({
                         model: openai('gpt-4o-mini'),
                         system: systemPrompt(),
@@ -156,11 +146,6 @@ export async function continueConversation(
             },
         },
     });
-    console.timeEnd('streamUI');
-
-    const endTime = performance.now();
-    console.log(`continueConversation execution time: ${endTime - startTime} milliseconds`);
-    console.timeEnd('continueConversation');
 
     return {
         id: generateId(),

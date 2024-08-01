@@ -5,7 +5,7 @@ This is my perplexity clone. Thanks for giving me the chance to make it.
 https://github.com/user-attachments/assets/5ae2660a-0e53-439c-accd-bf957d6fa011
 
 #### Preface
-I do not write a lot of react in a production context, so I learned a lot combing through the docs and using features I have not used before. If given the chance, I'd love to know whhere I can improve, or where I missed the mark.
+I do not write a lot of react in a production context, so I learned a lot combing through the docs and using features I have not used before. If given the chance, I'd love to know where I can improve, or where I missed the mark.
 
 ## Overview
 - NextJS for SSR and Routing

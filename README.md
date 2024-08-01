@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Hello Perplexity!
 
-## Getting Started
+This is my perplexity clone. Here's how it works:
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
+- NextJS for SSR and Routing
+- Most of the state is managed in a context called `FrontendProvider`
+- I use `redis` to store thread (conversation) state.
+- Searching is done with Brave's API.
+- `shadcn/ui` and the `vercel-ai-sdk` are used to build the UI and the AI functionality
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Search Flow
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The main search interface is implemented in the `SearchPage` component.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+When a user submits a query, it triggers the `handleQuery` function in the `FrontendProvider` context.
 
-## Learn More
+`handleQuery` saves the frontend-context to redis, creates a hash similar to perplexity's, and pushes the router to a pending URL. 
 
-To learn more about Next.js, take a look at the following resources:
+### Tradeoffs
+- Most of the state management is handled in a simple context, but as we scale the application it can get quite hairy - tracking down bugs would get harder, not easier. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+

@@ -42,7 +42,4 @@ Notably, I did not implement the abortion of a pending thread (which is what I o
 - Learn more about how state management is done in a production context
 
 
-
-
-
-
+Thanks again!

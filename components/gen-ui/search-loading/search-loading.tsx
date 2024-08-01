@@ -8,6 +8,7 @@ export interface SearchQuery {
   status: "searching" | "complete";
 }
 
+// not super animated because the client and server seem to be out of sync, need to fix this
 export function SearchLoading({ queries }: { queries: SearchQuery[] }) {
   return (
     <Card className="w-full">

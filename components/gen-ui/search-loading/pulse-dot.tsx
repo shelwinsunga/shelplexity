@@ -1,6 +1,4 @@
 "use client";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { CircleCheck } from "lucide-react";
 
 export interface SearchQuery {

@@ -16,6 +16,7 @@ import { userPrompt } from '@/lib/prompt';
 import { streamText } from 'ai';
 import { searchWebImage } from '@/actions/searchWebImage';
 import { performance } from 'perf_hooks';
+
 export interface ServerMessage {
     role: 'user' | 'assistant';
     content: string;

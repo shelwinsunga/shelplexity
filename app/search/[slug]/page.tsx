@@ -11,6 +11,7 @@ import { SourceGalleryLoading } from '@/components/search/SourceGalleryLoading';
 export const dynamicParams = true // true | false,
 export const revalidate = false
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60;
 
 export default async function Page(searchParams: { params: any }) {
   const indexedPath = `/search/${searchParams.params.slug}`;

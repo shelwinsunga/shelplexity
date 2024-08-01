@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Shelplexity",
   description: "Shelplexity is a search engine for the Shelly ecosystem.",
 };
+export const maxDuration = 60;
 
 export default async function RootLayout({
   children,

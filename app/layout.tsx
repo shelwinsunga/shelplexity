@@ -32,8 +32,15 @@ export default async function RootLayout({
           <AI>
             <FrontendProvider>
               <TooltipProvider>
-                <Nav />
-                {children}
+                <div className="hidden md:block w-full h-full">
+                  <Nav />
+                  {children}
+                </div>
+                <div className="md:hidden flex items-center justify-center h-screen">
+                  <p className="text-center text-lg">
+                    Not rendering on Mobile.
+                  </p>
+                </div>
               </TooltipProvider>
             </FrontendProvider>
           </AI>

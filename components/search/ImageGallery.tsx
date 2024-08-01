@@ -52,7 +52,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     );
   }, []);
 
-  const ImageWithErrorHandling = ({ src, alt, ...props }: any) => {
+  const ImageWrapper = ({ src, alt, ...props }: any) => {
     return (
       <Image
         src={src}
@@ -99,7 +99,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             <div
               className={`relative ${index === 0 ? "w-full pb-[66.67%]" : "w-full pb-[66.67%]"}`}
             >
-              <ImageWithErrorHandling
+              <ImageWrapper
                 src={image.thumbnail.src}
                 alt={image.title}
                 fill
@@ -114,7 +114,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 h-full">
               {validImages.slice(4, 7).map((image, index) => (
                 <div key={index} className="relative aspect-square">
-                  <ImageWithErrorHandling
+                  <ImageWrapper
                     src={image.thumbnail.src}
                     alt={image.title}
                     fill
@@ -187,7 +187,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                 {selectedImage && (
                   <div className="h-full flex flex-col">
                     <div className="relative w-full h-[calc(100%-4rem)] rounded-lg overflow-hidden">
-                      <ImageWithErrorHandling
+                      <ImageWrapper
                         src={selectedImage.properties.url}
                         alt={selectedImage.title}
                         fill
@@ -207,7 +207,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                       onClick={() => setSelectedImage(image)}
                     >
                       <div className="relative w-full pb-[66.67%]">
-                        <ImageWithErrorHandling
+                        <ImageWrapper
                           src={image.thumbnail.src}
                           alt={image.title}
                           fill

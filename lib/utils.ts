@@ -28,3 +28,4 @@ export function parseWebResults(
     index: index + 1,
   }));
 }
+

@@ -1,10 +1,11 @@
 "use server";
 import { kv } from "@vercel/kv";
 import { generateHash } from "@/lib/utils";
-type QueryStatus = "pending" | "complete" | "error";
 import { revalidatePath } from "next/cache";
 import { unstable_noStore as noStore } from "next/cache";
 import { setTimeout } from "timers/promises";
+
+type QueryStatus = "pending" | "complete" | "error";
 
 export async function retry<T>(
   operation: () => Promise<T>,
@@ -17,12 +18,10 @@ export async function retry<T>(
     try {
       return await operation();
     } catch (error) {
-      console.error(`Attempt ${attempt + 1} failed:`, error);
       lastError = error instanceof Error ? error : new Error(String(error));
 
       if (attempt < maxRetries - 1) {
         const delay = baseDelay * Math.pow(2, attempt);
-        console.log(`Retrying in ${delay}ms...`);
         await setTimeout(delay);
       }
     }
@@ -36,32 +35,22 @@ export async function saveFrontendContext(
   query: string,
   queryStatus: QueryStatus
 ) {
-  console.log(
-    `[saveFrontendContext] Starting with frontendContextId: ${frontendContextId}, query: ${query}, queryStatus: ${queryStatus}`
-  );
   try {
     const hash = generateHash();
-    console.log(`[saveFrontendContext] Generated hash: ${hash}`);
     const slug = query
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .slice(0, 26)
       .replace(/-+$/, "");
-    console.log(`[saveFrontendContext] Generated slug: ${slug}`);
     const indexedPath = `/search/${slug}-${hash}`;
-    console.log(`[saveFrontendContext] Generated indexedPath: ${indexedPath}`);
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
       indexedPath: indexedPath,
     });
-    console.log(`[saveFrontendContext] Saved frontend context to KV store`);
     await createThread(indexedPath, query);
-    console.log(`[saveFrontendContext] Created thread`);
-    console.log(`[saveFrontendContext] Completed successfully`);
     return { indexedPath };
   } catch (e) {
-    console.error(`[saveFrontendContext] Error: ${e}`);
     throw new Error("Failed to save frontend context");
   }
 }
@@ -150,28 +139,18 @@ export async function getConversation(
 export async function getQuery(
   frontendContextId: string
 ): Promise<{ query: string | null; status: QueryStatus } | null> {
-  console.log(
-    `[getQuery] Starting with frontendContextId: ${frontendContextId}`
-  );
-
   if (!frontendContextId) {
-    console.log("[getQuery] No frontendContextId provided, returning null");
     return null;
   }
 
   return await retry(
     async () => {
-      console.log(
-        `[getQuery] Attempting to fetch data for frontendContextId: ${frontendContextId}`
-      );
       const result = await kv.hgetall(
         `frontend-context-id:${frontendContextId}`
       );
       if (!result) {
-        console.log("[getQuery] No result found, returning null");
         return null;
       }
-      console.log("[getQuery] Data retrieved successfully:", result);
       return result as { query: string | null; status: QueryStatus };
     },
     10,
@@ -180,11 +159,9 @@ export async function getQuery(
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {
-  console.log(`[getThreadData] Starting with indexedPath: ${indexedPath}`);
   noStore();
 
   if (!indexedPath) {
-    console.log("[getThreadData] No indexedPath provided, returning null");
     return null;
   }
 
@@ -192,10 +169,8 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   const retryDelay = 250;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    console.log(`[getThreadData] Attempt ${attempt + 1} of ${maxRetries}`);
     try {
       const result = await kv.hgetall(`thread-id:${indexedPath}`);
-      console.log(`[getThreadData] Retrieved result:`, result);
 
       if (
         !result ||
@@ -204,9 +179,6 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
         !result.imageResults
       ) {
         if (attempt === maxRetries - 1) {
-          console.log(
-            "[getThreadData] Max retries reached with incomplete data, returning null"
-          );
           return null;
         }
       } else {
@@ -215,29 +187,18 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
           sourceResults: result.sourceResults,
           imageResults: result.imageResults,
         };
-        console.log(
-          "[getThreadData] Successfully retrieved thread data:",
-          threadData
-        );
         return threadData;
       }
     } catch (e) {
-      console.error(`[getThreadData] Error on attempt ${attempt + 1}:`, e);
       if (attempt === maxRetries - 1) {
-        console.error(
-          "[getThreadData] Max retries reached with error, throwing"
-        );
         throw new Error("Failed to retrieve thread data");
       }
     }
-    console.log(`[getThreadData] Retrying after ${retryDelay}ms delay`);
     await setTimeout(retryDelay);
   }
 
-  console.log("[getThreadData] Revalidating path");
   revalidatePath("/search/[slug]/page");
 
-  console.log("[getThreadData] All attempts failed, returning null");
   return null;
 }
 

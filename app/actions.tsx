@@ -104,7 +104,6 @@ export async function continueConversation(
                         .describe('Search objective'),
                 }),
                 generate: async function* ({ queries }) {
-                    console.time('search-generate');
                     const searchQueries: SearchQuery[] = queries.map(query => ({ query, status: 'searching' }));
                     const results = []
                     yield <SearchLoading queries={searchQueries} />;
@@ -146,11 +145,12 @@ export async function continueConversation(
                             </>
                         );
                     }
-                    console.timeEnd('streamText');
-
+                    history.done((messages: ServerMessage[]) => [
+                        ...messages,
+                        { role: 'assistant', content: accumulatedText },
+                    ]);
                     isComplete.done(true);
                     await saveConversationToThread(indexedPath, accumulatedText);
-                    console.timeEnd('search-generate');
                     return <SearchTextRender>{accumulatedText}</SearchTextRender>;
                 },
             },

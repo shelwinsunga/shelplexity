@@ -4,31 +4,9 @@ import { generateHash } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { unstable_noStore as noStore } from "next/cache";
 import { setTimeout } from "timers/promises";
+import { retry } from "@/lib/retry";
 
 type QueryStatus = "pending" | "complete" | "error";
-
-export async function retry<T>(
-  operation: () => Promise<T>,
-  maxRetries: number = 10,
-  baseDelay: number = 50
-): Promise<T> {
-  let lastError: Error | null = null;
-
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error));
-
-      if (attempt < maxRetries - 1) {
-        const delay = baseDelay * Math.pow(2, attempt);
-        await setTimeout(delay);
-      }
-    }
-  }
-
-  throw lastError || new Error("Operation failed after max retries");
-}
 
 export async function saveFrontendContext(
   frontendContextId: string,

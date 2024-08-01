@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theming/theme-provider"
+import { ThemeProvider } from "@/components/theming/theme-provider";
 import Nav from "@/components/nav/nav";
-import { AI } from './actions';
-import { FrontendProvider } from '@/contexts/FrontendContext';
-import { getRecentThreads } from '@/actions/threadActions';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { AI } from "./actions";
+import { FrontendProvider } from "@/contexts/FrontendContext";
+import { getRecentThreads } from "@/actions/threadActions";
+import { TooltipProvider } from "@/components/ui/tooltip";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,7 +20,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body className={inter.className}>

@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Snail } from 'lucide-react';
+import { Snail } from "lucide-react";
 
 export default function Loading() {
   return (
@@ -11,7 +11,8 @@ export default function Loading() {
         </div>
         <div className="w-full max-w-2xl">
           <div className="flex flex-row items-end gap-2 rounded-md border bg-card shadow-md p-4">
-            <Skeleton className="h-[120px] w-full" /> {/* Skeleton for the textarea */}
+            <Skeleton className="h-[120px] w-full" />{" "}
+            {/* Skeleton for the textarea */}
             <Skeleton className="h-10 w-10" /> {/* Skeleton for the button */}
           </div>
         </div>

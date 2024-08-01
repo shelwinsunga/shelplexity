@@ -4,10 +4,8 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
-    remotePatterns: [
-        { hostname: "imgs.search.brave.com" },
-    ],
-},
+    remotePatterns: [{ hostname: "imgs.search.brave.com" }],
+  },
 };
 
 export default nextConfig;

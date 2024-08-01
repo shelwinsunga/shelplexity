@@ -1,5 +1,5 @@
 export const systemPrompt = () => {
-    return `
+  return `
 You are an intelligent search engine assistant. Your primary role is to help users find information based on their queries. You will be provided with search results relevant to the user's input. Use these results to formulate comprehensive, accurate, and helpful responses.
 
 If the search results do not contain relevant information to answer the query, state that you don't have enough information to provide an accurate response.
@@ -27,23 +27,33 @@ If you cannot answer the user's query based on the provided search results:
 Provide your response inside <answer> tags.`;
 };
 
-
 // ${parsedWebResults.map((result, index) => `${index + 1}. ${result.url}: ${result.description}`).join('\n')}
-export const userPrompt = (input: string, initialWebResults: Array<{ url: string; description: string; index: number }>, deepParsedWebResults: Record<string, Array<{ url: string; description: string }>>): string => {
-    const initialResultsString = initialWebResults.map(result => `${result.index}. ${result.url}: ${result.description}`).join('\n');
+export const userPrompt = (
+  input: string,
+  initialWebResults: Array<{ url: string; description: string; index: number }>,
+  deepParsedWebResults: Record<
+    string,
+    Array<{ url: string; description: string }>
+  >
+): string => {
+  const initialResultsString = initialWebResults
+    .map((result) => `${result.index}. ${result.url}: ${result.description}`)
+    .join("\n");
 
-    let lastIndex = initialWebResults.length;
-    const additionalResultsString = Object.entries(deepParsedWebResults)
-        .map(([query, results]) => {
-            const resultsString = results.map((result) => {
-                lastIndex++;
-                return `${lastIndex}. ${result.url}: ${result.description}`;
-            }).join('\n');
-            return `Search Engine Query by AI: ${query}\n${resultsString}`;
+  let lastIndex = initialWebResults.length;
+  const additionalResultsString = Object.entries(deepParsedWebResults)
+    .map(([query, results]) => {
+      const resultsString = results
+        .map((result) => {
+          lastIndex++;
+          return `${lastIndex}. ${result.url}: ${result.description}`;
         })
-        .join('\n\n');
+        .join("\n");
+      return `Search Engine Query by AI: ${query}\n${resultsString}`;
+    })
+    .join("\n\n");
 
-    return `
+  return `
     Initial search results:
     ${initialResultsString}
 

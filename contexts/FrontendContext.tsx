@@ -1,12 +1,17 @@
-'use client'
-import { createContext, useContext, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { ClientMessage } from '@/app/actions';
-import { useActions, useUIState, useAIState, readStreamableValue } from 'ai/rsc';
-import { generateId } from 'ai';
-import { v4 as uuidv4 } from 'uuid';
-import { saveFrontendContext } from '@/actions/threadActions';
-import { getRecentThreads } from '@/actions/threadActions';
+"use client";
+import { createContext, useContext, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { ClientMessage } from "@/app/actions";
+import {
+  useActions,
+  useUIState,
+  useAIState,
+  readStreamableValue,
+} from "ai/rsc";
+import { generateId } from "ai";
+import { v4 as uuidv4 } from "uuid";
+import { saveFrontendContext } from "@/actions/threadActions";
+import { getRecentThreads } from "@/actions/threadActions";
 
 interface FrontendContextType {
   query: string | null;
@@ -20,13 +25,19 @@ interface FrontendContextType {
   updateRecentThreads: () => void;
 }
 
-const FrontendContext = createContext<FrontendContextType | undefined>(undefined);
+const FrontendContext = createContext<FrontendContextType | undefined>(
+  undefined
+);
 
 export function FrontendProvider({ children }: { children: React.ReactNode }) {
-  const [query, setQuery] = useState('');
-  const [frontendContextId, setFrontendContextId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [frontendContextId, setFrontendContextId] = useState<string | null>(
+    null
+  );
   const [sourceResults, setSourceResults] = useState<any>([]);
-  const [queryStatus, setQueryStatus] = useState<'pending' | 'complete' | 'error'>('pending');
+  const [queryStatus, setQueryStatus] = useState<
+    "pending" | "complete" | "error"
+  >("pending");
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const [AIState, setAIState] = useAIState();
@@ -42,13 +53,17 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setAIState([]);
     setConversation([]);
     const newFrontendContextId = uuidv4();
-    const { indexedPath } = await saveFrontendContext(newFrontendContextId, newQuery, 'pending');
-    router.push(`/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`);
+    const { indexedPath } = await saveFrontendContext(
+      newFrontendContextId,
+      newQuery,
+      "pending"
+    );
+    router.push(
+      `/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`
+    );
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);
-    setConversation([
-      { id: generateId(), role: 'user', display: newQuery },
-    ]);
+    setConversation([{ id: generateId(), role: "user", display: newQuery }]);
     const message = await continueConversation(newQuery, indexedPath);
 
     setConversation((currentConversation: ClientMessage[]) => [
@@ -59,7 +74,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
-          window.history.replaceState(null, '', indexedPath);
+          window.history.replaceState(null, "", indexedPath);
           await updateRecentThreads();
         }
       }
@@ -67,10 +82,19 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <FrontendContext.Provider value={{
-      query, handleQuery, setQuery, frontendContextId, setFrontendContextId, sourceResults, setSourceResults, recentThreads,
-      updateRecentThreads
-    }}>
+    <FrontendContext.Provider
+      value={{
+        query,
+        handleQuery,
+        setQuery,
+        frontendContextId,
+        setFrontendContextId,
+        sourceResults,
+        setSourceResults,
+        recentThreads,
+        updateRecentThreads,
+      }}
+    >
       {children}
     </FrontendContext.Provider>
   );
@@ -79,7 +103,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
 export function useFrontend() {
   const context = useContext(FrontendContext);
   if (context === undefined) {
-    throw new Error('useFrontend must be used within a FrontendProvider');
+    throw new Error("useFrontend must be used within a FrontendProvider");
   }
   return context;
 }

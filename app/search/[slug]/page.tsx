@@ -1,16 +1,16 @@
-import { getThreadData } from '@/actions/threadActions';
-import SourceGallery from '@/components/search/SourceGallery';
-import { Separator } from '@/components/ui/separator'
-import { Suspense } from 'react';
-import { SearchTextRender } from '@/components/search/SearchTextRender';
-import { getConversation } from '@/actions/threadActions';
-import SearchHeader from '@/components/search/SearchHeader';
-import ImageGallery from '@/components/search/ImageGallery';
-import { SourceGalleryLoading } from '@/components/search/SourceGalleryLoading';
+import { getThreadData } from "@/actions/threadActions";
+import SourceGallery from "@/components/search/SourceGallery";
+import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
+import { SearchTextRender } from "@/components/search/SearchTextRender";
+import { getConversation } from "@/actions/threadActions";
+import SearchHeader from "@/components/search/SearchHeader";
+import ImageGallery from "@/components/search/ImageGallery";
+import { SourceGalleryLoading } from "@/components/search/SourceGalleryLoading";
 
-export const dynamicParams = true // true | false,
-export const revalidate = false
-export const dynamic = 'force-dynamic'
+export const dynamicParams = true; // true | false,
+export const revalidate = false;
+export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export default async function Page(searchParams: { params: any }) {
@@ -35,9 +35,7 @@ export default async function Page(searchParams: { params: any }) {
             </div>
             <div className="w-full h-full">
               <Suspense fallback={<div>Loading...</div>}>
-                <SearchTextRender>
-                  {conversation}
-                </SearchTextRender>
+                <SearchTextRender>{conversation}</SearchTextRender>
               </Suspense>
             </div>
           </div>

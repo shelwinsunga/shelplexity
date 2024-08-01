@@ -18,12 +18,32 @@ export const maxDuration = 30;
 
 export default async function SearchPage({ searchParams }: { searchParams: any }) {
 
+  console.log(`[SearchPage] Starting with frontendContextId: ${searchParams.newFrontendContextUUID}`);
   const frontendContextId = searchParams.newFrontendContextUUID;
+
+  console.log(`[SearchPage] Fetching query data for frontendContextId: ${frontendContextId}`);
   const queryData = await getQuery(frontendContextId);
-  const indexedPath = (await getThreadId(frontendContextId))?.indexedPath || null;
-  const threadData = indexedPath ? (await getThreadData(indexedPath)) : null;
+  console.log(`[SearchPage] Query data fetched:`, queryData);
+
+  console.log(`[SearchPage] Getting thread ID for frontendContextId: ${frontendContextId}`);
+  const threadIdResult = await getThreadId(frontendContextId);
+  const indexedPath = threadIdResult?.indexedPath || null;
+  console.log(`[SearchPage] Indexed path:`, indexedPath);
+
+  let threadData = null;
+  if (indexedPath) {
+    console.log(`[SearchPage] Fetching thread data for indexedPath: ${indexedPath}`);
+    threadData = await getThreadData(indexedPath);
+    console.log(`[SearchPage] Thread data fetched:`, threadData);
+  } else {
+    console.log(`[SearchPage] No indexed path available, skipping thread data fetch`);
+  }
+
   const results = threadData?.sourceResults || null;
+  console.log(`[SearchPage] Source results:`, results ? `${results.length} items` : 'null');
+
   const images = threadData?.imageResults || null;
+  console.log(`[SearchPage] Image results:`, images ? `${images.length} items` : 'null');
 
   return (
     <>

@@ -67,6 +67,7 @@ export async function continueConversation(
                 {content}
             </SearchTextRender>;
         },
+        temperature: 0.1,
         toolChoice: 'required',
         tools: {
             search: {

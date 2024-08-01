@@ -10,6 +10,8 @@ Format your answer using the following guidelines:
 3. Use footnotes in the format [n] to reference your sources, where n is an integer starting from 1. For example: [1](https://www.example.com/page).
 4. Always include the footnote number [n] before the hyperlink.
 5. Do not create hyperlinks without the [n] notation.
+6. An example of poor formatting is: [Wikipedia article on Functional Programming](link)[1]. Please only use footnotes with a number in the brackets.
+7. Do include hyperlinks in the conclusion.
 
 When answering the user's query:
 1. Provide a clear and concise introduction to the topic.

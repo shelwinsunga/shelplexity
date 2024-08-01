@@ -33,7 +33,7 @@ export default function Loading() {
                             transition={{ delay: 0.2 }}
                             className="w-full mb-8"
                         >
-                            <h2 className="text-2xl font-semibold mb-4">Sources</h2>
+                            <Skeleton className="h-8 w-40 mb-4" />
                             <div className="flex flex-row gap-2 w-full">
                                 {[...Array(3)].map((_, index) => (
                                     <Card key={`source-${index}`} className="w-1/4 h-32">

@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/components/theming/theme-provider";
 import Nav from "@/components/nav/nav";
 import { AI } from "./actions";
 import { FrontendProvider } from "@/contexts/FrontendContext";
-import { getRecentThreads } from "@/actions/threadActions";
 import { TooltipProvider } from "@/components/ui/tooltip";
 const inter = Inter({ subsets: ["latin"] });
 

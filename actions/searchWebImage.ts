@@ -1,7 +1,4 @@
 "use server";
-
-import fs from "fs/promises";
-import path from "path";
 import { cache } from "react";
 
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
@@ -19,7 +16,7 @@ export const searchWebImage = cache(
 
     const url = `https://api.search.brave.com/res/v1/images/search?q=${encodeURIComponent(query)}&safesearch=strict&count=${count}&search_lang=en&country=us&spellcheck=1`;
 
-    const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
+    const retry = async (retryCount = 0): Promise<any[]> => {
       try {
         const response = await fetch(url, {
           headers: {
@@ -33,7 +30,7 @@ export const searchWebImage = cache(
           if (response.status === 429 && retryCount < 3) {
             const delay = 300 * (retryCount + 1);
             await new Promise((resolve) => setTimeout(resolve, delay));
-            return fetchWithRetry(retryCount + 1);
+            return retry(retryCount + 1);
           }
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -47,9 +44,7 @@ export const searchWebImage = cache(
       }
     };
 
-    const result = await fetchWithRetry();
+    const result = await retry();
     return result;
   }
 );
-
-// curl -s --compressed "https://api.search.brave.com/res/v1/images/search?q=munich&safesearch=strict&count=20&search_lang=en&country=us&spellcheck=1" -H "Accept: application/json" -H "Accept-Encoding: gzip" -H "X-Subscription-Token: ${BRAVE_API_KEY}"

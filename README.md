@@ -1,6 +1,6 @@
 
 # Hello Perplexity!
-This is my perplexity clone. Thanks for giving me the chance to make it.
+This is my perplexity clone.
 
 https://github.com/user-attachments/assets/5ae2660a-0e53-439c-accd-bf957d6fa011
 

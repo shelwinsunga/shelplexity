@@ -135,9 +135,11 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {
+  console.log(`[getThreadData] Starting with indexedPath: ${indexedPath}`);
   noStore()
 
   if (!indexedPath) {
+    console.log('[getThreadData] No indexedPath provided, returning null');
     return null;
   }
 
@@ -145,11 +147,14 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
   const retryDelay = 250; 
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
+    console.log(`[getThreadData] Attempt ${attempt + 1} of ${maxRetries}`);
     try {
       const result = await kv.hgetall(`thread-id:${indexedPath}`);
+      console.log(`[getThreadData] Retrieved result:`, result);
       
       if (!result || !result.query || !result.sourceResults || !result.imageResults) {
         if (attempt === maxRetries - 1) {
+          console.log('[getThreadData] Max retries reached with incomplete data, returning null');
           return null;
         }
       } else {
@@ -158,18 +163,23 @@ export async function getThreadData(indexedPath: string): Promise<any | null> {
           sourceResults: result.sourceResults,
           imageResults: result.imageResults
         };
+        console.log('[getThreadData] Successfully retrieved thread data:', threadData);
         return threadData;
       }
     } catch (e) {
+      console.error(`[getThreadData] Error on attempt ${attempt + 1}:`, e);
       if (attempt === maxRetries - 1) {
+        console.error('[getThreadData] Max retries reached with error, throwing');
         throw new Error('Failed to retrieve thread data');
       }
     }
-    await new Promise(resolve => setTimeout(resolve, retryDelay));
-  }
+    console.log(`[getThreadData] Retrying after ${retryDelay}ms delay`);
+    await setTimeout(retryDelay);  }
   
+  console.log('[getThreadData] Revalidating path');
   revalidatePath('/search/[slug]/page')
 
+  console.log('[getThreadData] All attempts failed, returning null');
   return null;
 }
 

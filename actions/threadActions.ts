@@ -4,6 +4,41 @@ import { generateHash } from "@/lib/utils";
 type QueryStatus = 'pending' | 'complete' | 'error';
 import { revalidatePath } from 'next/cache'
 import { unstable_noStore as noStore } from 'next/cache';
+import { setTimeout } from 'timers/promises';
+
+/**
+ * Utility function for retrying an async operation with exponential backoff
+ * @param operation The async function to retry
+ * @param maxRetries Maximum number of retry attempts
+ * @param baseDelay Initial delay in milliseconds
+ * @returns The result of the operation if successful
+ * @throws The last error encountered if all retries fail
+ */
+export async function retry<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 10,
+  baseDelay: number = 50
+): Promise<T> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      console.error(`Attempt ${attempt + 1} failed:`, error);
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      if (attempt < maxRetries - 1) {
+        const delay = baseDelay * Math.pow(2, attempt);
+        console.log(`Retrying in ${delay}ms...`);
+        await setTimeout(delay);
+      }
+    }
+  }
+
+  throw lastError || new Error('Operation failed after max retries');
+}
+
 
 export async function saveFrontendContext(frontendContextId: string, query: string, queryStatus: QueryStatus) {
   try {
@@ -86,27 +121,17 @@ export async function getQuery(frontendContextId: string): Promise<{ query: stri
     return null;
   }
 
-  const maxRetries = 10;
-  const retryDelay = 250;
-
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
+  return await retry(
+    async () => {
       const result = await kv.hgetall(`frontend-context-id:${frontendContextId}`);
       if (!result) {
-        if (attempt === maxRetries - 1) {
-          return null;
-        }
-      } else {
-        return result as { query: string | null; status: QueryStatus };
+        return null;
       }
-    } catch (e) {
-      if (attempt === maxRetries - 1) {
-        throw new Error('Failed to retrieve frontend context');
-      }
-    }
-    await new Promise(resolve => setTimeout(resolve, retryDelay));
-  }
-  return null;
+      return result as { query: string | null; status: QueryStatus };
+    },
+    10,
+    250
+  );
 }
 
 export async function getThreadData(indexedPath: string): Promise<any | null> {

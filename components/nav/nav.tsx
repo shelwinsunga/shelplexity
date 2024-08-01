@@ -59,7 +59,7 @@ export default function Nav() {
       <div
         className={`fixed left-0 top-0 w-72 h-screen overflow-hidden z-40 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
-        <div className="fixed top-0 left-0 w-72 h-full z-10 py-2 bg-gradient-to-r from-muted/10 to-background/90 rounded-md">
+        <div className="fixed top-0 left-0 w-72 h-full z-10 py-2 bg-gradient-to-r from-muted/10 to-transparent rounded-md">
           <div className="w-full h-full rounded-md py-4 flex flex-col justify-between text-sm mt-[1px]">
             <div className="flex items-center mb-4 px-6 text-muted-foreground/70">
               <Link

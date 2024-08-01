@@ -11,6 +11,7 @@ import { Snail, X } from "lucide-react";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+
 interface ImageResult {
   type: string;
   title: string;
@@ -36,9 +37,24 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const [validImages, setValidImages] = useState<ImageResult[]>([]);
-
   useEffect(() => {
-    setValidImages(images || []);
+    const validateImages = async () => {
+      const validatedImages = await Promise.all(
+        (images || []).map(async (image) => {
+          try {
+            const thumbnailResponse = await fetch(image.thumbnail.src, { method: 'HEAD' });
+            const propertiesUrlResponse = await fetch(image.properties.url, { method: 'HEAD' });
+            return thumbnailResponse.ok && propertiesUrlResponse.ok ? image : null;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
+      const filteredImages = validatedImages.filter((img): img is ImageResult => img !== null);
+      setValidImages(filteredImages);
+    };
+
+    validateImages();
   }, [images]);
 
   const removeInvalidImage = useCallback((imageUrl: string) => {

@@ -3,9 +3,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AnimatePresence, motion } from "framer-motion";
+import { SearchContainer } from "@/app/search/layout";
 
 export default function Loading() {
   return (
+    <SearchContainer>
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
@@ -109,7 +111,8 @@ export default function Loading() {
             </div>
           </motion.div>
         </div>
-      </motion.div>
-    </AnimatePresence>
+        </motion.div>
+      </AnimatePresence>
+    </SearchContainer>
   );
 }

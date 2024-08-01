@@ -38,16 +38,18 @@ export default function SourceGallery({
             </CardHeader>
             <CardContent className="pb-3 pt-1 px-3">
               <div className="flex items-center">
-                <img
-                  src={result.profile.img}
-                  alt={result.title}
-                  width={16}
-                  height={16}
-                  className="rounded-full mr-2 flex-shrink-0"
-                />
+                {result.profile && result.profile.img && (
+                  <img
+                    src={result.profile.img}
+                    alt={result.title}
+                    width={16}
+                    height={16}
+                    className="rounded-full mr-2 flex-shrink-0"
+                  />
+                )}
                 <div className="flex items-center gap-1 min-w-0">
                   <span className="text-muted-foreground/80 hover:underline text-xs truncate max-w-[100px]">
-                    {result.profile.name}
+                    {result.profile?.name || 'Unknown'}
                   </span>
                   <span className="text-muted-foreground/80 text-xs flex-shrink-0">
                     •
@@ -96,16 +98,18 @@ export default function SourceGallery({
                     </CardHeader>
                     <CardContent className="pb-3 pt-1 px-3">
                       <div className="flex items-center">
-                        <img
-                          src={result.profile.img}
-                          alt={result.title}
-                          width={16}
-                          height={16}
-                          className="rounded-full mr-2 flex-shrink-0"
-                        />
+                        {result.profile && result.profile.img && (
+                          <img
+                            src={result.profile.img}
+                            alt={result.title}
+                            width={16}
+                            height={16}
+                            className="rounded-full mr-2 flex-shrink-0"
+                          />
+                        )}
                         <div className="flex items-center gap-1 min-w-0">
                           <span className="text-muted-foreground/80 hover:underline text-xs truncate max-w-[100px]">
-                            {result.profile.name}
+                            {result.profile?.name || 'Unknown'}
                           </span>
                           <span className="text-muted-foreground/80 text-xs flex-shrink-0">
                             •

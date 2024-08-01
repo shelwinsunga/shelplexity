@@ -94,9 +94,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                 ))}
                 {validImages.length > 4 && (
                     <div className="cursor-pointer relative" onClick={openGallery}>
-                        <div className="grid grid-cols-3 gap-1 h-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 h-full">
                             {validImages.slice(4, 7).map((image, index) => (
-                                <div key={index} className="relative h-full">
+                                <div key={index} className="relative aspect-square">
                                     <ImageWithErrorHandling
                                         src={image.thumbnail.src}
                                         alt={image.title}
@@ -108,7 +108,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                             ))}
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                            <Button onClick={(e) => { e.stopPropagation(); openGallery(); }} className="z-10">
+                            <Button className="z-10 text-sm sm:text-base">
                                 View More
                             </Button>
                         </div>

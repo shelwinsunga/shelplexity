@@ -15,7 +15,7 @@ import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/s
 import { userPrompt } from '@/lib/prompt';
 import { streamText } from 'ai';
 import { searchWebImage } from '@/actions/searchWebImage';
-
+import { performance } from 'perf_hooks';
 export interface ServerMessage {
     role: 'user' | 'assistant';
     content: string;
@@ -34,21 +34,25 @@ export async function continueConversation(
 ): Promise<ClientMessage> {
     'use server';
 
+    console.time('continueConversation');
+    const startTime = performance.now();
+
     const history = getMutableAIState();
     history.update([]);
 
     const isComplete = createStreamableValue(false);
 
+    console.time('webSearches');
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
+    console.timeEnd('webSearches');
+
     if (webImageResults !== null) {
         console.log('\x1b[32mwebImageResults retrieved\x1b[0m');
     } else {
         console.log('\x1b[31mwebImageResults not retrieved\x1b[0m');
     }
     await saveThreadSourceResults(indexedPath, webResults, webImageResults);
-
-
 
     function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
         if (!Array.isArray(webResults)) {
@@ -66,6 +70,7 @@ export async function continueConversation(
 
     const initialWebResults = parseWebResults(webResults);
 
+    console.time('streamUI');
     const result = await streamUI({
         model: openai('gpt-4o'),
         system: systemPrompt(),
@@ -73,6 +78,7 @@ export async function continueConversation(
             const messages = [...history.get(), { role: 'user', content: input }];
             return messages;
         })(),
+        maxTokens: 500,
         text: async ({ content, done }) => {
             if (done) {
                 history.done((messages: ServerMessage[]) => [
@@ -89,7 +95,6 @@ export async function continueConversation(
         toolChoice: 'required', // force the model to call a tool
         tools: {
             search: {
-
                 description: 'Search the web for information',
                 parameters: z.object({
                     queries: z
@@ -98,6 +103,7 @@ export async function continueConversation(
                         .describe('Search objective'),
                 }),
                 generate: async function* ({ queries }) {
+                    console.time('search-generate');
                     const searchQueries: SearchQuery[] = queries.map(query => ({ query, status: 'searching' }));
                     const results = []
                     yield <SearchLoading queries={searchQueries} />;
@@ -123,6 +129,7 @@ export async function continueConversation(
 
                     const prompt = userPrompt(input, initialWebResults, deepParsedWebResults);
 
+                    console.time('streamText');
                     const result = await streamText({
                         model: openai('gpt-4o-mini'),
                         system: systemPrompt(),
@@ -134,19 +141,25 @@ export async function continueConversation(
                         accumulatedText += textPart;
                         yield (
                             <>
-
                                 <SearchTextRender>{accumulatedText}</SearchTextRender>
                             </>
                         );
                     }
+                    console.timeEnd('streamText');
+
                     isComplete.done(true);
                     await saveConversationToThread(indexedPath, accumulatedText);
+                    console.timeEnd('search-generate');
                     return <SearchTextRender>{accumulatedText}</SearchTextRender>;
                 },
             },
         },
     });
+    console.timeEnd('streamUI');
 
+    const endTime = performance.now();
+    console.log(`continueConversation execution time: ${endTime - startTime} milliseconds`);
+    console.timeEnd('continueConversation');
 
     return {
         id: generateId(),

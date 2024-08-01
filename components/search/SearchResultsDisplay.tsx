@@ -3,10 +3,6 @@
 import { ClientMessage } from '@/app/actions';
 import { useUIState } from 'ai/rsc';
 
-interface SearchResultsDisplayProps {
-    conversation: ClientMessage[];
-}
-
 export function SearchResultsDisplay() {
     const [conversation] = useUIState();
 

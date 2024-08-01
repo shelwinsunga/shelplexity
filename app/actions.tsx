@@ -15,7 +15,7 @@ import { SearchLoading, SearchQuery } from '@/components/gen-ui/search-loading/s
 import { userPrompt } from '@/lib/prompt';
 import { streamText } from 'ai';
 import { searchWebImage } from '@/actions/searchWebImage';
-import { performance } from 'perf_hooks';
+import { parseWebResults } from '@/lib/utils';
 
 export interface ServerMessage {
     role: 'user' | 'assistant';
@@ -35,31 +35,14 @@ export async function continueConversation(
 ): Promise<ClientMessage> {
     'use server';
 
-    const startTime = performance.now();
-
     const history = getMutableAIState();
     history.update([]);
 
     const isComplete = createStreamableValue(false);
-
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
 
     await saveThreadSourceResults(indexedPath, webResults, webImageResults);
-
-    function parseWebResults(webResults: any): Array<{ url: string; description: string; index: number }> {
-        if (!Array.isArray(webResults)) {
-            return [];
-        }
-
-        const results = typeof webResults === 'string' ? JSON.parse(webResults) : webResults;
-
-        return results.map((result: any, index: number) => ({
-            url: result.url,
-            description: result.description,
-            index: index + 1
-        }));
-    }
 
     const initialWebResults = parseWebResults(webResults);
 
@@ -84,7 +67,7 @@ export async function continueConversation(
                 {content}
             </SearchTextRender>;
         },
-        toolChoice: 'required', // force the model to call a tool
+        toolChoice: 'required',
         tools: {
             search: {
                 description: 'Search the web for information',

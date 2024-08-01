@@ -4,11 +4,10 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function SourceGallery({ SourceResults }: { SourceResults: any[] }) {
     if (!SourceResults || !Array.isArray(SourceResults)) {
-        return null; // or return a placeholder component
+        return null; 
     }
 
     const visibleResults = SourceResults.slice(0, 3);

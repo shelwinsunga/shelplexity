@@ -1,9 +1,9 @@
 "use server";
-
 import { cache } from "react";
 
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
 
+// todo, use the retry utility we made
 export const searchWeb = cache(
   async (query: string | null, count: number = 5): Promise<any[]> => {
     if (!query) {
@@ -12,7 +12,7 @@ export const searchWeb = cache(
 
     const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${count}`;
 
-    const fetchWithRetry = async (retryCount = 0): Promise<any[]> => {
+    const retry = async (retryCount = 0): Promise<any[]> => {
       try {
         const response = await fetch(url, {
           headers: {
@@ -26,7 +26,7 @@ export const searchWeb = cache(
           if (response.status === 429 && retryCount < 3) {
             const delay = 300 * (retryCount + 1);
             await new Promise((resolve) => setTimeout(resolve, delay));
-            return fetchWithRetry(retryCount + 1);
+            return retry(retryCount + 1);
           }
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -40,9 +40,7 @@ export const searchWeb = cache(
       }
     };
 
-    const results = await fetchWithRetry();
+    const results = await retry();
     return results;
   }
 );
-
-// curl -s --compressed "https://api.search.brave.com/res/v1/web/search?q=brave+search" -H "Accept: application/json" -H "Accept-Encoding: gzip" -H "X-Subscription-Token: ${BRAVE_API_KEY}"

@@ -31,6 +31,8 @@ export const searchWeb = cache(
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // todo: extract more meaningful information out of the web
+        // the descriptions aren't super helpful
         const data = await response.json();
         const results = data.web?.results || [];
 

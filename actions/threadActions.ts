@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { unstable_noStore as noStore } from "next/cache";
 import { setTimeout } from "timers/promises";
 import { retry } from "@/lib/retry";
-import { QueryStatus } from "@/lib/types";
+
+export type QueryStatus = "pending" | "complete" | "error";
 
 const ERROR_MESSAGES = {
   SAVE_CONTEXT: "Failed to save frontend context",

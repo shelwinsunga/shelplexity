@@ -1,3 +1,4 @@
+'use client'
 export type QueryStatus = "pending" | "complete" | "error";
 
 export interface FrontendContextType {
@@ -9,5 +10,5 @@ export interface FrontendContextType {
     sourceResults: any;
     setSourceResults: (sourceResults: any) => void;
     recentThreads: any[];
-    updateRecentThreads: () => void;
-  }
+  updateRecentThreads: () => void;
+}

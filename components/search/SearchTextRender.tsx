@@ -28,7 +28,72 @@ const FadeInWrapper = ({ children, duration = 1.0 }) => {
   );
 };
 
-const components = {
+
+
+
+const FadeLessComponents = {
+  p: ({ node, children, ...props }) => (
+    <p {...props}>
+      {children}
+    </p>
+  ),
+  h1: ({ children, ...props }: ComponentPropsWithoutRef<"h1">) => {
+    if (children === "Answer") {
+      return (
+        <h3
+          className="font-semibold flex items-center text-lg sm:text-xl md:text-2xl"
+          {...props}
+        >
+          <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+          {children}
+        </h3>
+      );
+    }
+    return null;
+  },
+  h2: ({ node, ...props }) => <h2 {...props} />,
+  h3: ({ node, ...props }) => <h3 {...props} />,
+  h4: ({ node, ...props }) => <h4 {...props} />,
+  h5: ({ node, ...props }) => <h5 {...props} />,
+  h6: ({ node, ...props }) => <h6 {...props} />,
+  blockquote: ({ node, ...props }) => <blockquote {...props} />,
+  ul: ({ node, ...props }) => <ul {...props} />,
+  ol: ({ node, ...props }) => <ol {...props} />,
+  li: ({ node, ...props }) => <li {...props} />,
+  strong: ({ node, ...props }) => <strong {...props} />,
+  em: ({ node, ...props }) => <em {...props} />,
+  code: ({ node, ...props }) => <code {...props} />,
+  pre: ({ node, ...props }) => <pre {...props} />,
+  img: ({ node, ...props }) => <img {...props} />,
+  a: ({ children, ...props }: ComponentPropsWithoutRef<"a">) => (
+    <Tooltip delayDuration={100}>
+      <TooltipTrigger asChild>
+        <a
+          className={`${typeof children === "string" &&
+            !isNaN(Number(children)) &&
+            children.trim().split(" ").length === 1
+            ? "p-1 opacity-90 bg-foreground/15 border m-1 text-[11px] rounded-md"
+            : "text-xs sm:text-sm md:text-base bg-foreground/10 hover:bg-card/10 shadow-md border text-accent-foreground rounded ml-1 px-1.5 py-0.5 no-underline hover:no-underline"
+            }`}
+          {...props}
+        >
+          {typeof children === "string" &&
+            !isNaN(Number(children)) &&
+            children.trim().split(" ").length === 1 ? (
+            <span className="numeric-content">{children}</span>
+          ) : (
+            children
+          )}
+        </a>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="text-xs sm:text-sm">{props.href}</p>
+      </TooltipContent>
+    </Tooltip>
+  ),
+};
+
+const FadeInComponents = {
   p: ({ node, children, ...props }) => (
     <p {...props}>
       {typeof children === 'string'
@@ -100,7 +165,7 @@ const components = {
   ),
 };
 
-export function SearchTextRender({ children }: { children: React.ReactNode }) {
+export function SearchTextRender({ children, disableFade }: { children: React.ReactNode, disableFade?: boolean }) {
   const content = children as string;
   const containsLaTeX = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/.test(
     content || ""
@@ -113,6 +178,8 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
     processedContent = preprocessLinks(processedContent);
     return processedContent;
   };
+
+  const components = disableFade ? FadeLessComponents : FadeInComponents;
 
   if (containsLaTeX) {
     return (

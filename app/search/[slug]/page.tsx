@@ -33,7 +33,9 @@ export default async function Page(searchParams: { params: any }) {
             </div>
             <div className="w-full h-full">
               <Suspense fallback={<div>Loading...</div>}>
-                <SearchTextRender>{conversation}</SearchTextRender>
+                <SearchTextRender disableFade={true}>
+                  {conversation}
+                </SearchTextRender>
               </Suspense>
             </div>
           </div>

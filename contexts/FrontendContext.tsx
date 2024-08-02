@@ -23,6 +23,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [frontendContextId, setFrontendContextId] = useState<string | null>(
     null
   );
+  const [message, setMessage] = useState<any>(null);
   const [sourceResults, setSourceResults] = useState<any>([]);
   const [queryStatus, setQueryStatus] = useState<QueryStatus>("pending");
   const [conversation, setConversation] = useUIState();
@@ -58,6 +59,10 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       message,
     ]);
 
+    for await (const value of readStreamableValue(message.searchText)) {
+      setMessage(value);
+    }
+
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
@@ -66,6 +71,8 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         }
       }
     }
+
+
   };
 
   return (
@@ -80,6 +87,8 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         setSourceResults,
         recentThreads,
         updateRecentThreads,
+        message,
+        setMessage,
       }}
     >
       {children}

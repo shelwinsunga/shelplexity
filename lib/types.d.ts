@@ -10,5 +10,7 @@ export interface FrontendContextType {
     sourceResults: any;
     setSourceResults: (sourceResults: any) => void;
     recentThreads: any[];
-  updateRecentThreads: () => void;
+    message: any;
+    setMessage: (message: any) => void;
+    updateRecentThreads: () => void;
 }

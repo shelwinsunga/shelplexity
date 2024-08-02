@@ -62,24 +62,25 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       message,
     ]);
 
-    for await (const value of readStreamableValue(message.searchProgress)) {
-      console.log("SEARCH PROGRESS", value);
-      setSearchProgress(value);
-    }
-
-    for await (const value of readStreamableValue(message.searchText)) {
-      // console.log("MESSAGE", value);
-      setMessage(value);
-    }
-
-    if (message.isComplete) {
-      for await (const complete of readStreamableValue(message.isComplete)) {
-        if (complete) {
-          window.history.replaceState(null, "", indexedPath);
-          await updateRecentThreads();
-        }
+    for await (const value of readStreamableValue(message)) {
+      const messageReturn = value as { searchProgress: any; searchText: any; isComplete: boolean };
+      setSearchProgress(messageReturn.searchProgress);
+      setMessage(messageReturn.searchText);
+      if (messageReturn.isComplete) {
+        window.history.replaceState(null, "", indexedPath);
+        await updateRecentThreads();
       }
     }
+
+
+    // if (message.isComplete) {
+    //   for await (const complete of readStreamableValue(message.isComplete)) {
+    //     if (complete) {
+    //       window.history.replaceState(null, "", indexedPath);
+    //       await updateRecentThreads();
+    //     }
+    //   }
+    // }
   };
 
   return (

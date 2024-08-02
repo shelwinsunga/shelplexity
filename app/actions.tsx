@@ -89,7 +89,6 @@ export async function continueConversation(
                         status: "searching",
                     }));
                     const results = [];
-                    yield <SearchLoading queries={searchQueries} />;
 
                     for (let i = 0; i < searchQueries.length; i++) {
                         results.push({
@@ -101,12 +100,7 @@ export async function continueConversation(
                         await new Promise((resolve) => setTimeout(resolve, 1000));
                         searchQueries[i].status = "complete";
                         const updatedQueries = searchQueries.map(q => ({ ...q })); // Create a deep copy
-                        searchProgress.update([...updatedQueries, `${searchQueries[i].query}: ${searchQueries[i].status}`]);
-                        yield (
-                            <>
-                                <SearchLoading queries={searchQueries} />
-                            </>
-                        );
+                        searchProgress.update(updatedQueries);
                     }
 
                     const finalQueries = searchQueries.map(q => ({ ...q })); // Create a deep copy

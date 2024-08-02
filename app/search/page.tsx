@@ -5,6 +5,7 @@ import { getQuery, getThreadId, getThreadData } from "@/actions/threadActions";
 import SearchHeader from "@/components/search/SearchHeader";
 import ImageGallery from "@/components/search/ImageGallery";
 import { SourceGalleryLoading } from "@/components/search/SourceGalleryLoading";
+import { SearchLoading } from "@/components/gen-ui/search-loading/search-loading";
 
 export const dynamicParams = true;
 export const revalidate = false;
@@ -27,9 +28,7 @@ export default async function SearchPage({
   if (indexedPath) {
     threadData = await getThreadData(indexedPath);
   }
-
   const results = threadData?.sourceResults || null;
-
   const images = threadData?.imageResults || null;
 
   return (
@@ -46,6 +45,7 @@ export default async function SearchPage({
             </div>
             <div className="w-full h-full">
               <Suspense fallback={<div>Loading...</div>}>
+                <SearchLoading />
                 <SearchResultsDisplay />
               </Suspense>
             </div>

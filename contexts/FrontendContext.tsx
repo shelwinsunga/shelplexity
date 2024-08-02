@@ -41,6 +41,8 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const handleQuery = async (newQuery: string) => {
     setAIState([]);
     setConversation([]);
+    setSearchProgress([]);
+    setMessage(null);
     const newFrontendContextId = uuidv4();
     const { indexedPath } = await saveFrontendContext(
       newFrontendContextId,

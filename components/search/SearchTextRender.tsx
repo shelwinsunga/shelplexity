@@ -103,7 +103,9 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
 
   const processContent = (content: string | null) => {
     if (content === null) return "";
-    return content.replace("<answer>", "# Answer").replace("</answer>", "");
+    let processedContent = content.replace("<answer>", "# Answer").replace("</answer>", "");
+    processedContent = preprocessLinks(processedContent);
+    return processedContent;
   };
 
   if (containsLaTeX) {
@@ -143,4 +145,12 @@ const preprocessLaTeX = (content: string) => {
     (_, equation) => `$${equation}$`
   );
   return inlineProcessedContent;
+};
+
+const preprocessLinks = (content: string) => {
+  // Replace [text](url) with [text](url){:target="_blank" rel="noopener noreferrer"}
+  return content.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '[$1]($2)'
+  );
 };

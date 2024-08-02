@@ -29,7 +29,17 @@ const FadeInWrapper = ({ children, duration = 1.0 }) => {
 };
 
 const components = {
-  p: ({ node, ...props }) => <FadeInWrapper><p {...props} /></FadeInWrapper>,
+  p: ({ node, children, ...props }) => (
+    <p {...props}>
+      {typeof children === 'string'
+        ? children.split('').map((char, index) => (
+          <FadeInWrapper key={index} duration={0.2}>
+            {char}
+          </FadeInWrapper>
+        ))
+        : children}
+    </p>
+  ),
   h1: ({ children, ...props }: ComponentPropsWithoutRef<"h1">) => {
     if (children === "Answer") {
       return (

@@ -32,6 +32,7 @@ export interface ClientMessage {
     display: ReactNode;
     isComplete?: StreamableValue<boolean, any>;
     searchText: any;
+    searchProgress: any;
 }
 
 export async function continueConversation(
@@ -46,6 +47,7 @@ export async function continueConversation(
 
     const isComplete = createStreamableValue(false);
     const searchText = createStreamableValue('');
+    const searchProgress = createStreamableValue<any>([]);
 
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
@@ -96,13 +98,19 @@ export async function continueConversation(
                                 3
                             ),
                         });
+                        await new Promise((resolve) => setTimeout(resolve, 1000));
                         searchQueries[i].status = "complete";
+                        const updatedQueries = searchQueries.map(q => ({ ...q })); // Create a deep copy
+                        searchProgress.update([...updatedQueries, `${searchQueries[i].query}: ${searchQueries[i].status}`]);
                         yield (
                             <>
                                 <SearchLoading queries={searchQueries} />
                             </>
                         );
                     }
+
+                    const finalQueries = searchQueries.map(q => ({ ...q })); // Create a deep copy
+                    searchProgress.done(finalQueries as any);
 
                     const deepParsedWebResults = results.reduce(
                         (acc, result) => {
@@ -115,6 +123,8 @@ export async function continueConversation(
                         },
                         {} as Record<string, Array<{ url: string; description: string }>>
                     );
+
+
 
                     const prompt = userPrompt(
                         input,
@@ -158,6 +168,7 @@ export async function continueConversation(
         display: result.value,
         isComplete: isComplete.value,
         searchText: searchText.value,
+        searchProgress: searchProgress.value,
     };
 }
 

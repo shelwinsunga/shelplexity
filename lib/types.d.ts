@@ -13,4 +13,6 @@ export interface FrontendContextType {
     message: any;
     setMessage: (message: any) => void;
     updateRecentThreads: () => void;
+    searchProgress: any;
+    setSearchProgress: (searchProgress: any) => void;
 }

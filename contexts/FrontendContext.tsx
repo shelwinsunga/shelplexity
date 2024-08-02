@@ -29,6 +29,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const [AIState, setAIState] = useAIState();
+  const [searchProgress, setSearchProgress] = useState<any>([]);
   const router = useRouter();
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
@@ -59,9 +60,17 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       message,
     ]);
 
+    for await (const value of readStreamableValue(message.searchProgress)) {
+      console.log("SEARCH PROGRESS", value);
+      setSearchProgress(value);
+    }
+
     for await (const value of readStreamableValue(message.searchText)) {
+      // console.log("MESSAGE", value);
       setMessage(value);
     }
+
+
 
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
@@ -89,6 +98,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         updateRecentThreads,
         message,
         setMessage,
+        searchProgress,
       }}
     >
       {children}

@@ -55,7 +55,7 @@ const components = {
   ul: ({ node, ...props }) => <FadeInWrapper><ul {...props} /></FadeInWrapper>,
   ol: ({ node, ...props }) => <FadeInWrapper><ol {...props} /></FadeInWrapper>,
   li: ({ node, ...props }) => <FadeInWrapper><li {...props} /></FadeInWrapper>,
-  strong: ({ node, ...props }) => <FadeInWrapper duration={0.5}><strong {...props} /></FadeInWrapper>,
+  strong: ({ node, ...props }) => <FadeInWrapper duration={0.2}><strong {...props} /></FadeInWrapper>,
   em: ({ node, ...props }) => <FadeInWrapper><em {...props} /></FadeInWrapper>,
   code: ({ node, ...props }) => <FadeInWrapper><code {...props} /></FadeInWrapper>,
   pre: ({ node, ...props }) => <FadeInWrapper><pre {...props} /></FadeInWrapper>,

@@ -43,7 +43,8 @@ Notably, I did not implement the abortion of a pending thread (which is what I o
 - Adding Mobile Support
 - Give the LLM more tools
 - Add Video Search
-- Learn more about how state management is done in a production context
+- Think harder about how to wire state such that scaling is reasonable, probably read some more complicated codebases
+- Fix the typescript types - not very precise yet.
 
 
 Thanks again!

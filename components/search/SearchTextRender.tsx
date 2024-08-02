@@ -12,43 +12,54 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Snail } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
-const CustomWrapper = ({ children }) => (
-  <span className="fade-in">
-    {children}
-  </span>
-);
+const FadeInWrapper = ({ children, duration = 1.0 }) => {
 
-const components1 = {
-  p: ({ node, ...props }) => <CustomWrapper><p {...props} /></CustomWrapper>,
+  return (
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: duration, ease: "easeIn" }}
+    >
+      {children}
+    </motion.span>
+  );
+};
+
+const components = {
+  p: ({ node, ...props }) => <FadeInWrapper><p {...props} /></FadeInWrapper>,
   h1: ({ children, ...props }: ComponentPropsWithoutRef<"h1">) => {
     if (children === "Answer") {
       return (
-        <h3
-          className="fade-in font-semibold flex items-center text-lg sm:text-xl md:text-2xl"
-          {...props}
-        >
-          <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-          {children}
-        </h3>
+        <FadeInWrapper duration={1.0}>
+          <h3
+            className="font-semibold flex items-center text-lg sm:text-xl md:text-2xl"
+            {...props}
+          >
+            <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+            {children}
+          </h3>
+        </FadeInWrapper>
       );
     }
     return null;
   },
-  h2: ({ node, ...props }) => <CustomWrapper><h2 {...props} /></CustomWrapper>,
-  h3: ({ node, ...props }) => <CustomWrapper><h3 {...props} /></CustomWrapper>,
-  h4: ({ node, ...props }) => <CustomWrapper><h4 {...props} /></CustomWrapper>,
-  h5: ({ node, ...props }) => <CustomWrapper><h5 {...props} /></CustomWrapper>,
-  h6: ({ node, ...props }) => <CustomWrapper><h6 {...props} /></CustomWrapper>,
-  blockquote: ({ node, ...props }) => <CustomWrapper><blockquote {...props} /></CustomWrapper>,
-  ul: ({ node, ...props }) => <CustomWrapper><ul {...props} /></CustomWrapper>,
-  ol: ({ node, ...props }) => <CustomWrapper><ol {...props} /></CustomWrapper>,
-  li: ({ node, ...props }) => <CustomWrapper><li {...props} /></CustomWrapper>,
-  strong: ({ node, ...props }) => <CustomWrapper><strong {...props} /></CustomWrapper>,
-  em: ({ node, ...props }) => <CustomWrapper><em {...props} /></CustomWrapper>,
-  code: ({ node, ...props }) => <CustomWrapper><code {...props} /></CustomWrapper>,
-  pre: ({ node, ...props }) => <CustomWrapper><pre {...props} /></CustomWrapper>,
-  img: ({ node, ...props }) => <CustomWrapper><img {...props} /></CustomWrapper>,
+  h2: ({ node, ...props }) => <FadeInWrapper><h2 {...props} /></FadeInWrapper>,
+  h3: ({ node, ...props }) => <FadeInWrapper><h3 {...props} /></FadeInWrapper>,
+  h4: ({ node, ...props }) => <FadeInWrapper><h4 {...props} /></FadeInWrapper>,
+  h5: ({ node, ...props }) => <FadeInWrapper><h5 {...props} /></FadeInWrapper>,
+  h6: ({ node, ...props }) => <FadeInWrapper><h6 {...props} /></FadeInWrapper>,
+  blockquote: ({ node, ...props }) => <FadeInWrapper><blockquote {...props} /></FadeInWrapper>,
+  ul: ({ node, ...props }) => <FadeInWrapper><ul {...props} /></FadeInWrapper>,
+  ol: ({ node, ...props }) => <FadeInWrapper><ol {...props} /></FadeInWrapper>,
+  li: ({ node, ...props }) => <FadeInWrapper><li {...props} /></FadeInWrapper>,
+  strong: ({ node, ...props }) => <FadeInWrapper duration={0.5}><strong {...props} /></FadeInWrapper>,
+  em: ({ node, ...props }) => <FadeInWrapper><em {...props} /></FadeInWrapper>,
+  code: ({ node, ...props }) => <FadeInWrapper><code {...props} /></FadeInWrapper>,
+  pre: ({ node, ...props }) => <FadeInWrapper><pre {...props} /></FadeInWrapper>,
+  img: ({ node, ...props }) => <FadeInWrapper><img {...props} /></FadeInWrapper>,
   a: ({ children, ...props }: ComponentPropsWithoutRef<"a">) => (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
@@ -84,23 +95,6 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
   );
   const processedData = preprocessLaTeX(content || "");
 
-  const components = {
-    h1: ({ children, ...props }: ComponentPropsWithoutRef<"h1">) => {
-      if (children === "Answer") {
-        return (
-          <h3
-            className="font-semibold flex items-center text-lg sm:text-xl md:text-2xl"
-            {...props}
-          >
-            <Snail className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-            {children}
-          </h3>
-        );
-      }
-      return null;
-    },
-  };
-
   const processContent = (content: string | null) => {
     if (content === null) return "";
     let processedContent = content.replace("<answer>", "# Answer").replace("</answer>", "");
@@ -115,7 +109,7 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
           rehypePlugins={[rehypeKatex]}
           remarkPlugins={[remarkGfm, remarkMath]}
           className="prose-neutral"
-          components={components1}
+          components={components}
         >
           {processContent(processedData)}
         </ReactMarkdown>
@@ -127,7 +121,7 @@ export function SearchTextRender({ children }: { children: React.ReactNode }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         className="prose-neutral"
-        components={components1}
+        components={components}
       >
         {processContent(content)}
       </ReactMarkdown>

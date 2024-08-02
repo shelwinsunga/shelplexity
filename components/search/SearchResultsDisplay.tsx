@@ -6,9 +6,6 @@ import { useUIState } from "ai/rsc";
 import { useFrontend } from "@/contexts/FrontendContext";
 import { SearchTextRender } from "./SearchTextRender";
 import ReactMarkdown from "react-markdown";
-import { visit } from 'unist-util-visit';
-
-
 
 export function SearchResultsDisplay() {
     const { message } = useFrontend();
@@ -16,23 +13,14 @@ export function SearchResultsDisplay() {
     const [displayedContent, setDisplayedContent] = useState<React.ReactNode[]>(
         []
     );
-    const [currentIndex, setCurrentIndex] = useState(0);
 
     const blocks = useMemo(() => {
-        const processedBlocks: string[] = [];
-        let buffer = '';
         setDisplayedContent([
-            <SearchTextRender>
+            <SearchTextRender key="search-text-render">
                 {message}
             </SearchTextRender>
         ]);
     }, [message]);
-
-    const animateBlock = (block: string, index: number) => {
-        return (
-            <span className="fade-in" key={index}>{block}</span>
-        )
-    }
 
     return (
         <div className="mt-2 flex flex-col items-start justify-start w-full max-w-full overflow-x-hidden">

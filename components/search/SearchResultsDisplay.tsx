@@ -12,6 +12,7 @@ import { visit } from 'unist-util-visit';
 
 export function SearchResultsDisplay() {
     const { message } = useFrontend();
+    const [conversation] = useUIState();
     const [displayedContent, setDisplayedContent] = useState<React.ReactNode[]>(
         []
     );
@@ -35,22 +36,18 @@ export function SearchResultsDisplay() {
 
     return (
         <div className="mt-2 flex flex-col items-start justify-start w-full max-w-full overflow-x-hidden">
-            <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl w-full">
-                {displayedContent}
-            </div>
-            {/* {conversation.map(
+            {conversation.map(
                 (message: ClientMessage) =>
                     message.role === "assistant" && (
                         <div
                             className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl w-full"
                             key={message.id}
                         >
-                            <div className="mt-8 w-full">
-                                <AnimatedTextWrapper>{message.display}</AnimatedTextWrapper>
-                            </div>
+                            {message.display}
+                            {displayedContent}
                         </div>
                     )
-            )} */}
+            )}
         </div>
     );
 }

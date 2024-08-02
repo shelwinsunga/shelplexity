@@ -19,6 +19,7 @@ import { userPrompt } from "@/lib/prompt";
 import { streamText } from "ai";
 import { searchWebImage } from "@/actions/searchWebImage";
 import { parseWebResults } from "@/lib/utils";
+import { createStreamableUI } from "ai/rsc"
 
 export interface ServerMessage {
     role: "user" | "assistant";
@@ -45,6 +46,7 @@ export async function continueConversation(
 
     const isComplete = createStreamableValue(false);
     const searchText = createStreamableValue('');
+
     const webResults = await searchWeb(input, 15);
     const webImageResults = await searchWebImage(input);
 
@@ -132,7 +134,6 @@ export async function continueConversation(
                         searchText.update(accumulatedText);
                         yield (
                             <>
-                                <SearchTextRender>{accumulatedText}</SearchTextRender>
                             </>
                         );
                     }
@@ -143,7 +144,9 @@ export async function continueConversation(
                     ]);
                     isComplete.done(true);
                     await saveConversationToThread(indexedPath, accumulatedText);
-                    return <SearchTextRender>{accumulatedText}</SearchTextRender>;
+                    return (
+                        <></>
+                    )
                 },
             },
         },

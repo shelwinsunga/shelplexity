@@ -148,9 +148,23 @@ const preprocessLaTeX = (content: string) => {
 };
 
 const preprocessLinks = (content: string) => {
-  // Replace [text](url) with [text](url){:target="_blank" rel="noopener noreferrer"}
-  return content.replace(
+  // Handle complete links
+  let processedContent = content.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '[$1]($2)'
   );
+
+  // Handle incomplete links (missing closing parenthesis)
+  processedContent = processedContent.replace(
+    /\[([^\]]+)\]\(([^)]+)$/gm,
+    '[$1]($2)'
+  );
+
+  // Handle incomplete links (missing closing bracket)
+  processedContent = processedContent.replace(
+    /\[([^\]]+)$/gm,
+    '[$1]'
+  );
+
+  return processedContent;
 };

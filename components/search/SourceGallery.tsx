@@ -49,7 +49,7 @@ export default function SourceGallery({
                 )}
                 <div className="flex items-center gap-1 min-w-0">
                   <span className="text-muted-foreground/80 hover:underline text-xs truncate max-w-[100px]">
-                    {result.profile?.name || 'Unknown'}
+                    {result.profile?.name || "Unknown"}
                   </span>
                   <span className="text-muted-foreground/80 text-xs flex-shrink-0">
                     •
@@ -109,7 +109,7 @@ export default function SourceGallery({
                         )}
                         <div className="flex items-center gap-1 min-w-0">
                           <span className="text-muted-foreground/80 hover:underline text-xs truncate max-w-[100px]">
-                            {result.profile?.name || 'Unknown'}
+                            {result.profile?.name || "Unknown"}
                           </span>
                           <span className="text-muted-foreground/80 text-xs flex-shrink-0">
                             •

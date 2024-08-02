@@ -72,8 +72,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       setMessage(value);
     }
 
-
-
     if (message.isComplete) {
       for await (const complete of readStreamableValue(message.isComplete)) {
         if (complete) {
@@ -82,8 +80,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         }
       }
     }
-
-
   };
 
   return (

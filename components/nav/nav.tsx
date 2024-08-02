@@ -50,9 +50,7 @@ export default function Nav() {
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
                 <Snail className="w-6 h-6 mr-2" />
-                <h1 className="text-lg font-semibold">
-                  Shelplexity
-                </h1>
+                <h1 className="text-lg font-semibold">Shelplexity</h1>
               </Link>
             </div>
             <div className="mb-[1px]">
@@ -85,18 +83,13 @@ export default function Nav() {
                 className="flex items-center hover:text-foreground ease-in-out duration-200"
               >
                 <Snail className="w-6 h-6 mr-2" />
-                <h1 className="text-lg font-semibold">
-                  Shelplexity
-                </h1>
+                <h1 className="text-lg font-semibold">Shelplexity</h1>
               </Link>
             </motion.div>
             <div className="px-6">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="mb-6 w-full text-sm"
-                  >
+                  <Button variant="outline" className="mb-6 w-full text-sm">
                     <Plus className="w-4 h-4 mr-2" />
                     New Thread
                   </Button>

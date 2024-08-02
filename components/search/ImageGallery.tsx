@@ -1,16 +1,11 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Snail, X } from "lucide-react";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 
 interface ImageResult {
   type: string;
@@ -42,15 +37,23 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       const validatedImages = await Promise.all(
         (images || []).map(async (image) => {
           try {
-            const thumbnailResponse = await fetch(image.thumbnail.src, { method: 'HEAD' });
-            const propertiesUrlResponse = await fetch(image.properties.url, { method: 'HEAD' });
-            return thumbnailResponse.ok && propertiesUrlResponse.ok ? image : null;
+            const thumbnailResponse = await fetch(image.thumbnail.src, {
+              method: "HEAD",
+            });
+            const propertiesUrlResponse = await fetch(image.properties.url, {
+              method: "HEAD",
+            });
+            return thumbnailResponse.ok && propertiesUrlResponse.ok
+              ? image
+              : null;
           } catch (error) {
             return null;
           }
         })
       );
-      const filteredImages = validatedImages.filter((img): img is ImageResult => img !== null);
+      const filteredImages = validatedImages.filter(
+        (img): img is ImageResult => img !== null
+      );
       setValidImages(filteredImages);
     };
 
@@ -130,7 +133,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
               ))}
             </div>
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-              <Button variant="outline" size="sm" className="w-[75%] h-[50%] text-[0.7vw] scale-100 hover:scale-105 transition-transform duration-200">View More</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-[75%] h-[50%] text-[0.7vw] scale-100 hover:scale-105 transition-transform duration-200"
+              >
+                View More
+              </Button>
             </div>
           </div>
         )}

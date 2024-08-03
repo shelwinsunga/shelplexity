@@ -33,11 +33,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
-  const updateRecentThreads = useCallback(async () => {
-    const threads = await getRecentThreads(10);
-    setRecentThreads(threads);
-  }, []);
-
   const handleQuery = async (newQuery: string) => {
     setAIState([]);
     setConversation([]);
@@ -62,26 +57,35 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
       message,
     ]);
 
-    for await (const value of readStreamableValue(message)) {
-      const messageReturn = value as { searchProgress: any; searchText: any; isComplete: boolean };
-      setSearchProgress(messageReturn.searchProgress);
-      setMessage(messageReturn.searchText);
-      if (messageReturn.isComplete) {
-        window.history.replaceState(null, "", indexedPath);
-        await updateRecentThreads();
-      }
-    }
-
-
-    // if (message.isComplete) {
-    //   for await (const complete of readStreamableValue(message.isComplete)) {
-    //     if (complete) {
-    //       window.history.replaceState(null, "", indexedPath);
-    //       await updateRecentThreads();
-    //     }
-    //   }
-    // }
+    await Promise.all([
+      updateStreamableValue(message.searchProgress, setSearchProgress),
+      updateStreamableValue(message.searchText, setMessage),
+      updateStreamableValue(message.isComplete, async (complete) => {
+        if (complete) {
+          window.history.replaceState(null, "", indexedPath);
+          await updateRecentThreads();
+        }
+      }),
+    ]);
   };
+
+  const updateStreamableValue = async (
+    streamable: any,
+    handler: (value: any) => void | Promise<void>
+  ) => {
+    try {
+      for await (const value of readStreamableValue(streamable)) {
+        await handler(value);
+      }
+    } catch (error) {
+      console.error(`Error reading streamable value: ${error}`);
+    }
+  };
+
+  const updateRecentThreads = useCallback(async () => {
+    const threads = await getRecentThreads(10);
+    setRecentThreads(threads);
+  }, []);
 
   return (
     <FrontendContext.Provider

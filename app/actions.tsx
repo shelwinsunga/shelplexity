@@ -124,7 +124,7 @@ export async function continueConversation(
                         model: openai("gpt-4o"),
                         system: systemPrompt(),
                         messages: [{ role: "user", content: prompt }],
-                        maxTokens: 500,
+                        maxTokens: 1000,
                         temperature: 0.1,
                     });
 

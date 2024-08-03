@@ -33,14 +33,12 @@ Notably, I did not implement the abortion of a pending thread (which is what I o
 
 - The Brave API has a hate-love relationship with me. I implemented some retry logic (ok I'll be honest, an LLM generated the retry logic), but there are still cases where I run into rate limiting issues and race conditions. If I worked on this longer, I'd spend more time making this more robust.
 
-- There aren't fantastic results from the Web - I mainly gave the LLM the first few sentences of each webpage parsed. I'd want to spend more time prompt engineering/improving the actual LLM response.
+- There aren't fantastic results from the Web - I mainly gave the LLM the first few sentences of each webpage parsed. I'd want to spend more time prompt engineering/improving the actual LLM response. Maybe using something like `@mozilla/readability` or a similar tool to extract web contents. Reading from files/pdfs would be nice.
 
 - Most of the state management is handled in a simple context, but as we scale the application it can get quite hairy - tracking down bugs would get harder, and extending the application would be messy.
 
 ## Possible Improvements
-
-- Make the Generative UI less... lackluster? It works, but I was quite inspired by the one in perplexity's (Pro Search) and I'd want to spend more time really making it pop.
-- Make the LLM stream fade-in effectively. I had trouble with syncing the client/server state properly and if I read more of the implementation details of the vercel ai sdk, I think I'd eventually figure it out. The main issue the React Markdown component constantly rerendering
+- Make the Generative UI less... lackluster? It works, but I was quite inspired by the one in perplexity's (Pro Search) and I'd want to spend more time really making it pop. Adding stuff like Weather/Movie Ticket bookings/etc. would be cool.
 - Authentication
 - Change the model / LLM
 - Code Syntax Highlighting

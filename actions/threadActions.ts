@@ -26,7 +26,7 @@ export async function saveFrontendContext(
 ) {
   try {
     const hash = generateHash();
-    // llm generated based off perplexity's slug
+
     const slug = query
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -34,7 +34,6 @@ export async function saveFrontendContext(
       .replace(/-+$/, "");
     const indexedPath = `/search/${slug}-${hash}`;
 
-    // todo: get rid of these keys after we index the thread
     await kv.hmset(`frontend-context-id:${frontendContextId}`, {
       query: query,
       status: queryStatus,
@@ -247,7 +246,12 @@ export async function deleteThread(indexedPath: string): Promise<void> {
   }
 }
 
-export async function deleteFrontendContext(indexedPath: string): Promise<void> {
+export async function deleteFrontendContext(indexedPath: string | null): Promise<void> {
+
+  if (!indexedPath) {
+    return;
+  }
+
   try {
     const frontendContextKeys = await kv.keys(`frontend-context-id:*`);
     for (const key of frontendContextKeys) {

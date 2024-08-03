@@ -6,6 +6,7 @@ import SearchHeader from "@/components/search/SearchHeader";
 import ImageGallery from "@/components/search/ImageGallery";
 import { SourceGalleryLoading } from "@/components/search/SourceGalleryLoading";
 import { SearchLoading } from "@/components/gen-ui/search-loading/search-loading";
+import { deleteFrontendContext } from "@/actions/threadActions";
 
 export const dynamicParams = true;
 export const revalidate = false;
@@ -30,6 +31,8 @@ export default async function SearchPage({
   }
   const results = threadData?.sourceResults || null;
   const images = threadData?.imageResults || null;
+  await deleteFrontendContext(indexedPath);
+
 
   return (
     <>

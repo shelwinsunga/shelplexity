@@ -77,7 +77,7 @@ export async function continueConversation(
             search: {
                 description: "Search the web for information",
                 parameters: z.object({
-                    queries: z.array(z.string()).max(4).describe("Search objective"),
+                    queries: z.array(z.string()).describe("Search objective"),
                 }),
                 generate: async function* ({ queries }) {
                     const searchQueries: SearchQuery[] = queries.map((query) => ({

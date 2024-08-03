@@ -228,3 +228,37 @@ export async function getRecentThreads(limit: number): Promise<any[]> {
     throw new Error(ERROR_MESSAGES.RETRIEVE_RECENT_THREADS);
   }
 }
+
+export async function deleteThread(indexedPath: string): Promise<void> {
+  try {
+    await kv.del(`thread-id:${indexedPath}`);
+
+    const frontendContextKeys = await kv.keys(`frontend-context-id:*`);
+    for (const key of frontendContextKeys) {
+      const contextData = await kv.hgetall(key);
+      if (contextData && contextData.indexedPath === indexedPath) {
+        await kv.del(key);
+        break;
+      }
+    }
+    revalidatePath("/search/[slug]/page");
+  } catch (e) {
+    throw new Error("Failed to delete thread");
+  }
+}
+
+export async function deleteFrontendContext(indexedPath: string): Promise<void> {
+  try {
+    const frontendContextKeys = await kv.keys(`frontend-context-id:*`);
+    for (const key of frontendContextKeys) {
+      const contextData = await kv.hgetall(key);
+      if (contextData && contextData.indexedPath === indexedPath) {
+        await kv.del(key);
+        break;
+      }
+    }
+    revalidatePath("/search/[slug]/page");
+  } catch (e) {
+    throw new Error("Failed to delete frontend context");
+  }
+}

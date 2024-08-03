@@ -6,6 +6,7 @@ import { getConversation } from "@/actions/threadActions";
 import SearchHeader from "@/components/search/SearchHeader";
 import ImageGallery from "@/components/search/ImageGallery";
 import { SourceGalleryLoading } from "@/components/search/SourceGalleryLoading";
+import { deleteThread, deleteFrontendContext } from "@/actions/threadActions";
 
 export const dynamicParams = true; // true | false,
 export const revalidate = false;
@@ -19,6 +20,8 @@ export default async function Page(searchParams: { params: any }) {
   const sourceResults = threadData?.sourceResults;
   const images = threadData?.imageResults;
   const conversation = await getConversation(indexedPath);
+  await deleteFrontendContext(indexedPath);
+
   return (
     <>
       <div className="flex h-full w-full">

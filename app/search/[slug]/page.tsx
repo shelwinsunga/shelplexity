@@ -8,7 +8,7 @@ import ImageGallery from "@/components/search/ImageGallery";
 import { SourceGalleryLoading } from "@/components/search/SourceGalleryLoading";
 import { deleteThread, deleteFrontendContext } from "@/actions/threadActions";
 
-export const dynamicParams = true; // true | false,
+export const dynamicParams = true; 
 export const revalidate = false;
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;

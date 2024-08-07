@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 
 export default function SearchHeader({ query }: { query: string | null }) {
-  const isLongQuery = query && query.length > 50; // Adjust this threshold as needed
+  const isLongQuery = query && query.length > 50; 
 
   return (
     <>

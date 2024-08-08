@@ -38,7 +38,6 @@ Notably, I did not implement the abortion of a pending thread (which is what I o
 - Most of the state management is handled in a simple context, but as we scale the application it can get quite hairy - tracking down bugs would get harder, and extending the application would be messy.
 
 ## Possible Improvements
-- Make the Generative UI less... lackluster? It works, but I was quite inspired by the one in perplexity's (Pro Search) and I'd want to spend more time really making it pop. Adding stuff like Weather/Movie Ticket bookings/etc. would be cool.
 - Authentication
 - Change the model / LLM
 - Code Syntax Highlighting

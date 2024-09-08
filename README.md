@@ -1,12 +1,5 @@
-# Hello Perplexity!
-
-This is my perplexity clone.
 
 https://github.com/user-attachments/assets/5ae2660a-0e53-439c-accd-bf957d6fa011
-
-#### Preface
-
-I do not write a lot of react in a production context, so I learned a lot combing through the docs and using features I have not used before. If given the chance, I'd love to know where I can improve, or where I missed the mark.
 
 ## Overview
 
@@ -27,15 +20,11 @@ When a user submits a query, it triggers the `handleQuery` function in the `Fron
 
 After the LLM is done generating it's response, we save the conversation at the end into redis where the `thread-id` is.
 
-Notably, I did not implement the abortion of a pending thread (which is what I observed from your application state); when a user leaves the page, the thread finishes on the server anyway.
-
 ### Notes
 
 - The Brave API has a hate-love relationship with me. I implemented some retry logic (ok I'll be honest, an LLM generated the retry logic), but there are still cases where I run into rate limiting issues and race conditions. If I worked on this longer, I'd spend more time making this more robust.
 
 - There aren't fantastic results from the Web - I mainly gave the LLM the first few sentences of each webpage parsed. I'd want to spend more time prompt engineering/improving the actual LLM response. Maybe using something like `@mozilla/readability` or a similar tool to extract web contents. Reading from files/pdfs would be nice.
-
-- Most of the state management is handled in a simple context, but as we scale the application it can get quite hairy - tracking down bugs would get harder, and extending the application would be messy.
 
 ## Possible Improvements
 - Authentication
@@ -44,7 +33,4 @@ Notably, I did not implement the abortion of a pending thread (which is what I o
 - Adding Mobile Support
 - Give the LLM more tools
 - Add Video Search
-- Think harder about how to wire state such that scaling is reasonable, probably read some more complicated codebases
 - Fix the typescript types - not very precise yet.
-
-Thanks again!

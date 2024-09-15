@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Nav() {
-    const { recentThreads, updateRecentThreads } = useFrontend();
+    const { recentThreads, updateRecentThreads, removeThread } = useFrontend();
     const [isContentVisible, setIsContentVisible] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const router = useRouter();
@@ -143,14 +143,19 @@ export default function Nav() {
                                                             <DropdownMenuContent>
                                                                 <DropdownMenuItem
                                                                     className="hover:bg-foreground"
-                                                                    onClick={(e) => {
+                                                                    onClick={async (e) => {
                                                                         e.preventDefault();
-                                                                        deleteThread(slug);
-                                                                        if (window.location.pathname === `${slug}`) {
+                                                                        removeThread(slug); 
+                                                                        try {
+                                                                            await deleteThread(slug);
+                                                                        } catch (error) {
+                                                                            console.error("Failed to delete thread:", error);
+                                                                            updateRecentThreads(); 
+                                                                        }
+                                                                        if (window.location.pathname === `/${slug}`) {
                                                                             window.history.replaceState(null, '', '/');
                                                                             router.push('/');
                                                                         }
-                                                                        updateRecentThreads();
                                                                     }}
                                                                 >
                                                                     Delete

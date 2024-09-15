@@ -33,8 +33,6 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
-
-
   const handleQuery = async (newQuery: string, newFrontendContextId: string) => {
     setAIState([]);
     setConversation([]);
@@ -85,6 +83,12 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
     setRecentThreads(threads);
   }, []);
 
+  const removeThread = (slug: string) => {
+    setRecentThreads((prevThreads) =>
+      prevThreads.filter((thread) => thread.key.split(":")[1] !== slug)
+    );
+  };
+
   return (
     <FrontendContext.Provider
       value={{
@@ -100,6 +104,7 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
         message,
         setMessage,
         searchProgress,
+        removeThread, 
       }}
     >
       {children}

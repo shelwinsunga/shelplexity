@@ -33,19 +33,17 @@ export function FrontendProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [recentThreads, setRecentThreads] = useState<any[]>([]);
 
-  const handleQuery = async (newQuery: string) => {
+
+
+  const handleQuery = async (newQuery: string, newFrontendContextId: string) => {
     setAIState([]);
     setConversation([]);
     setSearchProgress([]);
     setMessage(null);
-    const newFrontendContextId = uuidv4();
     const { indexedPath } = await saveFrontendContext(
       newFrontendContextId,
       newQuery,
       "pending"
-    );
-    router.push(
-      `/search?q=${queryStatus}&newFrontendContextUUID=${newFrontendContextId}`
     );
     setFrontendContextId(newFrontendContextId);
     setQuery(newQuery);

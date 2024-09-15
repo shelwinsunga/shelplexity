@@ -8,13 +8,15 @@ import { Send, Snail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFrontend } from "@/contexts/FrontendContext";
 import Loading from "./Loading";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 export function SearchPage({ onClose }: { onClose?: () => void }) {
   const [localQuery, setLocalQuery] = useState("");
   const { query, handleQuery, setQuery } = useFrontend();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const currentQuery = searchParams.get("q");
   if (currentQuery && currentQuery !== query) {
     setQuery(currentQuery);
@@ -22,8 +24,12 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
 
   const handleSearch = async () => {
     if (localQuery && localQuery.trim() !== "") {
+      const newFrontendContextId = uuidv4();
+      router.push(
+        `/search?q=pending&newFrontendContextUUID=${newFrontendContextId}`
+      );
       setIsLoading(true);
-      handleQuery(localQuery);
+      handleQuery(localQuery, newFrontendContextId);
       if (onClose) {
         onClose();
       }

@@ -3,7 +3,7 @@ export type QueryStatus = "pending" | "complete" | "error";
 
 export interface FrontendContextType {
   query: string | null;
-  handleQuery: (query: string) => void;
+  handleQuery: (query: string, frontendContextId: string) => void;
   setQuery: (query: string) => void;
   frontendContextId: string | null;
   setFrontendContextId: (frontendContextId: string | null) => void;

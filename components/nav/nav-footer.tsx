@@ -6,8 +6,7 @@ export default function NavFooter() {
     <div className="flex flex-col space-y-2 mt-auto">
       <Button variant="ghost" className="w-full justify-start">
         <User className="h-5 w-5 mr-2" />
-        <span className="hidden sm:inline">Perplexity Interviewer</span>
-        <span className="sm:hidden">Interviewer</span>
+        <span className="hidden sm:inline">You</span>
       </Button>
     </div>
   );

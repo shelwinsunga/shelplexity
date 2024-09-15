@@ -7,13 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFrontend } from "@/contexts/FrontendContext";
+import { v4 as uuidv4 } from "uuid";  
 
 export function SearchArea({ onClose }: { onClose?: () => void }) {
   const [localQuery, setLocalQuery] = useState("");
   const { query, handleQuery, setQuery } = useFrontend();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const currentQuery = searchParams.get("q");
   if (currentQuery && currentQuery !== query) {
     setQuery(currentQuery);
@@ -21,8 +22,12 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
 
   const handleSearch = async () => {
     if (localQuery && localQuery.trim() !== "") {
+      const newFrontendContextId = uuidv4();
+      router.push(
+        `/search?q=pending&newFrontendContextUUID=${newFrontendContextId}`
+      );
       setIsLoading(true);
-      handleQuery(localQuery);
+      handleQuery(localQuery, newFrontendContextId);
       if (onClose) {
         onClose();
       }

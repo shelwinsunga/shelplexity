@@ -28,10 +28,9 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
     );
   };
 
-  const handleSearch = async (newFrontendContextId: string) => {
+  const handleSearch = async () => {
     if (localQuery && localQuery.trim() !== "") {
       setIsLoading(true);
-      handleQuery(localQuery, newFrontendContextId);
       if (onClose) {
         onClose();
       }
@@ -39,6 +38,9 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
   };
 
   if (isLoading) {
+    const newFrontendContextId = uuidv4();
+    handleRouterPush(newFrontendContextId);
+    handleQuery(localQuery, newFrontendContextId);
     return <Loading />;
   }
 
@@ -56,9 +58,7 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
             onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                const newFrontendContextId = uuidv4();
-                handleRouterPush(newFrontendContextId);
-                handleSearch(newFrontendContextId);
+                handleSearch();
               }
             }}
             placeholder="Ask anything"
@@ -74,11 +74,7 @@ export function SearchPage({ onClose }: { onClose?: () => void }) {
                 className="self-end"
               >
                 <Button
-                  onClick={() => {
-                    const newFrontendContextId = uuidv4();
-                    handleRouterPush(newFrontendContextId);
-                    handleSearch(newFrontendContextId);
-                  }}
+                  onClick={handleSearch}
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Send className="w-4 h-4 mr-2" />

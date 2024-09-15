@@ -26,10 +26,9 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
     );
   };
 
-  const handleSearch = async (newFrontendContextId: string) => {
+  const handleSearch = async () => {
     if (localQuery && localQuery.trim() !== "") {
       setIsLoading(true);
-      handleQuery(localQuery, newFrontendContextId);
       if (onClose) {
         onClose();
       }
@@ -37,6 +36,10 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
   };
 
   if (isLoading) {
+    const newFrontendContextId = generateHash();
+    handleRouterPush(newFrontendContextId);
+    handleQuery(localQuery, newFrontendContextId);
+
     return (
       <div className="flex items-center justify-center h-[120px] rounded-md border bg-card shadow-md p-4">
         <Loader2 className="w-8 h-8 animate-spin" />
@@ -52,9 +55,7 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
         onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            const newFrontendContextId = uuidv4();
-            handleRouterPush(newFrontendContextId);
-            handleSearch(newFrontendContextId);
+            handleSearch();
           }
         }}
         placeholder="Ask anything"
@@ -70,11 +71,7 @@ export function SearchArea({ onClose }: { onClose?: () => void }) {
             className="mt-2 sm:mt-0"
           >
             <Button
-              onClick={() => {
-                const newFrontendContextId = uuidv4();
-                handleRouterPush(newFrontendContextId);
-                handleSearch(newFrontendContextId);
-              }}
+              onClick={handleSearch}
               className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Send className="w-4 h-4" />
